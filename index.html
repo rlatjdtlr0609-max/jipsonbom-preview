@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6935c9">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; connect-src 'none'; object-src 'none'">
+  <title>집손봄 | 생활수리 미리보기</title>
+  <style>
+:root {
+  --purple: #6935c9;
+  --purple-light: #b996ff;
+  --navy: #211735;
+  --muted: #605970;
+  --surface: #fbf9ff;
+  --line: #e9e2f2;
+  color: var(--navy);
+  background: var(--surface);
+  font-family: system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  line-height: 1.55;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+img { display: block; max-width: 100%; width: 100%; object-fit: cover; }
+a { color: inherit; text-decoration: none; }
+button, select { font: inherit; }
+a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visible { outline: 3px solid #9964ed; outline-offset: 4px; }
+.skip { position: absolute; top: -5rem; background: white; padding: .6rem 1rem; z-index: 2; }
+.skip:focus { top: .5rem; }
+.shell { width: min(1220px, calc(100% - 3rem)); margin-inline: auto; }
+.preview-note { background: var(--navy); color: white; text-align: center; margin: 0; padding: .55rem 1rem; font-size: .84rem; }
+.header { min-height: 5.3rem; display: flex; align-items: center; gap: 1.25rem; justify-content: space-between; }
+.brand { display: inline-flex; gap: .7rem; align-items: center; white-space: nowrap; font-size: 1.55rem; line-height: 1.15; letter-spacing: -.055em; }
+.brand span { display: grid; place-items: center; background: var(--purple); width: 2.6rem; aspect-ratio: 1; border-radius: .8rem; color: white; }
+.brand small { display: block; margin-top: .3rem; font-size: .69rem; letter-spacing: 0; color: var(--muted); }
+nav { display: flex; gap: .4rem; flex-wrap: wrap; }
+nav a { font-size: .92rem; font-weight: 700; border-radius: .65rem; padding: .62rem .8rem; }
+nav a:hover, nav a[aria-current] { background: #efe7ff; color: #5725b0; }
+.hero { display: grid; grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr); gap: 1rem; }
+.hero-primary, .side-card { border-radius: 1.3rem; overflow: hidden; position: relative; }
+.hero-primary { background: var(--navy); isolation: isolate; display: flex; align-items: center; min-height: clamp(26rem, 36vw, 32rem); }
+.hero-primary img, .technician img { position: absolute; inset: 0; height: 100%; z-index: -2; object-position: center; }
+.hero-primary::after, .technician::after { content: ""; position: absolute; inset: 0; z-index: -1; }
+.hero-primary::after { background: linear-gradient(90deg, #171026 8%, #211735ef 29%, #21173566 70%, #21173538); }
+.hero-body { padding: clamp(1.4rem, 4.1vw, 4rem); color: white; }
+.eyebrow { width: fit-content; border: 1px solid #bd98ff70; border-radius: 2rem; padding: .25rem .75rem; color: #efddff; font-size: .85rem; }
+h1, h2, p { margin-block: 0 .65em; }
+h1, h2 { letter-spacing: -.05em; line-height: 1.22; }
+.hero h1 { font-size: clamp(2rem, 4vw, 3.7rem); margin-top: .35em; }
+.hero em { color: #cfb5ff; font-style: normal; }
+.hero-body > p:not(.eyebrow) { color: #f4eafa; margin-bottom: 1.45rem; }
+.button { padding: .75rem 1.08rem; border-radius: .7rem; display: inline-flex; justify-content: center; align-items: center; min-height: 2.65rem; border: 0; font-weight: 750; }
+.primary { background: var(--purple); color: white; cursor: pointer; }
+.primary:hover { background: #5320b8; }
+.hero-side { display: grid; grid-template-rows: 1.1fr .9fr; gap: 1rem; }
+.side-card { padding: 1.35rem; isolation: isolate; display: flex; align-items: end; }
+.side-card a { text-decoration: underline; text-underline-offset: .25em; font-weight: 700; font-size: .9rem; }
+.technician { color: white; background: var(--navy); }
+.technician::after { background: linear-gradient(0deg, #180f2a 10%, #23163830); }
+.company { color: var(--navy); background: #eee4ff; border: 1px solid #e4d7f8; }
+.company a { color: #5725b0; }
+.steps { margin: 1.1rem 0 0; padding: .7rem; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); list-style-position: inside; background: white; border: 1px solid var(--line); border-radius: 1rem; }
+.steps li { padding: .55rem; font-size: .92rem; font-weight: 700; }
+.steps li::marker { color: var(--purple); }
+.section-heading { margin-block: 2.3rem 1.2rem; }
+.section-heading h1, .section-heading h2 { margin-bottom: .24em; font-size: clamp(1.6rem, 3vw, 2.5rem); }
+.section-heading p, .muted { color: var(--muted); }
+.category-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1rem; }
+.category-grid a, .panel { border: 1px solid var(--line); border-radius: 1rem; background: white; }
+.category-grid a { overflow: hidden; }
+.category-grid a:hover { border-color: #9c6fe5; }
+.category-grid img { aspect-ratio: 16/9; }
+.category-grid strong, .category-grid small { display: block; padding-inline: .85rem; }
+.category-grid strong { padding-top: .68rem; }
+.category-grid small { padding-bottom: .85rem; color: var(--muted); }
+.dashboard { min-height: 63vh; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
+.panel { padding: clamp(1rem, 2.5vw, 1.65rem); }
+.panel h2 { font-size: 1.27rem; }
+.case-image { aspect-ratio: 2.4; margin-bottom: 1rem; border-radius: .8rem; }
+.panel label { display: block; font-weight: 700; }
+select { display: block; padding: .5rem; max-width: 100%; min-width: 11rem; border: 1px solid #cfc2e1; background: white; border-radius: .55rem; margin: .4rem 0 .75rem; color: var(--navy); }
+details { border-bottom: 1px solid var(--line); padding: .8rem 0; }
+details summary { font-weight: 700; cursor: pointer; }
+details p { margin: .52rem 0 0; color: var(--muted); }
+#sample-result { margin: .7rem 0 0; color: #5320b8; font-weight: 700; }
+.footer { margin-top: 2.9rem; border-top: 1px solid var(--line); padding: 1.1rem 0 1.4rem; display: flex; gap: .5rem 1.15rem; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: .86rem; }
+.footer b { color: var(--navy); }
+.footer small { margin-left: auto; }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); }
+  .category-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 620px) {
+  .shell { width: calc(100% - 1.75rem); }
+  .header { align-items: flex-start; flex-direction: column; gap: .7rem; padding-block: .8rem; }
+  nav { width: 100%; justify-content: space-between; gap: .22rem; }
+  nav a { padding: .4rem; }
+  .hero, .dashboard-grid { grid-template-columns: 1fr; }
+  .hero-primary { min-height: 22rem; }
+  .hero-side { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: 1fr; }
+  .side-card { padding: .9rem; min-height: 10rem; }
+  .side-card h2 { font-size: 1.13rem; }
+  .side-card p, .side-card a { font-size: .8rem; }
+  .steps, .category-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .category-grid { gap: .65rem; }
+}
+
+</style>
+  
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
+  <p class="preview-note">시연용 미리보기 · 합성 데이터로 화면과 이용 흐름을 둘러볼 수 있습니다.</p>
+  <header class="shell header">
+    <a class="brand" href="#home"><span aria-hidden="true">⌂</span><b>집손봄<small>사진으로 먼저 보는 생활수리</small></b></a>
+    <nav aria-label="주 메뉴">
+      <a href="#home">메인</a>
+      <a href="#customer">고객센터</a>
+      <a href="#worker">기사센터</a>
+      <a href="#repair-company">수리업체</a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="shell" id="home" data-screen>
+      <div class="hero">
+        <div class="hero-primary">
+          <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%237861a9%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%2205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EB%B0%B0%EA%B4%80%20%EC%A0%90%EA%B2%80%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" alt="싱크대 배관을 점검 중인 수리기사의 시연 이미지" fetchpriority="high">
+          <div class="hero-body">
+            <p class="eyebrow">생활 수리, 더 간편한 시작</p>
+            <h1>우리 집 수리,<br><em>사진 한 장으로 시작하세요.</em></h1>
+            <p>수도·배관부터 조명·문 수리까지.<br>접수에서 기사 견적과 방문까지 살펴보세요.</p>
+            <a class="button primary" href="#customer">사진으로 수리 접수하기</a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <article class="side-card technician">
+            <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23716493%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%A0%84%EB%AC%B8%20%EA%B8%B0%EC%82%AC%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" alt="수리기사 소개용 시연 이미지">
+            <div><h2>내 지역 작업을 찾고<br>견적을 제안하세요.</h2><a href="#worker">기사 작업게시판 보기 ↗</a></div>
+          </article>
+          <article class="side-card company">
+            <div><h2>수리업체와 기사팀</h2><p>작업 배정부터 소속기사 일정까지.</p><a href="#repair-company">수리업체 화면 보기 ↗</a></div>
+          </article>
+        </div>
+      </div>
+      <ol class="steps" aria-label="이용 절차">
+        <li>사진으로 접수</li><li>기사 견적 제안</li><li>고객 승인·방문 예약</li><li>수리 완료·A/S</li>
+      </ol>
+      <div class="section-heading"><h2>어떤 수리가 필요하세요?</h2><p>수리 분야를 선택하면 고객 접수 시연으로 이동합니다.</p></div>
+      <div class="category-grid">
+        <a href="#customer/faucet"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%235f72a7%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%88%98%EC%A0%84%C2%B7%EB%B0%B0%EA%B4%80%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>수전·배관</strong><small>수도꼭지·배수 관련 수리</small></a>
+        <a href="#customer/toilet"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%236589a4%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%9A%95%EC%8B%A4%C2%B7%EB%B3%80%EA%B8%B0%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>욕실·변기</strong><small>변기 부속·막힘·교체</small></a>
+        <a href="#customer/lighting"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23d0a15e%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%A0%84%EA%B8%B0%C2%B7%EC%A1%B0%EB%AA%85%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>전기·조명</strong><small>LED·스위치·등기구</small></a>
+        <a href="#customer/door"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23a47778%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EB%AC%B8%C2%B7%EC%B0%BD%ED%98%B8%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>문·창호</strong><small>도어락·경첩·문손잡이</small></a>
+        <a href="#customer/shelf"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%238b7969%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EA%B0%80%EA%B5%AC%C2%B7%EC%84%A4%EC%B9%98%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>가구·설치</strong><small>선반·가구 부착</small></a>
+        <a href="#customer/silicone"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23688c8b%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%8B%A4%EB%A6%AC%EC%BD%98%C2%B7%EB%B0%A9%EC%88%98%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>실리콘·방수</strong><small>욕실 코킹·틈새 보수</small></a>
+        <a href="#customer/washing"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%2364819d%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%84%B8%ED%83%81%EA%B8%B0%20%EC%97%B0%EA%B2%B0%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>세탁기 연결</strong><small>호스·급수 연결</small></a>
+        <a href="#customer/plumber"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%237861a9%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EB%B0%B0%EA%B4%80%20%EC%A0%90%EA%B2%80%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" loading="lazy" alt=""><strong>배관 점검</strong><small>싱크대 배수 점검</small></a>
+      </div>
+    </section>
+
+    <section class="shell dashboard" id="customer" data-screen hidden>
+      <div class="section-heading"><h1>내 집 수리, 한곳에서</h1><p>회원·비회원 접수에서 작업완료까지 예시로 확인하세요.</p></div>
+      <div class="dashboard-grid">
+        <article class="panel"><h2>사진 수리접수 체험</h2><img class="case-image" id="example-photo" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%235f72a7%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%88%98%EC%A0%84%C2%B7%EB%B0%B0%EA%B4%80%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" alt="수리 요청 예시 사진">
+          <label for="category">수리 분야</label>
+          <select id="category"><option value="faucet">수전·배관</option><option value="toilet">욕실·변기</option><option value="lighting">전기·조명</option><option value="door">문·창호</option><option value="shelf">가구·설치</option><option value="silicone">실리콘·방수</option><option value="washing">세탁기 연결</option><option value="plumber">배관 점검</option></select>
+          <button class="button primary" id="sample-submit" type="button">예시 접수 확인하기</button>
+          <p id="sample-result" role="status"></p>
+        </article>
+        <article class="panel"><h2>접수·견적·예약</h2>
+          <details open><summary>견적 확인</summary><p>예시 견적에서 수리 범위와 총액을 확인합니다.</p></details>
+          <details><summary>방문 예약</summary><p>견적 확인 후 기사와 방문 일정을 조율합니다.</p></details>
+          <details><summary>작업완료·A/S</summary><p>작업이 끝나면 완료 여부를 확인하고 필요할 때 A/S 검토를 요청합니다.</p></details>
+          <p class="muted">예시 사진과 접수 내용은 브라우저 화면에서만 표시됩니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="shell dashboard" id="worker" data-screen hidden>
+      <div class="section-heading"><h1>내 지역 작업과 일정</h1><p>기사 작업게시판과 방문 일정의 시연 화면입니다.</p></div>
+      <div class="dashboard-grid">
+        <article class="panel"><h2>작업게시판</h2><img class="case-image" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%237861a9%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EB%B0%B0%EA%B4%80%20%EC%A0%90%EA%B2%80%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" alt="싱크대 배수관 시연 이미지">
+          <details><summary>싱크대 배수관 점검 · DEMO-101</summary><p>예시 구역 A · 견적 제안 대기</p><p>수리 범위와 소요 시간, 방문 가능 일정을 검토합니다.</p></details>
+        </article>
+        <article class="panel"><h2>방문 일정과 기사 이용료</h2>
+          <details open><summary>예약 예시 · DEMO-102</summary><p>오후 2시 · 도어락 상태 확인</p></details>
+          <details><summary>예약 기준 이용료</summary><p>예약 당시 집손봄 공식 수리단가의 10%를 적용합니다. 예시 공식 수리단가 80,000원이면 기사 이용료는 8,000원입니다. 고객이 기사에게 지급하는 수리비는 견적에서 확인합니다.</p></details>
+        </article>
+      </div>
+    </section>
+
+    <section class="shell dashboard" id="repair-company" data-screen hidden>
+      <div class="section-heading"><h1>수리업체·기사팀</h1><p>소속기사, 작업 배정, 방문 일정을 확인하는 시연 화면입니다.</p></div>
+      <div class="dashboard-grid">
+        <article class="panel"><h2>작업 현황</h2><img class="case-image" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23716493%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%A0%84%EB%AC%B8%20%EA%B8%B0%EC%82%AC%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E" alt="기사팀 작업 소개용 시연 이미지">
+          <details><summary>방문 예정 작업 · DEMO-201</summary><p>예시 기사 A · 예시 구역 B · 오후 3시 방문 예정</p></details>
+        </article>
+        <article class="panel"><h2>소속기사와 서류</h2>
+          <details open><summary>예시 기사 A</summary><p>수전·배관 · 배관 점검</p></details>
+          <details><summary>작업 배정·서류 확인</summary><p>기사별 활동 가능 여부, 배정 상태와 서류 검토 결과를 확인하는 흐름입니다.</p></details>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="shell footer"><b>⌂ 집손봄</b><span>생활수리 시연 · 사진은 합성 이미지입니다.</span><small>미리보기 14-preview.1 · 2026-11-20</small></footer>
+<script>
+const IMAGE_ASSETS={"plumber":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%237861a9%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EB%B0%B0%EA%B4%80%20%EC%A0%90%EA%B2%80%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","technician":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23716493%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%A0%84%EB%AC%B8%20%EA%B8%B0%EC%82%AC%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","faucet":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%235f72a7%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%88%98%EC%A0%84%C2%B7%EB%B0%B0%EA%B4%80%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","toilet":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%236589a4%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%9A%95%EC%8B%A4%C2%B7%EB%B3%80%EA%B8%B0%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","lighting":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23d0a15e%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%A0%84%EA%B8%B0%C2%B7%EC%A1%B0%EB%AA%85%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","door":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23a47778%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EB%AC%B8%C2%B7%EC%B0%BD%ED%98%B8%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","shelf":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%238b7969%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EA%B0%80%EA%B5%AC%C2%B7%EC%84%A4%EC%B9%98%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","silicone":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%23688c8b%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%8B%A4%EB%A6%AC%EC%BD%98%C2%B7%EB%B0%A9%EC%88%98%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E","washing":"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20480%22%3E%3Crect%20width%3D%22800%22%20height%3D%22480%22%20fill%3D%22%2364819d%22%2F%3E%3Cpath%20d%3D%22M0%20350%20Q260%20240%20440%20330%20T800%20290%20V480%20H0Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.16%22%2F%3E%3Ccircle%20cx%3D%22615%22%20cy%3D%22110%22%20r%3D%22110%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.12%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22170%22%20width%3D%22220%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.44%22%2F%3E%3Crect%20x%3D%2295%22%20y%3D%22205%22%20width%3D%22320%22%20height%3D%2214%22%20rx%3D%227%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.25%22%2F%3E%3Ctext%20x%3D%2295%22%20y%3D%22315%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2247%22%20font-weight%3D%22bold%22%3E%EC%84%B8%ED%83%81%EA%B8%B0%20%EC%97%B0%EA%B2%B0%3C%2Ftext%3E%3Ctext%20x%3D%2295%22%20y%3D%22360%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2223%22%3E%EC%A7%91%EC%86%90%EB%B4%84%20%C2%B7%20%EC%8B%9C%EC%97%B0%EC%9A%A9%20%EC%9D%B4%EB%AF%B8%EC%A7%80%3C%2Ftext%3E%3C%2Fsvg%3E"};
+'use strict';
+
+const screens = new Map([...document.querySelectorAll('[data-screen]')].map(screen => [screen.id, screen]));
+const navigation = document.querySelectorAll('nav a');
+const category = document.querySelector('#category');
+const picture = document.querySelector('#example-photo');
+const result = document.querySelector('#sample-result');
+
+function updateExample() {
+  picture.src = IMAGE_ASSETS[category.value];
+  picture.alt = category.selectedOptions[0].textContent + ' 수리 예시';
+  result.textContent = '';
+}
+
+function showScreen(moveFocus) {
+  if (location.hash === '#main') return;
+  const [name, example] = location.hash.slice(1).split('/');
+  const target = screens.get(name) ?? screens.get('home');
+  for (const screen of screens.values()) screen.hidden = screen !== target;
+  for (const item of navigation) {
+    if (item.hash === '#' + target.id) item.setAttribute('aria-current', 'page');
+    else item.removeAttribute('aria-current');
+  }
+  if (target.id === 'customer' && [...category.options].some(option => option.value === example)) {
+    category.value = example;
+    updateExample();
+  }
+  if (moveFocus) {
+    const title = target.querySelector('h1');
+    title.tabIndex = -1;
+    title.focus({preventScroll: true});
+    window.scrollTo(0, 0);
+  }
+}
+
+category.addEventListener('change', updateExample);
+document.querySelector('#sample-submit').addEventListener('click', () => {
+  result.textContent = 'DEMO-001 · ' + category.selectedOptions[0].textContent + ' · 예시 접수 완료';
+});
+window.addEventListener('hashchange', () => showScreen(true));
+showScreen(false);
+
+</script></body>
+  </html>
