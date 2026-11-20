@@ -333,3 +333,160 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+
+/* JSB MOBILE UX REFINEMENT 2026-11-21
+   Public 7-area preview only: no changes to Auth, Edge, or business behavior.
+   Intent: predictable 7-tab grid, readable cards, touch-friendly customer entry. */
+@media (max-width:720px) {
+  html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  body { overflow-wrap:break-word; }
+  .wrap { padding-inline:16px; }
+  .nav { height:62px; min-width:0; gap:8px; }
+  .logo { min-width:0; flex:0 1 auto; gap:7px; }
+  .logo b { font-size:20px; }
+  .mark { width:34px; height:34px; flex:0 0 34px; }
+  .navtools { flex:0 0 auto; gap:6px; }
+  .navtools .hy-nav-search { display:none; }
+  .navtools .navbtn { min-height:42px; padding:8px 11px; font-size:12px; }
+  .tabstrip { position:relative; z-index:19; }
+  #tabs[aria-label="집손봄 영역"] {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    align-items:stretch;
+    gap:6px;
+    padding-block:9px;
+    overflow:visible;
+  }
+  #tabs[aria-label="집손봄 영역"] .tab {
+    min-height:46px;
+    width:100%;
+    padding:7px 4px;
+    font-size:12px;
+    font-weight:650;
+    line-height:1.3;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    border:1px solid #e9e3f2;
+    border-radius:9px;
+    background:#faf9fc;
+    color:#435066;
+  }
+  #tabs[aria-label="집손봄 영역"] .tab.active {
+    background:#ede8fa;
+    color:#462b91;
+    border-color:#cbbbeb;
+    font-weight:800;
+  }
+  #screen [id] { scroll-margin-top:88px; }
+  #screen section, .layout, .dashboard, .panel, .card, .iteminfo { min-width:0; }
+  .section { padding-block:25px 36px; }
+  .layout, .grid2, .grid3, .fields { grid-template-columns:minmax(0,1fr); }
+  .dashnav {
+    position:static;
+    display:flex;
+    flex-wrap:nowrap;
+    gap:5px;
+    padding:6px;
+    max-width:100%;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
+  }
+  .dashnav a { flex:0 0 auto; min-height:44px; padding:10px 12px; scroll-snap-align:start; }
+  .dashhead { display:block; }
+  .dashhead h1 { font-size:clamp(22px,6.2vw,27px); line-height:1.3; overflow-wrap:break-word; }
+  .dashhead > .btn, .dashhead > a.btn { margin-top:12px; }
+  .panel { padding:16px; }
+  .panel h3 { line-height:1.35; }
+  .hint, .notice, .jb-policy-note, .preview-list, #member-receipts, #member-receipt-detail {
+    overflow-wrap:anywhere;
+  }
+  .fields > .field, .fields > .field.full { min-width:0; grid-column:1/-1; }
+  .field input, .field select, .field textarea, #member-login input {
+    min-width:0;
+    max-width:100%;
+    font-size:16px;
+    min-height:44px;
+  }
+  input[type="checkbox"], input[type="radio"] {
+    width:18px;
+    height:18px;
+    min-height:0;
+    flex:0 0 18px;
+    vertical-align:middle;
+  }
+  #member-fields { max-width:100%; min-width:0; padding:12px; }
+  #member-fields legend { max-width:100%; font-size:14px; }
+  #member-fields p label { line-height:1.55; }
+  #member-login .btn, #requestForm > .field.full > .btn, #requestForm [type="submit"] {
+    min-height:46px;
+  }
+  #member-receipts button, #member-receipt-detail dd { overflow-wrap:anywhere; word-break:break-word; }
+  #autharea .panel .btn, #member-workspace .btn { max-width:100%; white-space:normal; text-align:center; }
+  .dashboard .item { flex-wrap:wrap; gap:10px; }
+  .dashboard .item .row { flex-wrap:wrap; }
+  .dashboard .itemphoto { width:74px; height:69px; }
+  .dashboard .row { min-width:0; }
+  .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .kpi { min-width:0; }
+  .kpi b { overflow-wrap:anywhere; }
+  .hy-hero-aside { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .hy-aside-card { min-height:165px; }
+  .hy-aside-card > div { max-width:72%; }
+  .hy-aside-card img { opacity:.7; }
+  .hy-trust { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .hy-section { padding-block:34px; }
+  .hy-heading h2 { line-height:1.3; }
+  .hy-bottom-cta { overflow:hidden; }
+  .hy-service-card, .hy-card-info { min-width:0; }
+  .footer .wrap { display:block; }
+  .footer .wrap > div + div { margin-top:8px; }
+}
+@media (max-width:440px) {
+  .wrap { padding-inline:14px; }
+  .nav { height:58px; gap:6px; }
+  .logo b { font-size:19px; }
+  .navtools .navbtn { padding:8px 9px; font-size:11px; }
+  #tabs[aria-label="집손봄 영역"] { gap:5px; padding-block:7px; }
+  #tabs[aria-label="집손봄 영역"] .tab { font-size:11px; padding:6px 2px; min-height:48px; }
+  .hy-hero { padding-top:12px; }
+  .hy-hero-primary { min-height:545px; }
+  .hy-hero-body { padding:22px 18px; }
+  .hy-hero-body h1 { font-size:clamp(27px,7.5vw,34px); }
+  .hy-hero-body > p { font-size:13px; line-height:1.5; }
+  .hy-hero-img { height:48%; width:88%; opacity:.75; }
+  .hy-hero-gradient { background:linear-gradient(180deg,#f5f6fa 0%,#f5f6fa 47%,#f5f6fae8 57%,#f5f6fa08 94%); }
+  .hy-search { display:flex; flex-wrap:wrap; min-height:0; padding:8px; gap:5px; }
+  .hy-search > span { display:none; }
+  .hy-search input { flex:1 1 100%; min-height:42px; padding:8px 10px; font-size:16px; }
+  .hy-search button { width:100%; min-height:44px; font-size:14px; padding:9px; }
+  .hy-hero-actions { display:grid; grid-template-columns:1fr; gap:5px; margin-top:10px; }
+  .hy-hero-actions .hy-cta, .hy-hero-actions .hy-textlink {
+    min-height:44px; width:100%; justify-content:center; text-align:center; padding:10px 12px!important;
+  }
+  .hy-category-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 8px; }
+  .hy-category { min-height:112px; }
+  .hy-category strong { font-size:13px; }
+  .hy-category small { font-size:12px; }
+  .hy-card-grid, .hy-how-grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+  .hy-card-img { aspect-ratio:2; }
+  .hy-card-info { padding:15px; }
+  .hy-card-info h3 { font-size:17px; }
+  .hy-how-step { padding:18px; }
+  .hy-how-step strong { font-size:16px; }
+  .hy-trust > div { min-width:0; }
+  .hy-trust small { overflow-wrap:break-word; }
+  .head { align-items:start; flex-wrap:wrap; }
+  .head h2 { font-size:21px; }
+  .panel, .card { border-radius:13px; }
+  .itemphoto { width:70px; height:65px; }
+  .footer { padding-block:24px; }
+}
+@media (max-width:340px) {
+  .navtools .navbtn { padding:7px 6px; }
+  .logo b { font-size:18px; }
+  #tabs[aria-label="집손봄 영역"] .tab { font-size:10px; }
+  .hy-hero-primary { min-height:555px; }
+}
