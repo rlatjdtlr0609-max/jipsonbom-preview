@@ -56,7 +56,7 @@ document.addEventListener('click',event=>{
   const target=event.target.closest('button,a');
   if(!target)return;
   const {go,scroll,auth,cat,action,filter,provider,constructionStep,unavailable}=target.dataset;
-  if (go) {event.preventDefault();navigate(go,scroll);return;}
+  if (go) {event.preventDefault();document.querySelector('.mobile-menu')?.removeAttribute('open');navigate(go,scroll);return;}
   if (scroll) {event.preventDefault();document.getElementById(scroll)?.scrollIntoView({block:'start'});return;}
   if (cat) {cat==='전문 기사'?navigate('worker'):startRequest(cat);return;}
   if (auth) {
