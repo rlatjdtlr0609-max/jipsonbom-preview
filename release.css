@@ -495,7 +495,7 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
 /* JSB MOBILE SCREENSHOT FIX 2026-11-21 R2
    Screenshot 747px physical: search button and wrapped auth in sticky header.
    Mobile menu keeps all seven area routes reachable when the tabs scroll away.
-   Existing Supabase member transport, roles, and desktop styles unchanged. */
+   Existing member transport, roles, and desktop styles unchanged. */
 .mobile-menu { display:none; }
 @media (max-width:1030px) {
   .navouter .nav { position:relative; min-width:0; flex-wrap:nowrap; gap:7px; }
@@ -591,7 +591,7 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
 
 
 /* JSB MOBILE UX R3 - simplified single-row mobile header and accessible drawer.
-   Mobile CSS only. Keep desktop v15.2.0, 7 area routes and Supabase functionality. */
+   Mobile CSS only. Keep desktop v15.2.0, 7 area routes and business connectivity. */
 @media (max-width:1030px) {
   .mobile-menu { z-index:41; }
   .mobile-menu > nav {
