@@ -60,6 +60,11 @@ document.addEventListener('click',event=>{
   if (scroll) {event.preventDefault();document.getElementById(scroll)?.scrollIntoView({block:'start'});return;}
   if (cat) {cat==='전문 기사'?navigate('worker'):startRequest(cat);return;}
   if (auth) {
+    if (auth==='login' && document.querySelector('#member-workspace')) {
+      navigate('customer','autharea');
+      document.querySelector('#member-email:not([hidden])')?.focus({preventScroll:true});
+      return;
+    }
     const label={login:'로그인',signup:'회원가입',worker:'기사 등록'}[auth]??'가입 및 심사';
     toast(label+'은 개발 서버 연결 후 이용할 수 있습니다.');
     return;
