@@ -117,3 +117,16 @@ document.querySelector('#calcprice').addEventListener('input',event=>{
 });
 
 show(location.hash.slice(1));
+
+
+// Close the mobile drawer after selection, outside tap, or Escape. No API changes.
+document.addEventListener('click',event=>{
+ const drawer=document.querySelector('.mobile-menu');
+ if(!drawer?.open)return;
+ if(!drawer.contains(event.target)||event.target.closest('.mobile-menu [data-go],.mobile-menu [data-auth]')){
+   drawer.removeAttribute('open');
+ }
+});
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape')document.querySelector('.mobile-menu')?.removeAttribute('open');
+});
