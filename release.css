@@ -490,3 +490,101 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
   #tabs[aria-label="집손봄 영역"] .tab { font-size:10px; }
   .hy-hero-primary { min-height:555px; }
 }
+
+
+/* JSB MOBILE SCREENSHOT FIX 2026-11-21 R2
+   Screenshot 747px physical: search button and wrapped auth in sticky header.
+   Mobile menu keeps all seven area routes reachable when the tabs scroll away.
+   Existing Supabase member transport, roles, and desktop styles unchanged. */
+.mobile-menu { display:none; }
+@media (max-width:1030px) {
+  .navouter .nav { position:relative; min-width:0; flex-wrap:nowrap; gap:7px; }
+  .navouter .mainnav { display:none; }
+  .navtools { flex:0 0 auto; margin-left:0; gap:5px; }
+  .navtools .hy-nav-search { display:none!important; }
+  .navtools .navbtn { white-space:nowrap!important; word-break:keep-all; overflow-wrap:normal; min-height:43px; }
+  .mobile-menu { display:block; margin-left:auto; flex:0 0 auto; }
+  .mobile-menu > summary {
+    display:flex; justify-content:center; align-items:center;
+    gap:5px; min-height:43px; padding:8px 12px;
+    border:1px solid #dcd3ed; border-radius:10px;
+    color:#482b90; background:#f5f0ff;
+    font-size:13px; font-weight:750; line-height:1.2;
+    list-style:none; cursor:pointer; user-select:none;
+  }
+  .mobile-menu > summary::-webkit-details-marker { display:none; }
+  .mobile-menu > summary:focus-visible { outline:3px solid #d1bbf2; outline-offset:2px; }
+  .mobile-menu[open] > summary { background:#e8dcfb; }
+  .mobile-menu > nav {
+    position:absolute; z-index:40; top:calc(100% - 1px);
+    left:10px; right:10px; max-width:440px; margin-left:auto;
+    background:#fff; padding:14px; border-radius:0 0 16px 16px;
+    border:1px solid #ddd7ea; box-shadow:0 16px 36px #1e163847;
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px;
+  }
+  .mobile-menu > nav a {
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    min-height:48px; padding:9px 7px; min-width:0;
+    background:#f7f5fc; border:1px solid #ede7f5; border-radius:9px;
+    color:#332a47; font-weight:680; font-size:13px; line-height:1.35;
+    overflow-wrap:anywhere;
+  }
+  .mobile-menu > nav a:hover, .mobile-menu > nav a:focus-visible {
+    background:#e9e1f9; color:#492c94;
+  }
+}
+@media (max-width:720px) {
+  .navouter .nav { height:60px; }
+  .navouter .logo b { font-size:19px; }
+  .navouter .mark { width:32px; height:32px; flex:0 0 32px; font-size:20px; }
+  .navtools .navbtn { padding:8px 9px; font-size:12px; }
+  .mobile-menu > summary { padding:8px 10px; font-size:12px; }
+  #tabs[aria-label="집손봄 영역"] {
+    display:flex; flex-wrap:nowrap;
+    overflow-x:auto; overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity;
+    gap:6px; padding-block:7px;
+  }
+  #tabs[aria-label="집손봄 영역"] .tab {
+    flex:0 0 auto; width:auto; min-height:42px;
+    font-size:12px; line-height:1.3; white-space:nowrap;
+    padding:7px 11px; scroll-snap-align:start;
+  }
+  .hy-hero-primary {
+    display:flex; flex-direction:column; align-items:stretch;
+    min-height:0; height:auto; overflow:hidden;
+  }
+  .hy-hero-body {
+    align-self:stretch; max-width:100%;
+    width:100%; padding:23px 19px 19px;
+    order:0;
+  }
+  .hy-hero-body h1 { font-size:clamp(28px,7.5vw,35px); line-height:1.25; margin-top:13px; }
+  .hy-hero-body > p { max-width:100%; font-size:14px; line-height:1.5; margin-top:12px; }
+  .hy-hero-img {
+    position:relative; order:1; display:block;
+    inset:auto; width:100%; height:190px;
+    object-position:center 45%; opacity:1;
+    -webkit-mask-image:none; mask-image:none;
+  }
+  .hy-hero-gradient { display:none; }
+  .hy-hero-corner { display:none; }
+  .hy-search { display:flex; flex-wrap:wrap; padding:8px; gap:6px; max-width:none; min-height:0; margin-top:16px; }
+  .hy-search > span { display:none; }
+  .hy-search input { flex:1 1 100%; width:100%; min-width:0; min-height:42px; font-size:16px; padding:8px 10px; }
+  .hy-search button { flex:1 1 100%; width:100%; min-height:44px; padding:9px 12px; font-size:14px; }
+  .hy-hero-actions { display:grid; grid-template-columns:minmax(0,1fr); gap:6px; margin-top:11px; }
+  .hy-hero-actions .hy-cta, .hy-hero-actions .hy-textlink {
+    width:100%; min-height:44px;
+    justify-content:center; text-align:center;
+    padding:10px 12px!important; font-size:13px!important;
+  }
+}
+@media (max-width:380px) {
+  .navouter .nav { gap:4px; }
+  .navouter .logo b { font-size:17px; }
+  .navtools .navbtn { padding:7px 7px; font-size:11px; }
+  .mobile-menu > summary { padding:8px 8px; font-size:11px; }
+  .hy-hero-body { padding:21px 16px 18px; }
+  .hy-hero-img { height:175px; }
+}
