@@ -1,0 +1,38 @@
+name: Jipsonbom Mobile UI QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'release.css'
+      - 'release.js'
+      - 'member.js'
+      - 'tests/mobile-qa.mjs'
+      - '.github/workflows/mobile-qa.yml'
+permissions:
+  contents: read
+jobs:
+  mobile-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Test seven areas and mobile geometry
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-mobile-http.log 2>&1 &
+          sleep 2
+          node tests/mobile-qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-ui-qa-screenshots
+          path: mobile-qa-evidence/
+          retention-days: 7
