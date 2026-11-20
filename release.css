@@ -251,6 +251,7 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
   .navbtn{font-size:12px;padding:10px 12px}
   .tabs{flex-wrap:nowrap;overflow-x:auto;gap:7px;scrollbar-width:thin;scrollbar-color:#c8bcdd transparent}
   .tabs .tab{flex:0 0 auto;font-size:13px;padding:10px 11px}
+  #tabs[aria-label="집손봄 영역"]{flex-wrap:wrap}
   .section{padding-block:38px 44px}
   .hy-hero{padding-top:17px;gap:12px}
   .hy-hero-primary{min-height:470px;border-radius:15px;align-items:flex-start}
