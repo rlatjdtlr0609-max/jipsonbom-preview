@@ -588,3 +588,82 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
   .hy-hero-body { padding:21px 16px 18px; }
   .hy-hero-img { height:175px; }
 }
+
+
+/* JSB MOBILE UX R3 - simplified single-row mobile header and accessible drawer.
+   Mobile CSS only. Keep desktop v15.2.0, 7 area routes and Supabase functionality. */
+@media (max-width:1030px) {
+  .mobile-menu { z-index:41; }
+  .mobile-menu > nav {
+    max-height:min(72dvh,600px); overflow-y:auto;
+    overscroll-behavior:contain; -webkit-overflow-scrolling:touch;
+  }
+  .mobile-menu > nav button {
+    grid-column:1 / -1; display:flex; align-items:center; justify-content:center;
+    width:100%; min-height:48px; padding:10px 12px; border-radius:9px;
+    background:#efe8fe; border:1px solid #d9cef4; color:#48318e;
+    font-size:14px; font-weight:750; cursor:pointer;
+  }
+}
+@media (max-width:720px) {
+  .topnote { padding:6px 13px; font-size:11px!important; line-height:1.35; }
+  .navouter { position:sticky; top:0; z-index:50; }
+  .navouter .nav {
+    display:flex; flex-wrap:nowrap; align-items:center;
+    height:60px; gap:7px;
+  }
+  .navouter .logo {
+    order:0; margin-right:auto; min-width:0; flex:0 1 auto;
+    gap:7px; white-space:nowrap;
+  }
+  .navouter .logo b { font-size:20px; line-height:1; white-space:nowrap; }
+  .navouter .mark { flex:0 0 32px; width:32px; height:32px; font-size:20px; }
+  .navouter .navtools { order:1; flex:0 0 auto; gap:0; margin-left:0; }
+  .navouter .navtools .hy-nav-search { display:none!important; }
+  .navouter .navtools .navbtn.strong { display:none!important; }
+  .navouter .navtools .navbtn:not(.strong) {
+    display:inline-flex; align-items:center; justify-content:center;
+    min-height:42px; padding:8px 12px; flex:0 0 auto;
+    font-size:12px; font-weight:700;
+    white-space:nowrap!important; word-break:keep-all;
+  }
+  .mobile-menu { order:2; flex:0 0 auto; margin-left:0; }
+  .mobile-menu > summary {
+    display:flex; align-items:center; justify-content:center;
+    min-width:65px; min-height:42px; padding:8px 10px;
+    font-size:13px; line-height:1.2;
+    white-space:nowrap; border-radius:10px;
+  }
+  .mobile-menu > nav {
+    position:absolute; left:10px; right:10px; top:calc(100% - 1px);
+    max-width:none; max-height:min(75dvh,560px);
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    z-index:51;
+  }
+  .tabstrip { display:none!important; }
+  .hy-hero-primary { min-height:0; }
+  .hy-hero-body { min-width:0; }
+  .hy-hero-body .hy-hero-eyebrow { max-width:100%; }
+  .hy-hero-body > h1 { max-width:100%; overflow-wrap:break-word; }
+  .hy-hero-body > p { max-width:100%; }
+  .hy-hero-img { max-width:100%; display:block; }
+  .hy-hero-aside { grid-template-columns:minmax(0,1fr); }
+  #autharea { grid-template-columns:minmax(0,1fr); }
+  #requestForm { grid-template-columns:minmax(0,1fr); }
+  #requestForm .field, #requestForm fieldset { min-width:0; }
+  #member-login button[type="submit"], #requestForm button[type="submit"] {
+    min-height:48px;
+    max-width:100%;
+    white-space:normal;
+  }
+}
+@media (max-width:390px) {
+  .navouter .nav { gap:5px; height:58px; }
+  .navouter .logo b { font-size:18px; }
+  .navouter .navtools .navbtn:not(.strong) { padding:8px 10px; font-size:12px; }
+  .mobile-menu > summary { min-width:61px; padding:7px 8px; }
+  .hy-hero-body h1 { font-size:clamp(26px,7.5vw,31px); }
+  .hy-hero-body { padding:19px 16px 18px; }
+  .hy-search { padding:7px; }
+  .hy-category-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
