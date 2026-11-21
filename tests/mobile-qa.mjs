@@ -1,17 +1,23 @@
-import { chromium } from 'playwright';
+import {createRequire} from 'node:module';
+const {chromium}=createRequire(import.meta.url)('playwright');
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 
-const base='http://127.0.0.1:8765/';
-const widths=[320,360,390,430,768,1366];
+const base=process.env.JSB_QA_URL || 'http://127.0.0.1:8765/';
+const widths=[320,360,390,430,768,1024,1366];
 const screens=['home','customer','worker','provider','adminEntry','guideEntry','repairCompany'];
 await mkdir('mobile-qa-evidence',{recursive:true});
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH});
 let bad=0;
 try {
   for(const width of widths){
     const height=width<=430?800:width===768?1024:900;
     const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1,isMobile:width<=430,hasTouch:width<=430});
+    page.setDefaultTimeout(8000);
+    await page.emulateMedia({reducedMotion:'reduce'});
+    const faults=[];
+    page.on('pageerror',err=>faults.push(err.message));
+    page.on('request',req=>{if(req.method()!=='GET'||!req.url().startsWith(base))faults.push('Unexpected network request');});
     try{
       await page.goto(base,{waitUntil:'domcontentloaded'});
       await page.locator('.hy-hero-primary').waitFor();
@@ -43,28 +49,51 @@ try {
         assert.ok(facts.loginVisible,'Mobile login unavailable');
         assert.ok(facts.heroImageBelowText,'Hero image must be below text and CTAs');
         assert.ok(facts.headerNoOverlap,'Logo/login/menu collision '+JSON.stringify(facts));
+      }
+      if (width<=1024) {
+        assert.ok(facts.menuVisible && !facts.searchVisible,'Tablet/mobile menu');
         const summary=page.locator('.mobile-menu summary');
         await summary.click();
         assert.equal(await page.locator('.mobile-menu nav [data-go]').count(),7);
         assert.equal(await page.locator('.mobile-menu nav [data-auth=signup]').count(),1);
-        for(const screen of screens){
-          await summary.click().catch(()=>{});
-          const opened=await page.locator('.mobile-menu').evaluate(el=>el.open);
-          if(!opened) await summary.click();
-          await page.locator('.mobile-menu nav [data-go='+screen+']').click();
-          await page.waitForFunction(name=>{const section=document.querySelector('section[data-screen="'+name+'"]');return section&&!section.hidden;},screen);
-          assert.equal(await page.locator('.mobile-menu').evaluate(el=>el.open),false,'Menu should close on '+screen);
-        }
-        await page.goto(base+'#customer');
-        await page.screenshot({path:'mobile-qa-evidence/customer-'+width+'.png',fullPage:false});
-        await page.goto(base+'#home');
-      }else if(width===768){
-        assert.ok(facts.menuVisible,'Tablet menu missing');
-        assert.ok(!facts.searchVisible,'Tablet navigation should not crowd header');
-      }else{
-        assert.ok(!facts.menuVisible,'Desktop should not show hamburger');
-        assert.ok(facts.tabVisible,'Desktop seven-area tabs missing');
+        await page.keyboard.press('Escape');
+        assert.ok(await summary.evaluate(el=>el===document.activeElement));
+      } else {
+        assert.ok(!facts.menuVisible && facts.tabVisible,'Desktop navigation');
       }
+      async function go(screen) {
+        const nav=width<=1024?'.mobile-menu nav':'#tabs';
+        if (width<=1024) await page.locator('.mobile-menu summary').click();
+        const link=page.locator(nav+' [data-go="'+screen+'"]');
+        await link.click();
+        assert.equal(await link.getAttribute('aria-current'),'page');
+        assert.ok(await page.locator('section[data-screen="'+screen+'"]').isVisible());
+        assert.equal(await page.locator('.mobile-menu').evaluate(el=>el.open),false);
+      }
+      for (const screen of screens) {
+        await go(screen);
+        const over=await page.evaluate(()=>Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)-innerWidth);
+        assert.ok(over<=1,screen+' horizontal overflow '+over);
+      }
+      await go('home');
+      await page.locator('.hy-hero-actions [data-go="customer"]').click();
+      assert.ok(await page.locator('#reception').evaluate(el=>el===document.activeElement));
+      await page.locator('#requestForm select[name=category]').selectOption({index:1});
+      await page.locator('#preview-media').setInputFiles({name:'sample.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jN9sAAAAASUVORK5CYII=','base64')});
+      assert.match(await page.locator('#preview-file').innerText(),/1개/);
+      await page.locator('#requestForm button[type=submit]').click();
+      assert.match(await page.locator('#preview-receipt').innerText(),/시연 전용/);
+      await page.screenshot({path:'mobile-qa-evidence/customer-'+width+'.png'});
+      await go('worker');
+      await page.locator('#calcprice').fill('90000');
+      assert.equal(await page.locator('#calcresult').innerText(),'9,000원');
+      await go('provider');
+      await page.locator('[data-construction-step=report]').click();
+      assert.match(await page.locator('#constructionContract [role=status]').innerText(),/실제 계약 및 청구 차단/);
+      await go('home');
+      assert.equal(await page.locator('input[type=password],#member-workspace').count(),0);
+      assert.ok(await page.locator('.hy-hero-img').evaluate(el=>el.complete&&el.naturalWidth>0));
+      assert.deepEqual(faults,[]);
       await page.screenshot({path:'mobile-qa-evidence/home-'+width+'.png',fullPage:false});
       console.log('PASS MOBILE_LAYOUT',JSON.stringify(facts));
     }catch(error){bad++;console.error('FAIL WIDTH',width,error.stack??String(error));}

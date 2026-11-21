@@ -19,12 +19,19 @@ function toast(message) {
 function show(page, anchor) {
   if (!routes.has(page)) page = 'home';
   for (const [name, view] of routes) view.hidden = page!==name;
-  for (const tab of document.querySelectorAll('#tabs [data-go]')) {
+  for (const tab of document.querySelectorAll('#tabs [data-go], .mobile-menu nav [data-go]')) {
     tab.classList.toggle('active',tab.dataset.go===page);
     if(tab.dataset.go===page) tab.setAttribute('aria-current','page');
     else tab.removeAttribute('aria-current');
   }
-  if (anchor) document.getElementById(anchor)?.scrollIntoView({block:'start'});
+  if (anchor) {
+    const section=document.getElementById(anchor);
+    if (section) {
+      section.tabIndex=-1;
+      section.focus({preventScroll:true});
+      section.scrollIntoView({block:'start'});
+    }
+  }
   else window.scrollTo(0,0);
 }
 
@@ -128,5 +135,9 @@ document.addEventListener('click',event=>{
  }
 });
 document.addEventListener('keydown',event=>{
- if(event.key==='Escape')document.querySelector('.mobile-menu')?.removeAttribute('open');
+ const drawer=document.querySelector('.mobile-menu[open]');
+ if(event.key==='Escape' && drawer){
+   drawer.open=false;
+   drawer.querySelector('summary').focus({preventScroll:true});
+ }
 });
