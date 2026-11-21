@@ -1,7 +1,7 @@
 import {createRequire} from 'node:module';
 const {chromium}=createRequire(import.meta.url)('playwright');
 import assert from 'node:assert/strict';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 
 const base=process.env.JSB_QA_URL || 'http://127.0.0.1:8765/';
 const widths=[320,360,390,430,768,1024,1366];
@@ -98,6 +98,44 @@ try {
       console.log('PASS MOBILE_LAYOUT',JSON.stringify(facts));
     }catch(error){bad++;console.error('FAIL WIDTH',width,error.stack??String(error));}
     finally{await page.close();}
+  }
+  if (!bad && process.env.GITHUB_ACTIONS==='true' &&
+      process.env.GITHUB_REPOSITORY==='rlatjdtlr0609-max/jipsonbom-preview' &&
+      process.env.GITHUB_REF==='refs/heads/main') {
+    const homepage='https://rlatjdtlr0609-max.github.io/jipsonbom-preview/';
+    const source=await readFile('index.html','utf8');
+    const expectedAssets=source.match(/\.\/release\.(?:css|js)\?v=[a-f0-9]{12}/g);
+    assert.equal(expectedAssets?.length,2);
+    const live=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    live.setDefaultTimeout(8000);
+    try {
+      // Pages and the existing UI check run concurrently after a push to main.
+      await live.setExtraHTTPHeaders({'Cache-Control':'no-cache'});
+      const deadline=Date.now()+180000;
+      for (;;) {
+        const response=await live.goto(homepage,{waitUntil:'domcontentloaded'});
+        if (response?.ok() && response.url()===homepage &&
+            await live.evaluate(paths=>paths.every(path=>
+              Array.from(document.querySelectorAll('link[href],script[src]')).some(el=>
+                (el.getAttribute('href')??el.getAttribute('src'))===path)),expectedAssets)) break;
+        if(Date.now()>=deadline) throw new Error('Pages has not served this release');
+        await new Promise(resolve=>setTimeout(resolve,5000));
+      }
+      await live.evaluate(()=>document.fonts.ready);
+      assert.equal(await live.title(),'집손봄 | 생활수리 플랫폼 출시형 미리보기');
+      await live.waitForFunction(()=>{const img=document.querySelector('.hy-hero-img');return img?.complete&&img.naturalWidth>0;});
+      for (const screen of screens) {
+        await live.locator('.mobile-menu summary').click();
+        await live.locator('.mobile-menu nav [data-go="'+screen+'"]').click();
+        assert.ok(await live.locator('section[data-screen="'+screen+'"]').isVisible());
+        assert.equal(await live.locator('.mobile-menu [aria-current=page]').getAttribute('data-go'),screen);
+      }
+      assert.equal(await live.locator('#member-workspace,input[type=password]').count(),0);
+      await live.locator('.mobile-menu summary').click();
+      await live.locator('.mobile-menu nav [data-go=home]').click();
+      await live.screenshot({path:'mobile-qa-evidence/deployed-home-390.png'});
+      console.log('PASS DEPLOYED_HTTPS',homepage,expectedAssets.join(' '),'7 routes',await live.locator('#release-version').innerText());
+    } finally { await live.close(); }
   }
 }finally{await browser.close();}
 if(bad)process.exit(1);
