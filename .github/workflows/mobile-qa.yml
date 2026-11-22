@@ -2,7 +2,7 @@ name: Jipsonbom Mobile UI QA
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, 'work24/master11-navigation-r5']
     paths:
       - 'index.html'
       - 'release.css'
@@ -30,8 +30,11 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-mobile-http.log 2>&1 &
           sleep 2
           node tests/mobile-qa.mjs
+      # Storage quota can block screenshot artifact uploads on the free plan.
+      # Preserve real test pass/fail in logs without requiring a paid upgrade.
       - uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
         with:
           name: mobile-ui-qa-screenshots
           path: mobile-qa-evidence/
