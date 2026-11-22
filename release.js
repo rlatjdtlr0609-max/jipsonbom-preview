@@ -53,7 +53,7 @@ window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
 
 function startRequest(category, guest=false) {
   if(category&&[...request.elements.category.options].some(option=>option.value===category))request.elements.category.value=category;
-  if(guest) request.elements.account.selectedIndex=0;
+  if(guest) {request.elements.account.selectedIndex=0;request.elements.account.dispatchEvent(new Event('change'));}
   navigate('customer','reception');
 }
 function openIntake(category='') {
@@ -81,7 +81,7 @@ document.addEventListener('click',event=>{
   if (target.hasAttribute('data-intake-guest')) {
     event.preventDefault();
     intakeDialog?.close();
-    startRequest(pendingCategory,true);
+    startRequest(target.closest('dialog') ? pendingCategory : '',true);
     return;
   }
   if (target.hasAttribute('data-intake-member')) {
@@ -89,8 +89,10 @@ document.addEventListener('click',event=>{
     intakeDialog?.close();
     if(pendingCategory&&[...request.elements.category.options].some(option=>option.value===pendingCategory)) request.elements.category.value=pendingCategory;
     request.elements.account.selectedIndex=1;
+    request.elements.account.dispatchEvent(new Event('change'));
     navigate('customer','autharea');
-    toast('회원 로그인·가입은 개발환경 검증 전까지 시연 안내만 제공합니다.');
+    if(document.querySelector('#member-workspace')) document.querySelector('#member-email')?.focus();
+    else toast('로그인·회원가입 시연 안내입니다. 작성 중인 접수로 돌아갈 수 있습니다.');
     return;
   }
   if (go) {event.preventDefault();document.querySelector('.mobile-menu')?.removeAttribute('open');navigate(go,scroll);return;}
@@ -98,6 +100,10 @@ document.addEventListener('click',event=>{
   if (cat) {cat==='전문 기사'?navigate('worker'):openIntake(cat);return;}
   if (auth) {
     if (auth==='login' || auth==='signup') navigate('customer','autharea');
+    if (auth==='login' && document.querySelector('#member-workspace')) {
+      document.querySelector('#member-email')?.focus();
+      return;
+    }
     if (auth==='worker') navigate('worker','worker-apply');
     const label={login:'로그인',signup:'회원가입',worker:'기사 등록',repairCompany:'수리업체 가입'}[auth]??'가입 및 심사';
     toast(label+'은 개발 서버 연결 후 이용할 수 있습니다. 현재는 시연 안내입니다.');

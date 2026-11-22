@@ -762,3 +762,18 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
   .navouter .logo b{font-size:16px}
   .hy-search-panel .hy-search button{min-width:0;padding-inline:8px;font-size:12px}
 }
+
+/* Role centers use the existing R5 spacing and brand colors. */
+.center-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.center-grid a{display:grid;align-content:start;gap:8px;position:relative;padding:22px 38px 22px 18px;border:1px solid #dfd9ed;border-radius:16px;background:#fff;color:#251c41;text-decoration:none}
+.center-grid a::after{content:'↗';position:absolute;right:14px;top:20px;color:#7142bb}
+.center-grid a:hover,.center-grid a:focus-visible{background:#f6f2ff;border-color:#8860bf}
+.center-grid strong{font-size:1.05rem;word-break:keep-all}
+.center-grid span{font-size:.9rem;line-height:1.55;color:#574f62;word-break:keep-all}
+.mobile-menu .drawer-section{display:block;border-top:1px solid #e5dfee;padding:12px 10px 2px;color:#634597}
+.mobile-menu[open] nav{max-height:calc(100dvh - 100px);overflow-y:auto;overscroll-behavior:contain}
+.center-details{margin:12px 0;color:#443955;line-height:1.65}
+.center-details summary{cursor:pointer;font-weight:700;padding:8px 0}
+.center-details ul{padding-left:22px}
+@media(max-width:850px){.center-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:460px){.center-grid{grid-template-columns:1fr;gap:8px}.center-grid a{gap:3px;padding:12px 38px 12px 14px}.center-grid a::after{top:14px}}

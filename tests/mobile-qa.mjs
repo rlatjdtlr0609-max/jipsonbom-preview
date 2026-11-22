@@ -76,6 +76,29 @@ try {
         assert.ok(facts.heroImageBelowText,'Hero photo must sit below body on mobile');
         assert.ok(facts.headerNoOverlap,'Mobile logo/login/menu overlap '+JSON.stringify(facts));
       }
+      const centers=['customer','worker','provider','repairCompany'];
+      const links=page.locator('#service-centers nav a');
+      assert.deepEqual(await links.evaluateAll(nodes=>nodes.map(n=>n.dataset.go)),centers);
+      for(const route of centers){
+        await go('home');
+        const link=page.locator('#service-centers [data-go="'+route+'"]');
+        await link.click();
+        assert.equal(await page.locator('[data-screen="'+route+'"]').isVisible(),true);
+        if(width<=1024){
+          await page.locator('.mobile-menu summary').click();
+          await page.getByRole('navigation',{name:'모바일 공개 서비스 메뉴'}).locator('[data-go="'+route+'"]').last().click();
+          assert.equal(await page.locator('.mobile-menu').evaluate(el=>el.open),false);
+        }
+      }
+      const broken=await page.evaluate(()=>[...document.querySelectorAll('[data-scroll],a[href^="#"]')].filter(el=>{
+        const key=el.dataset.scroll||el.hash?.slice(1);
+        return key&&!document.getElementById(key)&&![...document.querySelectorAll('[data-screen]')].some(n=>n.dataset.screen===key);
+      }).map(el=>el.textContent.trim()));
+      assert.deepEqual(broken,[]);
+      for(const blocked of ['admin','guide']){
+        await page.goto(base+'#'+blocked);
+        assert.ok(await page.locator('[data-screen="home"]').isVisible());
+      }
       for(const route of screens)await go(route);
       await go('home');
       assert.ok(await page.locator('#service-categories').isVisible());
@@ -109,6 +132,12 @@ try {
       await page.locator('#requestForm select[name=category]').selectOption({index:1});
       await page.locator('#preview-media').setInputFiles({name:'sample.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jN9sAAAAASUVORK5CYII=','base64')});
       assert.match(await page.locator('#preview-file').innerText(),/1개/);
+      await page.locator('#preview-visit').selectOption('평일 오후');
+      await page.locator('.navtools [data-auth=login]').click();
+      await page.getByRole('button',{name:'작성 중인 접수로 돌아가기'}).click();
+      assert.equal(await page.locator('#preview-visit').inputValue(),'평일 오후');
+      assert.equal(await page.locator('#requestForm select[name=category]').inputValue(),'욕실·변기');
+      assert.equal(await page.locator('#preview-media').evaluate(el=>el.files.length),1);
       await page.locator('#requestForm button[type=submit]').click();
       assert.match(await page.locator('#preview-receipt').innerText(),/시연 전용/);
       await page.screenshot({path:'mobile-qa-evidence/customer-'+width+'.png'});
@@ -124,7 +153,7 @@ try {
       assert.ok(await page.locator('.hy-hero-img').evaluate(el=>el.complete&&el.naturalWidth>0),'Existing hero photo preserved');
       assert.deepEqual(faults,[],'No network writes or JS faults');
       await page.screenshot({path:'mobile-qa-evidence/home-'+width+'.png'});
-      console.log('PASS MASTER11_R5_LAYOUT '+JSON.stringify(facts));
+      console.log('PASS MASTER11_R6_LAYOUT '+JSON.stringify(facts));
     }catch(error){bad++;console.error('FAIL WIDTH '+width+' '+(error.stack??String(error)));}
     finally{await page.close();}
   }
@@ -142,20 +171,20 @@ try {
         const response=await live.goto(homepage,{waitUntil:'domcontentloaded'});
         if(response?.ok()&&response.url()===homepage &&
            await live.evaluate(paths=>paths.every(path=>[...document.querySelectorAll('link[href],script[src]')].some(el=>(el.getAttribute('href')??el.getAttribute('src'))===path)),expectedAssets))break;
-        if(Date.now()>=deadline)throw Error('Pages has not served this R5 release');
+        if(Date.now()>=deadline)throw Error('Pages has not served this R6 release');
         await new Promise(resolve=>setTimeout(resolve,5000));
       }
       await live.locator('.hy-hero-actions [data-intake-open]').click();
       assert.ok(await live.locator('#intake-choice').evaluate(el=>el.open));
       await live.locator('#intake-choice [data-intake-guest]').click();
       assert.ok(await live.locator('#reception').isVisible());
-      await live.screenshot({path:'mobile-qa-evidence/deployed-r5-home-390.png'});
-      assert.match(await live.locator('#release-version').innerText(),/MASTER_11 공개메뉴 R5/);
+      await live.screenshot({path:'mobile-qa-evidence/deployed-r6-home-390.png'});
+      assert.match(await live.locator('#release-version').innerText(),/MASTER_11 서비스별 바로가기 R6/);
       for(const route of screens){
         await live.goto(homepage+'#'+route,{waitUntil:'domcontentloaded'});
         assert.ok(await live.locator('section[data-screen="'+route+'"]').isVisible());
       }
-      console.log('PASS DEPLOYED_HTTPS_R5 '+homepage+' '+expectedAssets.join(' ')+' seven-preserved routes');
+      console.log('PASS DEPLOYED_HTTPS_R6 '+homepage+' '+expectedAssets.join(' ')+' seven-preserved routes');
     }finally{await live.close();}
   }
 }finally{await browser.close();}
