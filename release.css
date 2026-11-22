@@ -689,3 +689,76 @@ input::placeholder,textarea::placeholder{color:#6c788a;opacity:1}
 @media (prefers-reduced-motion:reduce) {
   html { scroll-behavior:auto; }
 }
+
+
+/* WORK 24 · MASTER_11 public navigation / customer intake R5
+   Public presentation only: no user PII, authentication API, cash payments or admin workspace. */
+.tabstrip{display:none!important}
+.hy-hero{grid-template-columns:minmax(0,1fr)}
+.hy-hero-primary{min-height:400px}
+.hy-hero-body{max-width:min(720px,70%)}
+.hy-hero-actions{margin-top:23px}
+.hy-hero-actions .hy-cta{min-height:52px;padding:14px 25px!important;font-size:15px!important}
+.hy-category[data-cat="전문 기사"]{display:none}
+.mainnav{gap:17px;margin-left:12px;white-space:nowrap}
+.mainnav a{font-size:13px}
+.hy-search-panel{padding-block:26px 5px}
+.hy-search-panel-inner{display:grid;grid-template-columns:minmax(210px,1fr) minmax(290px,1.2fr);gap:18px;align-items:center;padding:19px 24px;background:#f7f3fe;border:1px solid #ebe2f9;border-radius:18px}
+.hy-search-panel h2{font-size:20px;letter-spacing:-.04em}
+.hy-search-panel p{color:#726481;font-size:12px;margin-top:5px}
+.hy-search-panel .hy-search{max-width:none;margin-top:0;width:100%}
+.hy-secondary-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.jsb-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.jsb-info-grid .panel{min-width:0;line-height:1.7}
+.jsb-info-grid .panel p{font-size:14px}
+.jsb-faq{border:1px solid #e9e2f3;border-radius:17px;overflow:hidden;background:#fff}
+.jsb-faq details+details{border-top:1px solid #eee8f3}
+.jsb-faq summary{cursor:pointer;padding:17px 19px;font-weight:800;min-height:50px}
+.jsb-faq details p{padding:0 19px 19px;font-size:13px;color:#665a75;line-height:1.7}
+.jsb-help-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.footer .wrap{display:flex;flex-direction:column;gap:9px}
+.footer-information{color:#786a86}
+.footer-shortcuts{display:flex;flex-wrap:wrap;gap:13px;margin-bottom:8px}
+.footer-shortcuts a{font-weight:750;text-decoration:underline;text-underline-offset:3px}
+.footer-information p{font-size:12px;line-height:1.65}
+.jsb-intake-dialog{color:#241c38;border:1px solid #e9dff8;border-radius:24px;padding:25px;max-width:min(530px,calc(100vw - 28px));width:100%;box-shadow:0 26px 90px #21163f55}
+.jsb-intake-dialog:not([open]){display:none}
+.jsb-intake-dialog::backdrop{background:rgba(21,16,43,.62)}
+.jsb-dialog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.jsb-dialog-close{border:0;background:#f4effc;border-radius:10px;width:42px;height:42px;font-size:18px}
+.jsb-intake-dialog h2{font-size:27px;letter-spacing:-.065em;margin-bottom:10px}
+.jsb-intake-dialog .intro{line-height:1.6}
+.jsb-intake-options{display:grid;gap:10px;margin-block:20px}
+.jsb-intake-options button{border:1px solid #e3d9f5;border-radius:15px;text-align:left;padding:17px;background:#fbf9ff;display:grid;gap:6px;min-height:88px}
+.jsb-intake-options button:focus-visible,.jsb-intake-options button:hover{border-color:#986de0;background:#f4edff}
+.jsb-intake-options strong{font-size:16px;color:#4c2c91}
+.jsb-intake-options span{color:#6c6078;font-size:13px;line-height:1.45}
+.jsb-intake-warning{font-size:12px;line-height:1.6}
+.jsb-existing{border:0;background:none;text-decoration:underline;color:#5b30ab;margin-top:15px;padding:8px 0;font-size:13px}
+#price-guide,#help-center,#service-categories,#how-it-works,#worker-apply,#reception,#myrequests,#asarea{scroll-margin-top:100px}
+@media(max-width:1030px){
+  .hy-search-panel-inner{grid-template-columns:minmax(0,1fr);gap:13px}
+  .hy-secondary-cards{grid-template-columns:minmax(0,1fr)}
+  .hy-hero-primary{min-height:370px}
+  .hy-hero-body{max-width:74%}
+}
+@media(max-width:720px){
+  .hy-hero-primary{min-height:0}
+  .hy-hero-body{max-width:100%;width:100%}
+  .hy-hero-actions{margin-top:13px}
+  .hy-hero-actions .hy-cta{width:100%;font-size:15px!important}
+  .hy-search-panel{padding-block:17px 5px}
+  .hy-search-panel-inner{padding:16px}
+  .hy-search-panel h2{font-size:18px}
+  .hy-search-panel .hy-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
+  .hy-search-panel .hy-search input{grid-column:1}
+  .hy-search-panel .hy-search button{grid-column:2;min-width:100px}
+  .jsb-info-grid{grid-template-columns:minmax(0,1fr)}
+  .jsb-intake-dialog{padding:19px 16px;border-radius:17px}
+  .jsb-intake-dialog h2{font-size:22px}
+  .footer-shortcuts{gap:9px 13px}
+}
+@media(max-width:355px){
+  .navouter .logo b{font-size:16px}
+  .hy-search-panel .hy-search button{min-width:0;padding-inline:8px;font-size:12px}
+}
