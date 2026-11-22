@@ -49,6 +49,7 @@ function navigate(page, anchor) {
 }
 
 window.addEventListener('popstate',()=>show(location.hash.slice(1)));
+window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
 
 function startRequest(category, guest=false) {
   if(category&&[...request.elements.category.options].some(option=>option.value===category))request.elements.category.value=category;
