@@ -1,0 +1,37 @@
+name: Jipsonbom approved hero photo - release QA
+on:
+  push:
+    branches:
+      - release/hero-shelf-photo-20261124
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-and-function:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned Chromium test runtime, no new paid service
+        run: |
+          npm install --no-save --no-package-lock playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Keep original public program and navigation tests
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-premium-public.log 2>&1 &
+          sleep 2
+          node tests/programs-qa.mjs
+          node tests/mobile-qa.mjs
+      - name: Render all seven real layouts on mobile, tablet, desktop and save 21 screenshots
+        run: node tests/premium-visual.qa.mjs
+      - name: Archive actual visual proof (not deploy)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hero-photo-21-viewport-screenshots
+          path: design-screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 30

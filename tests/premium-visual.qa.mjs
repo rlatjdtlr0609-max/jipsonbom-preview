@@ -42,6 +42,11 @@ try{
   assert.equal(await page.locator('.logo .mark svg.jsb-svg-icon').count(),1,'Brand glyph not replaced');
   assert.ok((await page.locator('img').count())>=10,'Source imagery missing');
   const hero=page.locator('.hy-hero-img');
+  assert.equal(await hero.getAttribute('src'),'./assets/hero-shelf-premium-20261124.webp','Owner-selected representative photo missing');
+  const photo=await hero.evaluate(img=>({loaded:img.complete,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight}));
+  assert.equal(photo.loaded,true,'Representative photo is not decoded');
+  assert.equal(photo.naturalWidth,1672,'Representative photo unexpectedly downscaled');
+  assert.equal(photo.naturalHeight,941);
   assert.equal(await hero.getAttribute('fetchpriority'),'high');
   assert.ok((await hero.getAttribute('alt')).includes('AI'),'AI imagery must be explicitly marked illustrative');
   const campaignBg=await page.locator('.jsb-campaign').first().evaluate(e=>getComputedStyle(e).backgroundImage).catch(()=>null);

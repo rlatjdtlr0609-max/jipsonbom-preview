@@ -272,3 +272,21 @@ dialog{border-radius:9px!important}
 /* Keyboard skip navigation is only surfaced while focused. */
 .jsb-skip-link{position:absolute;left:16px;top:-90px;z-index:9999;padding:11px 17px;background:#1d3049;color:#fff;border:2px solid #fff;border-radius:5px;font-weight:700;text-decoration:none}
 .jsb-skip-link:focus-visible{top:8px;outline:3px solid #7b64b4;outline-offset:2px}
+
+/* Owner-approved representative hero photo: preserve left editorial text space,
+ * reveal shelving installation at right; same photo and original seven screens. */
+@media(min-width:901px){
+  .hy-hero-primary .hy-hero-img{
+    width:100%!important;
+    right:0;
+    object-position:50% 42%;
+    filter:saturate(.94) contrast(1.015);
+  }
+  .hy-hero-primary .hy-hero-body{max-width:49%!important}
+}
+@media(min-width:721px) and (max-width:900px){
+  .hy-hero-primary .hy-hero-img{object-position:78% 44%}
+}
+@media(max-width:720px){
+  .hy-hero-primary .hy-hero-img{object-position:77% 45%}
+}
