@@ -1,0 +1,33 @@
+name: Jipsonbom premium commercial UI — 7 screens x 3 sizes
+on:
+  push:
+    branches:
+      - design/premium-commercial-ui-20261124
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-and-function:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Keep original public program and navigation tests
+        run: node --test tests/mobile-qa.mjs tests/programs-qa.mjs
+      - name: Install pinned Chromium test runtime, no new paid service
+        run: |
+          npm install --no-save --no-package-lock playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Render all seven real layouts on mobile, tablet, desktop and save 21 screenshots
+        run: node tests/premium-visual.qa.mjs
+      - name: Archive actual visual proof (not deploy)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: premium-ui-21-viewport-screenshots
+          path: design-screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 30
