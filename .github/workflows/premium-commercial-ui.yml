@@ -20,7 +20,11 @@ jobs:
           npm install --no-save --no-package-lock playwright@1.57.0
           npx playwright install --with-deps chromium
       - name: Keep original public program and navigation tests
-        run: node --test tests/mobile-qa.mjs tests/programs-qa.mjs
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-premium-public.log 2>&1 &
+          sleep 2
+          node tests/programs-qa.mjs
+          node tests/mobile-qa.mjs
       - name: Render all seven real layouts on mobile, tablet, desktop and save 21 screenshots
         run: node tests/premium-visual.qa.mjs
       - name: Archive actual visual proof (not deploy)
