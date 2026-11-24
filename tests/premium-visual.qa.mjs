@@ -49,7 +49,8 @@ try{
   for(const screen of screens){
    const tab=page.locator('#tabs [data-go="'+screen+'"]').first();
    assert.equal(await tab.count(),1,'Missing nav '+screen);
-   await tab.click();
+   if(await tab.isVisible())await tab.click();
+   else await tab.evaluate(el=>el.click()); // Original mobile menu hides the seven-tab desktop strip.
    await page.locator('[data-screen="'+screen+'"]').waitFor({state:'visible'});
    await page.evaluate(()=>document.fonts.ready);
    const report=await page.evaluate(name=>{
