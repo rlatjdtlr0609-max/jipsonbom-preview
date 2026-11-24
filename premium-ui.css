@@ -208,15 +208,16 @@ dialog{border-radius:9px!important}
   .logo b{font-size:23px}
   .logo small{font-size:10px}
   .logo .mark,.mark{width:35px;height:35px}
-  .navtools .navbtn{display:none}
+  .navtools .navbtn.strong{display:none}
+  .navtools .navbtn:not(.strong){display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-height:40px}
   .navtools .hy-nav-search{min-height:40px;padding:8px 12px}
   .tabs{gap:0}
   .tabs .tab,.tabs button{font-size:12px;min-height:45px;padding:11px 12px}
   .hy-hero{padding-top:13px}
   .hy-hero-primary{display:flex!important;flex-direction:column;min-height:0;border-radius:7px!important}
-  .hy-hero-img{position:relative!important;width:100%!important;height:clamp(200px,60vw,290px)!important;max-height:290px;object-position:50% 45%;order:0}
+  .hy-hero-img{position:relative!important;width:100%!important;height:clamp(200px,60vw,290px)!important;max-height:290px;object-position:50% 45%;order:1}
   .hy-hero-gradient{display:none!important}
-  .hy-hero-body{order:1;width:100%;max-width:none!important;padding:26px 22px 30px!important;background:#f0f2f3}
+  .hy-hero-body{order:0;width:100%;max-width:none!important;padding:26px 22px 30px!important;background:#f0f2f3}
   .hy-hero-body h1{font-size:clamp(30px,7.5vw,40px);margin-top:16px}
   .hy-hero-body>p{font-size:14px;line-height:1.7;max-width:520px}
   .hy-hero-eyebrow{font-size:11px}
@@ -244,6 +245,7 @@ dialog{border-radius:9px!important}
 @media(max-width:420px){
   .logo small{display:none}
   .wrap{padding-inline:14px}
+  .navtools .hy-nav-search{display:none!important}
   .navtools .hy-nav-search span{display:none}
   .hy-hero-body{padding:23px 18px 27px!important}
   .hy-hero-body h1{font-size:30px}
