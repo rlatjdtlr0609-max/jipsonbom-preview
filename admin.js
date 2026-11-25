@@ -206,7 +206,7 @@
  };
  function setRecordNav(total,offset,hasMore){
   recordsPrev.disabled=recordBusy||offset===0;
-  recordsNext.disabled=recordBusy||!hasMore;
+  recordsNext.disabled=recordBusy||!hasMore||offset+RECORD_LIMIT>500;
   recordsPage.textContent=total===0?'0건':(offset+1)+'–'+Math.min(total,offset+RECORD_LIMIT)+' / '+total+'건';
  }
  async function loadRecords(offset=0){
@@ -261,7 +261,7 @@
   void loadRecords(Math.max(0,recordOffset-RECORD_LIMIT));
  });
  recordsNext.addEventListener('click',()=>{
-  if(recordBusy||!recordHasMore||recordOffset>=500||!snapshot||isExpired())return;
+  if(recordBusy||!recordHasMore||recordOffset+RECORD_LIMIT>500||!snapshot||isExpired())return;
   void loadRecords(recordOffset+RECORD_LIMIT);
  });
 
