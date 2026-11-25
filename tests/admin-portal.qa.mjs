@@ -13,6 +13,19 @@ const payload={
   confirmed_bookings:1,open_operation_tasks:5,worker_documents:2,
   open_aftercare_cases:1,active_compliance_policy:0,booking_impact_reviews:0}
 };
+const panel=(screen)=>({
+ environment:'DEVELOPMENT',read_only:true,production_deployment:false,
+ schema_version:'WORK108_READ_ONLY_V1',screen_count:24,screen_id:screen,
+ full_business_e2e_certified:false,pii_included:false,
+ mfa_and_backend_permissions_verified:true,
+ workflow_actions_enabled:false,real_pg_actions_enabled:false,
+ screen_coverage:'AGGREGATE_ONLY',
+ metrics:(screen==='overview'
+  ?[{key:'requests',label:'수리접수 건수',value:4,source:'WORK01 접수'},
+    {key:'jobs',label:'작업게시 건수',value:3,source:'WORK04 작업'},
+    {key:'bookings',label:'확정예약',value:1,source:'WORK04 예약'}]
+  :[{key:screen,label:'DB 업무별 집계 '+screen,value:2,source:'WORK108 DB'}])
+});
 const browser=await chromium.launch({headless:true});
 let successful=0;
 try{
@@ -43,6 +56,12 @@ try{
     assert.equal(req.headers().authorization,'Bearer test-aal2');
     return body(200,payload);
    }
+   if(url.pathname==='/rest/v1/rpc/jsb_w108_admin_panel'){
+    assert.equal(req.headers().authorization,'Bearer test-aal2');
+    const input=req.postDataJSON();
+    assert.deepEqual(Object.keys(input),['p_screen']);
+    return body(200,panel(input.p_screen));
+   }
    throw Error('Unexpected external request '+url.pathname);
   });
   await page.goto(URL_BASE+'admin.html',{waitUntil:'domcontentloaded'});
@@ -62,11 +81,15 @@ try{
   await page.locator('#mfa-submit').click();
   await page.locator('#dashboard').waitFor({state:'visible'});
   assert.equal(await page.locator('#screen-nav button').count(),24);
+  await page.locator('#metrics .metric').first().waitFor({state:'visible'});
   assert.equal(await page.locator('#metrics .metric').count(),3);
   assert.match(await page.locator('#metrics').innerText(),/4/);
   await page.locator('[data-screen-id="cases"]').click();
   assert.match(await page.locator('#detail-title').innerText(),/A\/S/);
+  await page.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
+  assert.ok(calls.some(c=>c.url.endsWith('/jsb_w108_admin_panel')),'server panels must be queried');
   await page.locator('[data-screen-id="release"]').click();
+  await page.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('release'));
   assert.match(await page.locator('#detail-safety').innerText(),/실제 업무처리/);
   assert.ok(await overflow()<=2,'Dashboard horizontal overflow width '+width);
   const secret=await page.evaluate(()=>({
@@ -129,13 +152,61 @@ try{
  assert.equal(await denied.locator('#dashboard').isVisible(),false);
  assert.doesNotMatch(await denied.locator('body').innerText(),/PRIVATE_DB_DETAIL_NEVER_RENDER/);
  await denied.close();
+ // A valid AAL2 admin must NOT see finance metrics without prices_manage.
+ // A second protected screen may still succeed; stale or private details
+ // from the denied screen must never be presented.
+ const scoped=await browser.newPage();
+ await scoped.route(SUPA+'/**',async route=>{
+  const req=route.request(),u=new URL(req.url());
+  const headers={'access-control-allow-origin':'*'};
+  if(req.method()==='OPTIONS')return route.fulfill({status:204,headers:{
+   ...headers,'access-control-allow-methods':'POST,GET,OPTIONS',
+   'access-control-allow-headers':'apikey,authorization,content-type'}});
+  let status=200,value={};
+  if(u.pathname==='/auth/v1/token')value={access_token:'test-aal1',expires_in:3600};
+  else if(u.pathname==='/auth/v1/user')value={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false};
+  else if(u.pathname==='/auth/v1/factors')value={totp:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
+  else if(u.pathname.endsWith('/challenge'))value={id:'22222222-2222-4222-8222-222222222222'};
+  else if(u.pathname.endsWith('/verify'))value={access_token:'test-aal2',expires_in:3600};
+  else if(u.pathname==='/rest/v1/rpc/jsb_w103_admin_snapshot')value=payload;
+  else if(u.pathname==='/rest/v1/rpc/jsb_w108_admin_panel'){
+   const screen=req.postDataJSON().p_screen;
+   if(screen==='cash'){status=403;value={code:'42501',message:'PRIVATE_PERSONAL_DATA_MUST_NOT_APPEAR'};}
+   else{
+    if(screen==='tasks')await new Promise(ok=>setTimeout(ok,180));
+    value=panel(screen);
+   }
+  }else if(u.pathname==='/auth/v1/logout')value={};
+  else throw Error('Unexpected scoped path '+u.pathname);
+  await route.fulfill({status,headers,contentType:'application/json',body:JSON.stringify(value)});
+ });
+ await scoped.goto(URL_BASE+'admin.html',{waitUntil:'domcontentloaded'});
+ await scoped.locator('#login-email').fill('admin@example.invalid');
+ await scoped.locator('#login-password').fill('password');
+ await scoped.locator('#login-submit').click();
+ await scoped.locator('#mfa-form').waitFor({state:'visible'});
+ await scoped.locator('#totp-code').fill('123456');
+ await scoped.locator('#mfa-submit').click();
+ await scoped.locator('#dashboard').waitFor({state:'visible'});
+ await scoped.locator('.metric').first().waitFor({state:'visible'});
+ await scoped.locator('[data-screen-id="cash"]').click();
+ await scoped.waitForFunction(()=>document.querySelector('#dashboard-message')?.textContent.includes('별도 업무권한'));
+ assert.equal(await scoped.locator('.metric').count(),0,'denied finance panel must have no metrics');
+ assert.doesNotMatch(await scoped.locator('body').innerText(),/PRIVATE_PERSONAL_DATA_MUST_NOT_APPEAR/);
+ await scoped.locator('[data-screen-id="tasks"]').click();
+ await scoped.locator('[data-screen-id="cases"]').click();
+ await scoped.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
+ await scoped.waitForTimeout(240);
+ assert.match(await scoped.locator('.metric-label').innerText(),/cases/,'late tasks response must not overwrite selected cases');
+ await scoped.close();
  const index=await readFile('index.html','utf8');
  const html=await readFile('admin.html','utf8');
  const js=await readFile('admin.js','utf8');
  assert.ok(index.includes('href="./admin.html"'),'existing admin entry should point to secured page');
  assert.match(html,/connect-src https:\/\/ohwkywomdqgcnptsnhwk\.supabase\.co/);
  assert.match(js,/jsb_w103_admin_snapshot/);
+ assert.match(js,/jsb_w108_admin_panel/);
  assert.doesNotMatch(js,/localStorage\s*\.|sessionStorage\s*\.|document\.cookie|service_role|sb_secret_/i);
  assert.ok(!html.includes('test-aal2'));
- console.log('WORK103-106 PASS: '+successful+' viewport auth/MFA/role/private route + unauthorized/rejected + CSP/secret checks');
+ console.log('WORK107-112 PASS: '+successful+' viewport auth/MFA/24-screen DB panels + unauthorized/rejected + CSP/secret checks');
 }finally{await browser.close();}
