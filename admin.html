@@ -8,8 +8,8 @@
  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src https://ohwkywomdqgcnptsnhwk.supabase.co; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
  <meta name="referrer" content="no-referrer">
  <title>집손봄 관리자 통합 관제 | 개발 환경</title>
- <link rel="stylesheet" href="./admin.css?v=work107-112-1">
- <script defer src="./admin.js?v=work107-112-1"></script>
+ <link rel="stylesheet" href="./admin.css?v=work113-118-1">
+ <script defer src="./admin.js?v=work113-118-1"></script>
 </head>
 <body>
  <header class="topbar">
@@ -88,6 +88,20 @@
       <span class="state-tag">업무별 권한검사 · 읽기 전용</span>
      </div>
      <p id="detail-info"></p>
+     <section class="records-panel" aria-label="선택한 관리자 업무의 상태목록">
+      <div class="records-heading">
+       <div><span class="eyebrow">SAFE STATUS LIST</span><h3>업무별 상태목록</h3></div>
+       <span class="records-tag">DEV · 개인정보 비식별</span>
+      </div>
+      <p class="records-disclaimer">최대 15건씩 조회합니다. 이름·전화·주소·기사 식별자·민감 서류는 표시하지 않습니다. 접수·승인·환불·결제 처리 기능은 아직 연결되지 않았습니다.</p>
+      <p id="records-state" class="records-state" role="status" aria-live="polite">관리자 업무목록을 불러올 수 있는지 확인하고 있습니다.</p>
+      <div id="records-list" class="records-list" aria-label="업무 상태 목록"></div>
+      <div class="records-pagination">
+       <button id="records-prev" class="plain-btn bordered" type="button" disabled>이전</button>
+       <span id="records-page" aria-live="polite">0건</span>
+       <button id="records-next" class="plain-btn bordered" type="button" disabled>다음</button>
+      </div>
+     </section>
      <div id="detail-safety" class="detail-safety"></div>
     </section>
     <footer class="work-footer">실제 업무수정·금전거래·고객연락·기사 승인은 제공하지 않습니다. 전체 24개 화면의 업무기능 완전 연동과 실계정 E2E는 추가 검증이 필요합니다.</footer>
