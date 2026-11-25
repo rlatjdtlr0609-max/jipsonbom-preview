@@ -26,6 +26,24 @@ const panel=(screen)=>({
     {key:'bookings',label:'확정예약',value:1,source:'WORK04 예약'}]
   :[{key:screen,label:'DB 업무별 집계 '+screen,value:2,source:'WORK108 DB'}])
 });
+const list=(screen,offset=0,limit=15)=>{
+ const total=screen==='overview'?17:1;
+ return {
+  environment:'DEVELOPMENT',read_only:true,production_deployment:false,
+  schema_version:'WORK114_SAFE_LIST_V1',screen_count:24,screen_id:screen,
+  full_business_e2e_certified:false,pii_included:false,
+  mfa_and_backend_permissions_verified:true,
+  workflow_actions_enabled:false,real_pg_actions_enabled:false,
+  list_coverage:'PSEUDONYMIZED_STATUS_ONLY',
+  limit,offset,total,has_more:offset+limit<total,
+  items:Array.from({length:Math.max(0,Math.min(limit,total-offset))},(_,i)=>({
+   ref:(offset+i+1).toString(16).padStart(12,'0'),
+   title:screen==='overview'?'운영업무':'상태조회 '+screen,
+   status:'OPEN',source:'WORK93 운영업무',
+   time:'2026-11-25T08:00:00Z',amount_krw:null
+  }))
+ };
+};
 const browser=await chromium.launch({headless:true});
 let successful=0;
 try{
@@ -62,6 +80,13 @@ try{
     assert.deepEqual(Object.keys(input),['p_screen']);
     return body(200,panel(input.p_screen));
    }
+   if(url.pathname==='/rest/v1/rpc/jsb_w114_admin_list'){
+    assert.equal(req.headers().authorization,'Bearer test-aal2');
+    const input=req.postDataJSON();
+    assert.deepEqual(Object.keys(input).sort(),['p_limit','p_offset','p_screen']);
+    assert.equal(input.p_limit,15);
+    return body(200,list(input.p_screen,input.p_offset,input.p_limit));
+   }
    throw Error('Unexpected external request '+url.pathname);
   });
   await page.goto(URL_BASE+'admin.html',{waitUntil:'domcontentloaded'});
@@ -84,12 +109,23 @@ try{
   await page.locator('#metrics .metric').first().waitFor({state:'visible'});
   assert.equal(await page.locator('#metrics .metric').count(),3);
   assert.match(await page.locator('#metrics').innerText(),/4/);
+  await page.locator('.record-item').first().waitFor({state:'visible'});
+  assert.equal(await page.locator('.record-item').count(),15);
+  assert.equal(await page.locator('#records-next').isEnabled(),true);
+  await page.locator('#records-next').click();
+  await page.waitForFunction(()=>document.querySelector('#records-page')?.textContent.includes('16'));
+  assert.equal(await page.locator('.record-item').count(),2);
+  await page.locator('#records-prev').click();
+  await page.waitForFunction(()=>document.querySelector('#records-page')?.textContent.includes('1–15'));
+  assert.equal(await page.locator('.record-item').count(),15);
   await page.locator('[data-screen-id="cases"]').click();
   assert.match(await page.locator('#detail-title').innerText(),/A\/S/);
   await page.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
+  await page.waitForFunction(()=>document.querySelector('.record-title')?.textContent.includes('cases'));
   assert.ok(calls.some(c=>c.url.endsWith('/jsb_w108_admin_panel')),'server panels must be queried');
   await page.locator('[data-screen-id="release"]').click();
   await page.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('release'));
+  await page.waitForFunction(()=>document.querySelector('.record-title')?.textContent.includes('release'));
   assert.match(await page.locator('#detail-safety').innerText(),/실제 업무처리/);
   assert.ok(await overflow()<=2,'Dashboard horizontal overflow width '+width);
   const secret=await page.evaluate(()=>({
@@ -176,6 +212,13 @@ try{
     if(screen==='tasks')await new Promise(ok=>setTimeout(ok,180));
     value=panel(screen);
    }
+  }else if(u.pathname==='/rest/v1/rpc/jsb_w114_admin_list'){
+   const input=req.postDataJSON(),screen=input.p_screen;
+   if(screen==='cash'){status=403;value={code:'42501',message:'SENSITIVE_PROTECTED_NEVER_RENDERED'};}
+   else{
+    if(screen==='tasks')await new Promise(ok=>setTimeout(ok,200));
+    value=list(screen,input.p_offset,input.p_limit);
+   }
   }else if(u.pathname==='/auth/v1/logout')value={};
   else throw Error('Unexpected scoped path '+u.pathname);
   await route.fulfill({status,headers,contentType:'application/json',body:JSON.stringify(value)});
@@ -192,11 +235,14 @@ try{
  await scoped.locator('[data-screen-id="cash"]').click();
  await scoped.waitForFunction(()=>document.querySelector('#dashboard-message')?.textContent.includes('별도 업무권한'));
  assert.equal(await scoped.locator('.metric').count(),0,'denied finance panel must have no metrics');
+ await scoped.waitForFunction(()=>document.querySelector('#records-state')?.textContent.includes('별도 업무권한'));
+ assert.equal(await scoped.locator('.record-item').count(),0,'denied finance list must expose no records');
  assert.doesNotMatch(await scoped.locator('body').innerText(),/PRIVATE_PERSONAL_DATA_MUST_NOT_APPEAR/);
  await scoped.locator('[data-screen-id="tasks"]').click();
  await scoped.locator('[data-screen-id="cases"]').click();
  await scoped.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
- await scoped.waitForTimeout(240);
+ await scoped.waitForTimeout(280);
+ assert.match(await scoped.locator('.record-title').innerText(),/cases/,'late task list must not replace selected cases');
  assert.match(await scoped.locator('.metric-label').innerText(),/cases/,'late tasks response must not overwrite selected cases');
  await scoped.close();
  const index=await readFile('index.html','utf8');
@@ -206,7 +252,8 @@ try{
  assert.match(html,/connect-src https:\/\/ohwkywomdqgcnptsnhwk\.supabase\.co/);
  assert.match(js,/jsb_w103_admin_snapshot/);
  assert.match(js,/jsb_w108_admin_panel/);
+ assert.match(js,/jsb_w114_admin_list/);
  assert.doesNotMatch(js,/localStorage\s*\.|sessionStorage\s*\.|document\.cookie|service_role|sb_secret_/i);
  assert.ok(!html.includes('test-aal2'));
- console.log('WORK107-112 PASS: '+successful+' viewport auth/MFA/24-screen DB panels + unauthorized/rejected + CSP/secret checks');
+ console.log('WORK113-118 PASS: '+successful+' viewport auth/MFA/24-screen status lists + pagination + scope denials + no token/PII');
 }finally{await browser.close();}

@@ -3,7 +3,7 @@
  * Dev Supabase Auth + TOTP provides AAL2; public.jsb_w103 and jsb_w108 (DB) gate
  * operations_read / requests_publish / access_review / recent MFA.
  * ALL access tokens stay in JS memory only (no storage/cookies/URL).
- * The 24 screens are read-only development dashboards, NOT full E2E certification.
+ * WORK113-118 listings remain pseudonymized read-only statuses, NOT full E2E certification.
  */
 'use strict';
 (()=>{
@@ -59,9 +59,13 @@
  const mfaInput=select('totp-code'),topSession=select('session-label');
  const message=select('dashboard-message'),nav=select('screen-nav');
  const metrics=select('metrics');
+ const records=select('records-list'),recordsState=select('records-state');
+ const recordsPrev=select('records-prev'),recordsNext=select('records-next');
+ const recordsPage=select('records-page');
  const sections=groups.flatMap(g=>g.entries.map(([id,label,description,...keys])=>({id,label,description,keys,group:g.title})));
  let token=null;let expiresAt=0;let factorId=null;let busy=false;let selected='overview';let snapshot=null;
- let panelRequestSequence=0;
+ let panelRequestSequence=0,recordRequestSequence=0,recordOffset=0,recordBusy=false,recordHasMore=false;
+ const RECORD_LIMIT=15;
  const create=(tag,cls,text)=>{
   const e=document.createElement(tag);
   if(cls)e.className=cls;
@@ -73,6 +77,9 @@
  };
  const emptySession=()=>{
   panelRequestSequence++;
+  recordRequestSequence++;recordBusy=false;recordHasMore=false;recordOffset=0;
+  records.replaceChildren();recordsPrev.disabled=true;recordsNext.disabled=true;
+  recordsPage.textContent='0건';recordsState.textContent='관리자 인증 후 업무목록을 조회합니다.';
   token=null;expiresAt=0;factorId=null;snapshot=null;
   login.reset();mfa.reset();mfa.hidden=true;login.hidden=false;
   dashboard.hidden=true;authLayout.hidden=false;logout.hidden=true;topSession.hidden=true;
@@ -173,6 +180,91 @@
     :'보호된 화면 데이터 연결 상태를 확인해야 합니다.'));
   }
  }
+
+ const safeList=(data,screen,offset)=>
+  data&&data.read_only===true&&data.environment==='DEVELOPMENT'&&
+  data.production_deployment===false&&data.pii_included===false&&
+  data.real_pg_actions_enabled===false&&data.workflow_actions_enabled===false&&
+  data.full_business_e2e_certified===false&&
+  data.mfa_and_backend_permissions_verified===true&&data.screen_count===24&&
+  data.schema_version==='WORK114_SAFE_LIST_V1'&&data.screen_id===screen&&
+  data.list_coverage==='PSEUDONYMIZED_STATUS_ONLY'&&
+  data.limit===RECORD_LIMIT&&data.offset===offset&&
+  Number.isSafeInteger(data.total)&&data.total>=0&&
+  typeof data.has_more==='boolean'&&Array.isArray(data.items)&&
+  data.items.length<=RECORD_LIMIT&&
+  data.items.every(v=>v&&/^[0-9a-f]{12}$/.test(v.ref)&&
+    typeof v.title==='string'&&v.title.length<=72&&
+    typeof v.status==='string'&&v.status.length<=44&&
+    typeof v.source==='string'&&v.source.startsWith('WORK')&&v.source.length<=120&&
+    (v.time===null||typeof v.time==='string')&&
+    (v.amount_krw===null||(typeof v.amount_krw==='string'&&/^[0-9]{1,20}$/.test(v.amount_krw))));
+ const fmtDate=value=>{
+  if(!value)return '시각 미등록';
+  const d=new Date(value);
+  return Number.isFinite(d.getTime())?d.toLocaleString('ko-KR',{dateStyle:'short',timeStyle:'short'}):'시각 확인 불가';
+ };
+ function setRecordNav(total,offset,hasMore){
+  recordsPrev.disabled=recordBusy||offset===0;
+  recordsNext.disabled=recordBusy||!hasMore||offset+RECORD_LIMIT>500;
+  recordsPage.textContent=total===0?'0건':(offset+1)+'–'+Math.min(total,offset+RECORD_LIMIT)+' / '+total+'건';
+ }
+ async function loadRecords(offset=0){
+  const screen=selected,issuedToken=token,serial=++recordRequestSequence;
+  recordOffset=offset;recordBusy=true;recordHasMore=false;
+  records.replaceChildren();recordsState.dataset.error='false';
+  recordsState.textContent='화면별 개인정보 비식별 상태목록을 조회하고 있습니다…';
+  setRecordNav(0,0,false);
+  try{
+   if(isExpired())throw Error('AUTH_EXPIRED');
+   const data=await request('/rest/v1/rpc/jsb_w114_admin_list',{
+    method:'POST',accessToken:token,
+    body:{p_screen:screen,p_limit:RECORD_LIMIT,p_offset:offset}
+   });
+   if(serial!==recordRequestSequence||issuedToken!==token||dashboard.hidden||selected!==screen)return;
+   if(isExpired())throw Error('AUTH_EXPIRED');
+   if(!safeList(data,screen,offset))throw Error('UNVERIFIED_RESPONSE');
+   records.replaceChildren();
+   for(const item of data.items){
+    const article=create('article','record-item');
+    const information=create('div','record-info');
+    information.append(create('div','record-title',item.title),
+     create('div','record-meta',item.source+' · '+fmtDate(item.time)+' · 참조 '+item.ref));
+    const state=create('span','record-status',item.status);
+    article.append(information,state);
+    if(item.amount_krw!==null){
+     const a=create('div','record-amount',
+      new Intl.NumberFormat('ko-KR').format(BigInt(item.amount_krw))+'원');
+     information.append(a);
+    }
+    records.append(article);
+   }
+   if(!data.items.length)records.append(create('div','records-empty','개발 DB에 표시할 업무 기록이 없습니다.'));
+   recordHasMore=data.has_more;
+   recordsState.textContent='서버 MFA·업무권한 검증 완료 · '+data.items.length+'개 비식별 상태 기록 · 실제 업무 승인·수정 비활성';
+   recordBusy=false;setRecordNav(data.total,offset,recordHasMore);
+  }catch(e){
+   if(serial!==recordRequestSequence||issuedToken!==token||dashboard.hidden||selected!==screen)return;
+   records.replaceChildren();recordBusy=false;recordHasMore=false;
+   recordsPrev.disabled=true;recordsNext.disabled=true;recordsPage.textContent='조회 제한';
+   if(e.message==='AUTH_INVALID'||e.message==='AUTH_EXPIRED'){
+    emptySession();showStatus(friendly(e),true);return;
+   }
+   recordsState.dataset.error='true';
+   recordsState.textContent=e.status===403
+    ?'이 목록은 별도 업무권한 또는 최근 MFA 인증이 필요합니다. 데이터가 표시되지 않았습니다.'
+    :'업무목록 조회를 완료하지 못했습니다. 보호된 자료는 표시되지 않았습니다.';
+  }
+ }
+ recordsPrev.addEventListener('click',()=>{
+  if(recordBusy||recordOffset<=0||!snapshot||isExpired())return;
+  void loadRecords(Math.max(0,recordOffset-RECORD_LIMIT));
+ });
+ recordsNext.addEventListener('click',()=>{
+  if(recordBusy||!recordHasMore||recordOffset+RECORD_LIMIT>500||!snapshot||isExpired())return;
+  void loadRecords(recordOffset+RECORD_LIMIT);
+ });
+
  function renderScreen(){
   const current=sections.find(x=>x.id===selected)||sections[0];selected=current.id;
   select('workarea-title').textContent=current.label;
@@ -184,6 +276,7 @@
    button.setAttribute('aria-current',button.dataset.screenId===selected?'page':'false');
   }
   void loadPanel();
+  void loadRecords(0);
  }
  function buildNav(){
   nav.replaceChildren();
