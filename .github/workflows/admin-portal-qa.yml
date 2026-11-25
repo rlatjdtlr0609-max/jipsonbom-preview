@@ -1,9 +1,10 @@
-name: WORK103-106 fixed-link admin portal security and mobile QA
+name: WORK103-112 fixed-link admin 24-screen scope, auth and mobile QA
 on:
   push:
     branches:
       - main
       - feature/work103-106-admin-auth-portal-20261126
+      - feature/work107-112-admin-fixed-link-20261126
     paths:
       - admin.html
       - admin.css
@@ -38,3 +39,4 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-admin-portal-http.log 2>&1 &
           sleep 2
           node tests/admin-portal.qa.mjs
+          node tests/mobile-qa.mjs
