@@ -1,6 +1,6 @@
 /* WORK103~106 / MASTER_11
  * Static GitHub Pages hosts NO privileged records or keys.
- * Dev Supabase Auth + TOTP provides AAL2; public.jbs_w103... (server DB) gates
+ * Dev Supabase Auth + TOTP provides AAL2; public.jsb_w103 and jsb_w108 (DB) gate
  * operations_read / requests_publish / access_review / recent MFA.
  * ALL access tokens stay in JS memory only (no storage/cookies/URL).
  * The 24 screens are read-only development dashboards, NOT full E2E certification.
@@ -61,6 +61,7 @@
  const metrics=select('metrics');
  const sections=groups.flatMap(g=>g.entries.map(([id,label,description,...keys])=>({id,label,description,keys,group:g.title})));
  let token=null;let expiresAt=0;let factorId=null;let busy=false;let selected='overview';let snapshot=null;
+ let panelRequestSequence=0;
  const create=(tag,cls,text)=>{
   const e=document.createElement(tag);
   if(cls)e.className=cls;
@@ -71,6 +72,7 @@
   status.textContent=msg;status.dataset.error=error?'true':'false';
  };
  const emptySession=()=>{
+  panelRequestSequence++;
   token=null;expiresAt=0;factorId=null;snapshot=null;
   login.reset();mfa.reset();mfa.hidden=true;login.hidden=false;
   dashboard.hidden=true;authLayout.hidden=false;logout.hidden=true;topSession.hidden=true;
@@ -118,8 +120,59 @@
    !data.counts||typeof data.counts!=='object')throw Error('UNVERIFIED_RESPONSE');
   return data;
  }
- const count=(key)=>Number.isSafeInteger(snapshot?.counts?.[key])&&snapshot.counts[key]>=0
-  ?snapshot.counts[key].toLocaleString('ko-KR'):'—';
+ async function readPanel(screenId){
+  if(isExpired())throw Error('AUTH_EXPIRED');
+  return request('/rest/v1/rpc/jsb_w108_admin_panel',{
+   method:'POST',accessToken:token,body:{p_screen:screenId}});
+ }
+ const safePanel=(data,screenId)=>
+  data&&data.read_only===true&&data.environment==='DEVELOPMENT'&&
+  data.production_deployment===false&&data.mfa_and_backend_permissions_verified===true&&
+  data.pii_included===false&&data.full_business_e2e_certified===false&&
+  data.workflow_actions_enabled===false&&data.real_pg_actions_enabled===false&&
+  data.screen_count===24&&data.screen_id===screenId&&
+  data.schema_version==='WORK108_READ_ONLY_V1'&&
+  data.screen_coverage==='AGGREGATE_ONLY'&&
+  Array.isArray(data.metrics)&&data.metrics.length>0&&data.metrics.length<=8&&
+  data.metrics.every(m=>m&&typeof m.key==='string'&&m.key.length<=60&&
+    typeof m.label==='string'&&m.label.length<=100&&
+    typeof m.source==='string'&&m.source.length<=120&&
+    Number.isSafeInteger(m.value)&&m.value>=0);
+ async function loadPanel(){
+  const screenId=selected,serial=++panelRequestSequence,issuedToken=token;
+  metrics.replaceChildren();
+  metrics.append(create('p','loading-message','보호된 개발 DB 조회 중…'));
+  message.textContent='관리자 권한·인증 앱·화면별 업무권한을 DB에서 확인하고 있습니다.';
+  try{
+   const data=await readPanel(screenId);
+   if(serial!==panelRequestSequence||issuedToken!==token||dashboard.hidden||screenId!==selected)return;
+   if(isExpired())throw Error('AUTH_EXPIRED');
+   if(!safePanel(data,screenId))throw Error('UNVERIFIED_RESPONSE');
+   metrics.replaceChildren();
+   for(const metric of data.metrics){
+    const tile=create('article','metric');
+    tile.append(create('div','metric-label',metric.label),
+     create('div','metric-value',metric.value.toLocaleString('ko-KR')),
+     create('div','metric-note',metric.source+' · 개발 DB 집계'));
+    metrics.append(tile);
+   }
+   message.textContent='보호된 업무별 조회 성공 · '+data.metrics.length+
+    '개 집계 · 실제 업무처리/정산/PG 미연결 · 24개 상세업무 전체 E2E 인증은 아직 미완료';
+  }catch(e){
+   if(serial!==panelRequestSequence||issuedToken!==token||dashboard.hidden||screenId!==selected)return;
+   metrics.replaceChildren();
+   if(e.message==='AUTH_INVALID'||e.message==='AUTH_EXPIRED'){
+    emptySession();showStatus(friendly(e),true);return;
+   }
+   const blocked=e.status===403;
+   message.textContent=blocked
+    ?'해당 화면은 별도 업무권한 또는 최근 MFA가 필요합니다. 서버가 조회를 거부했으며 데이터는 표시하지 않았습니다.'
+    :friendly(e)+' · 서버의 보호된 데이터는 표시하지 않았습니다.';
+   metrics.append(create('p','metric-empty',blocked
+    ?'접근 권한이 없는 업무입니다. 담당 권한 승인 전에는 조회할 수 없습니다.'
+    :'보호된 화면 데이터 연결 상태를 확인해야 합니다.'));
+  }
+ }
  function renderScreen(){
   const current=sections.find(x=>x.id===selected)||sections[0];selected=current.id;
   select('workarea-title').textContent=current.label;
@@ -130,14 +183,7 @@
   for(const button of nav.querySelectorAll('button[data-screen-id]')){
    button.setAttribute('aria-current',button.dataset.screenId===selected?'page':'false');
   }
-  const ids=current.keys.length?current.keys:['customer_requests','open_operation_tasks','active_compliance_policy'];
-  metrics.replaceChildren();
-  for(const key of ids){
-   const tile=create('article','metric');
-   tile.append(create('div','metric-label',labels[key]||key),
-    create('div','metric-value',count(key)),create('div','metric-note','개발 DB · 서버 권한검사 후 집계'));
-   metrics.append(tile);
-  }
+  void loadPanel();
  }
  function buildNav(){
   nav.replaceChildren();
@@ -161,7 +207,7 @@
  function showDashboard(data){
   snapshot=data;selected='overview';buildNav();
   authLayout.hidden=true;dashboard.hidden=false;logout.hidden=false;topSession.hidden=false;
-  message.textContent='관리자 권한·최근 인증 앱 확인 완료 · 개발 DB 읽기 전용 요약 · 실제 관리자 업무처리 및 운영 출시 비활성';
+  message.textContent='관리자 인증 완료 · 업무별 DB 권한 및 집계 조회 준비 중 · 운영 실행 차단';
   renderScreen();
  }
  const friendly=e=>{
@@ -236,7 +282,8 @@
   try{
    const data=await readSnapshot();
    snapshot=data;renderScreen();
-   message.textContent='개발 DB 요약을 다시 조회했습니다. '+new Date().toLocaleString('ko-KR')+' · 고객·기사 원문은 내려받지 않습니다.';
+   // readPanel() independently checks the current selected admin screen scope.
+   // Do not overwrite an in-flight per-screen denial or display stale counts.
   }catch(e){emptySession();showStatus(friendly(e),true);}
   finally{guardBusy(false);}
  });
