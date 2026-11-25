@@ -24,6 +24,9 @@ try{
   page.on('request',r=>{if(r.url().startsWith(SUPA))calls.push({url:r.url(),method:r.method()});});
   await page.route(SUPA+'/**',async route=>{
    const req=route.request(),url=new URL(req.url());
+   if(req.method()==='OPTIONS')return route.fulfill({status:204,headers:{
+    'access-control-allow-origin':'*','access-control-allow-methods':'POST,GET,OPTIONS',
+    'access-control-allow-headers':'apikey,authorization,content-type'}});
    const body=async(status,obj)=>route.fulfill({status,
     contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(obj)});
    if(url.pathname==='/auth/v1/token'&&url.searchParams.get('grant_type')==='password'){
@@ -32,6 +35,7 @@ try{
     return body(200,{access_token:'test-aal1',expires_in:3600});
    }
    if(url.pathname==='/auth/v1/user')return body(200,{id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false});
+   if(url.pathname==='/auth/v1/logout')return body(200,{});
    if(url.pathname==='/auth/v1/factors')return body(200,{totp:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]});
    if(url.pathname.endsWith('/challenge'))return body(200,{id:'22222222-2222-4222-8222-222222222222'});
    if(url.pathname.endsWith('/verify'))return body(200,{access_token:'test-aal2',expires_in:3600});
@@ -83,6 +87,9 @@ try{
  const rejected=await browser.newPage();
  await rejected.route(SUPA+'/**',async route=>{
   const req=route.request(),path=new URL(req.url()).pathname;
+  if(req.method()==='OPTIONS')return route.fulfill({status:204,headers:{
+   'access-control-allow-origin':'*','access-control-allow-methods':'POST,GET,OPTIONS',
+   'access-control-allow-headers':'apikey,authorization,content-type'}});
   const response={contentType:'application/json',headers:{'access-control-allow-origin':'*'}};
   if(path==='/auth/v1/token')return route.fulfill({...response,status:401,body:'{"error":"invalid_grant"}'});
   return route.abort();
@@ -97,6 +104,9 @@ try{
  const denied=await browser.newPage();
  await denied.route(SUPA+'/**',async route=>{
   const u=new URL(route.request().url());
+  if(route.request().method()==='OPTIONS')return route.fulfill({status:204,headers:{
+   'access-control-allow-origin':'*','access-control-allow-methods':'POST,GET,OPTIONS',
+   'access-control-allow-headers':'apikey,authorization,content-type'}});
   let status=200,value={};
   if(u.pathname==='/auth/v1/token')value={access_token:'test-aal1',expires_in:3600};
   else if(u.pathname==='/auth/v1/user')value={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false};
