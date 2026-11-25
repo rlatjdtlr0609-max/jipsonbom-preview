@@ -152,6 +152,53 @@ try{
  assert.equal(await denied.locator('#dashboard').isVisible(),false);
  assert.doesNotMatch(await denied.locator('body').innerText(),/PRIVATE_DB_DETAIL_NEVER_RENDER/);
  await denied.close();
+ // A valid AAL2 admin must NOT see finance metrics without prices_manage.
+ // A second protected screen may still succeed; stale or private details
+ // from the denied screen must never be presented.
+ const scoped=await browser.newPage();
+ await scoped.route(SUPA+'/**',async route=>{
+  const req=route.request(),u=new URL(req.url());
+  const headers={'access-control-allow-origin':'*'};
+  if(req.method()==='OPTIONS')return route.fulfill({status:204,headers:{
+   ...headers,'access-control-allow-methods':'POST,GET,OPTIONS',
+   'access-control-allow-headers':'apikey,authorization,content-type'}});
+  let status=200,value={};
+  if(u.pathname==='/auth/v1/token')value={access_token:'test-aal1',expires_in:3600};
+  else if(u.pathname==='/auth/v1/user')value={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false};
+  else if(u.pathname==='/auth/v1/factors')value={totp:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
+  else if(u.pathname.endsWith('/challenge'))value={id:'22222222-2222-4222-8222-222222222222'};
+  else if(u.pathname.endsWith('/verify'))value={access_token:'test-aal2',expires_in:3600};
+  else if(u.pathname==='/rest/v1/rpc/jsb_w103_admin_snapshot')value=payload;
+  else if(u.pathname==='/rest/v1/rpc/jsb_w108_admin_panel'){
+   const screen=req.postDataJSON().p_screen;
+   if(screen==='cash'){status=403;value={code:'42501',message:'PRIVATE_PERSONAL_DATA_MUST_NOT_APPEAR'};}
+   else{
+    if(screen==='tasks')await new Promise(ok=>setTimeout(ok,180));
+    value=panel(screen);
+   }
+  }else if(u.pathname==='/auth/v1/logout')value={};
+  else throw Error('Unexpected scoped path '+u.pathname);
+  await route.fulfill({status,headers,contentType:'application/json',body:JSON.stringify(value)});
+ });
+ await scoped.goto(URL_BASE+'admin.html',{waitUntil:'domcontentloaded'});
+ await scoped.locator('#login-email').fill('admin@example.invalid');
+ await scoped.locator('#login-password').fill('password');
+ await scoped.locator('#login-submit').click();
+ await scoped.locator('#mfa-form').waitFor({state:'visible'});
+ await scoped.locator('#totp-code').fill('123456');
+ await scoped.locator('#mfa-submit').click();
+ await scoped.locator('#dashboard').waitFor({state:'visible'});
+ await scoped.locator('.metric').first().waitFor({state:'visible'});
+ await scoped.locator('[data-screen-id="cash"]').click();
+ await scoped.waitForFunction(()=>document.querySelector('#dashboard-message')?.textContent.includes('별도 업무권한'));
+ assert.equal(await scoped.locator('.metric').count(),0,'denied finance panel must have no metrics');
+ assert.doesNotMatch(await scoped.locator('body').innerText(),/PRIVATE_PERSONAL_DATA_MUST_NOT_APPEAR/);
+ await scoped.locator('[data-screen-id="tasks"]').click();
+ await scoped.locator('[data-screen-id="cases"]').click();
+ await scoped.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
+ await scoped.waitForTimeout(240);
+ assert.match(await scoped.locator('.metric-label').innerText(),/cases/,'late tasks response must not overwrite selected cases');
+ await scoped.close();
  const index=await readFile('index.html','utf8');
  const html=await readFile('admin.html','utf8');
  const js=await readFile('admin.js','utf8');
