@@ -1,10 +1,11 @@
-name: WORK103-112 fixed-link admin 24-screen scope, auth and mobile QA
+name: WORK103-118 fixed-link admin 24-screen worklist, auth, pagination and mobile QA
 on:
   push:
     branches:
       - main
       - feature/work103-106-admin-auth-portal-20261126
       - feature/work107-112-admin-fixed-link-20261126
+      - feature/work113-118-admin-list-ui-20261126
     paths:
       - admin.html
       - admin.css
