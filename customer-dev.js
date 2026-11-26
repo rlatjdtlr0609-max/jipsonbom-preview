@@ -101,6 +101,16 @@
   return {name,phone,category,description,address,
    terms:true,privacy:true,policyVersion:'work01-dev-v1',contactConfirmed:true};
  }
+ // Existing WORK164 login/signup CTAs now focus the new DEV auth panel.
+ // Capture before the legacy demo-only click handler; do not intercept any other role.
+ document.addEventListener('click',event=>{
+  const link=event.target.closest('[data-auth="login"],[data-auth="signup"]');
+  if(!link||!link.closest('[data-screen="customer"]'))return;
+  event.preventDefault();event.stopImmediatePropagation();
+  document.getElementById('w165-dev')?.scrollIntoView({behavior:'smooth',block:'start'});
+  authForm.querySelector('input[name="email"]')?.focus({preventScroll:true});
+  write('개발용 회원 인증 화면입니다. 실제 고객정보 대신 합성 데이터만 사용하세요.');
+ },true);
  authForm.addEventListener('submit',async event=>{
   event.preventDefault();if(busy)return;
   const f=authForm.elements,email=f.email.value.trim(),password=f.password.value;
