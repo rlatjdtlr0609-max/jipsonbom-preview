@@ -103,6 +103,14 @@ try{
     assert.equal(input.p_limit,15);
     return body(200,list(input.p_screen,input.p_offset,input.p_limit));
    }
+   if(url.pathname==='/rest/v1/rpc/jsb_w120_admin_task_queue'){
+    assert.deepEqual(req.postDataJSON(),{p_limit:15});
+    return body(200,workQueue);
+   }
+   if(url.pathname==='/rest/v1/rpc/jsb_w123_admin_cash_integrity')
+    return body(200,workFinance);
+   if(url.pathname==='/rest/v1/rpc/jsb_w120_admin_task_command')
+    return body(403,{code:'42501'});
    throw Error('Unexpected external request '+url.pathname);
   });
   await page.goto(URL_BASE+'admin.html',{waitUntil:'domcontentloaded'});
