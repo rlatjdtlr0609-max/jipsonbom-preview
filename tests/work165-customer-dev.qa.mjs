@@ -110,6 +110,7 @@ try{
  await page.locator('#w165-list button[data-w165-open]').waitFor({state:'visible'});
  assert.equal(states.A.length,1);assert.equal(new Set(seen.A).size,1);
  await page.locator('#w165-list button[data-w165-open]').click();
+ await page.locator('#w165-detail').getByText('A 계정의 가상 누수 요청',{exact:false}).waitFor({state:'visible'});
  assert.match(await page.locator('#w165-detail').textContent(),/A 계정의 가상 누수 요청/);
  await page.locator('#w165-signout').click();
  await page.locator('#w165-auth').waitFor({state:'visible'});
@@ -139,6 +140,7 @@ try{
  await page.locator('#w165-request button[type=submit]').click();
  await page.locator('#w165-list button[data-w165-open]').waitFor({state:'visible'});
  await page.locator('#w165-list button').click();
+ await page.locator('#w165-detail').getByText('B 계정만 볼 수 있는',{exact:false}).waitFor({state:'visible'});
  assert.match(await page.locator('#w165-detail').textContent(),/B 계정만 볼 수 있는/);
  assert.doesNotMatch(await page.locator('#w165-detail').textContent(),/A 계정/);
  // Cross ownership blocked even via API; no storage of JWTs or user data.
