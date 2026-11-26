@@ -1,0 +1,41 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const admin=await readFile(new URL('../admin.js',import.meta.url),'utf8');
+const html=await readFile(new URL('../admin.html',import.meta.url),'utf8');
+const match=/const groups=\[([\s\S]*?)\];/.exec(admin);
+const groups=[...match[1].matchAll(/title:'([A-F]\. [^']+)'/g)].map(m=>m[1]);
+const screens=[...match[1].matchAll(/\['([a-z]+)','([^']+)'/g)].map(m=>({id:m[1],name:m[2]}));
+test('MASTER_11 six groups and 24 unique screens retained',()=>{
+ assert.equal(groups.length,6);
+ assert.equal(screens.length,24);
+ assert.equal(new Set(screens.map(x=>x.id)).size,24);
+ assert.equal(screens[0].id,'overview');
+ assert.equal(screens.at(-1).id,'release');
+ assert.match(html,/24개 상세화면/);
+});
+test('all screen navigations require verified server snapshot and correct screen-specific RPC envelope',()=>{
+ assert.match(admin,/if\(!snapshot\|\|isExpired\(\)\)/);
+ assert.match(admin,/jsb_w103_admin_snapshot/);
+ assert.match(admin,/jsb_w108_admin_panel/);
+ assert.match(admin,/jsb_w114_admin_list/);
+ assert.match(admin,/data\.mfa_and_backend_permissions_verified===true/);
+ assert.match(admin,/data\.screen_count===24/);
+ assert.match(admin,/data\.screen_id===screenId/);
+ assert.match(admin,/data\.read_only===true/);
+ assert.match(admin,/data\.pii_included===false/);
+ assert.match(admin,/data\.production_deployment===false/);
+ assert.match(admin,/data\.real_pg_actions_enabled===false/);
+ assert.match(admin,/UNVERIFIED_RESPONSE/);
+});
+test('server-side roles remain mandatory, no client-only privilege escalation',()=>{
+ assert.doesNotMatch(admin,/GET \/auth\/v1\/factors\s*\)/);
+ assert.match(admin,/user\.factors/);
+ assert.match(admin,/factor_type==='totp'/);
+ assert.match(admin,/accessToken:token/);
+ assert.match(admin,/ACCESS_DENIED/);
+ assert.match(admin,/readSnapshot\(\)/);
+ assert.doesNotMatch(admin,/localStorage\.setItem|sessionStorage\.setItem/);
+ assert.match(html,/개발 환경/);
+});
+console.log('WORK174: static API contracts only — real 24-screen user-JWT E2E NOT CERTIFIED');
