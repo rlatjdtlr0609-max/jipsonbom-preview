@@ -151,7 +151,7 @@ try{
  await page.locator('#w165-password').fill('ExamplePassword_165!');
  await page.locator('#w165-signup').click();
  await page.locator('#w165-status').getByText('가입 요청을 접수했습니다',{exact:false}).waitFor({state:'visible'});
- assert.match(await page.locator('#w165-status').textContent(),/이메일 확인/);
+ assert.match(await page.locator('#w165-status').textContent(),/등록 메일에서 확인/);
  assert.equal(await page.locator('#w165-request').isVisible(),false);
  assert.equal(unsanctioned.length,0,JSON.stringify(unsanctioned));
  assert.equal(errors.length,0,JSON.stringify(errors));
