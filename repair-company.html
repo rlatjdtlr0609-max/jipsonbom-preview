@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="./premium-ui.css?v=atelier-1">
 <link rel="stylesheet" href="./role-pages.css?v=work164-1">
 <script src="./role-pages.js?v=work164-1" defer></script>
+<script type="module" src="./work168-org-panel.mjs"></script>
 </head>
 <body data-role-page="repairCompany">
 <div class="topnote">집손봄 · 수리업체·기사팀 · 개발용 독립 고정페이지 · 실제 개인정보 입력 및 결제 금지</div>
@@ -37,6 +38,17 @@
 </div>
 <main id="screen">
 <section data-screen="repairCompany"><div class="wrap section"><div class="layout"><aside class="card dashnav"><h3>⑦ 수리업체 · 기사팀</h3><a href="#providermain" data-scroll="providermain">업체 대시보드</a><a href="#team" data-scroll="team">소속기사</a><a href="#providerdocs" data-scroll="providerdocs">정산 · 서류</a><a href="#team-agenda" data-scroll="team-agenda">작업 배정·일정 (시연)</a></aside><div class="dashboard"><div class="dashhead"><div><span class="tag">⑦ 수리업체·기사팀 전용</span><h1>수리업체·기사팀 운영센터</h1><p class="intro">기존 수리업체의 소속기사·일정·작업·지급증빙·조직권한을 보존합니다. 공사업체 계약 수수료와 별도입니다.</p></div><button type="button" class="btn small soft" data-auth="repairCompany">수리업체 가입·승인 안내</button></div><p class="hint preview-state">시연 전용 · 등록·승인, 소속기사, 배정과 일정. 실제 조직정보 전송은 차단됩니다.</p><div class="panel" id="providermain"><h3>기존 수리업체·소속기사 기능 보존 <span class="tag warn">데모</span></h3><div class="grid2"><div><img class="" src="./assets/technician.webp" alt="파트너 수리기사 이미지"><h3 class="spaced">파트너 소속기사 관리</h3><p class="intro">기사별 자격, 지역, 활동 상태, 매칭 기록과 소속 관계를 관리합니다.</p></div><div><img class="" src="./assets/door.webp" alt="도어 보수 이미지"><h3 class="spaced">작업·방문 일정 관리</h3><p class="intro">기사 일정과 현장 작업을 확인하고 이력 및 정산 자료와 연결합니다.</p></div></div></div><div class="panel space24" id="team"><h3>소속 기사 (시연용)</h3><div class="item"><img class="itemphoto" src="./assets/technician.webp" alt="기사"><div class="iteminfo"><b>기사 샘플 A</b><p>수도·배관 / 문·창호 · 승인 대기</p></div><span class="tag">시연</span></div><div class="item"><img class="itemphoto" src="./assets/plumber.webp" alt="현장 수리기사"><div class="iteminfo"><b>기사 샘플 B</b><p>전기·조명 / 설치 · 서류 검토</p></div><span class="tag warn">시연</span></div></div><section id="team-agenda" class="panel space24"><h3>작업 배정·일정 (시연)</h3><ul class="preview-list"><li><b>기사 샘플 A</b> · 오후 2:00 · 예시 구역 A · 배관 방문 배정</li><li><b>기사 샘플 B</b> · 오후 4:00 · 예시 구역 B · 전기 점검 배정</li></ul></section><div class="panel space24" id="providerdocs"><h3>기존 기사팀 기능 메뉴</h3><div class="pillrow"><button class="chip" data-provider="업체정보">업체정보</button><button class="chip" data-provider="소속기사">소속기사</button><button class="chip" data-provider="기사일정">기사일정</button><button class="chip" data-provider="지역">지역</button><button class="chip" data-provider="작업">작업</button><button class="chip" data-provider="정산">정산</button><button class="chip" data-provider="지급">지급</button><button class="chip" data-provider="서류">서류</button><button class="chip" data-provider="문의">문의</button><button class="chip" data-provider="공지">공지</button></div><div class="hint spaced">업체 등록 심사, 소속기사 관리, 작업 배정은 개발 서버의 기능입니다. 공개 미리보기에서는 예시만 제공합니다.</div><details class="center-details"><summary>승인된 수리업체의 업무 안내</summary><ul><li>업체정보 · 등록서류 · 소속기사 · 기사일정 · 활동지역</li><li>작업배정 · 진행현황 · 정산 · 지급증빙 · 문의·공지</li></ul></details></div></div><div class="notice space24"><b>⑦ 수리업체 운영 분리</b><p>기사 개인 캐시는 본인에게 귀속되고 공식단가 10%만 적용합니다. ④ 공사업체 계약체결형 수수료는 이 화면에 적용되지 않습니다. 실제 조직 가입·소속·지급·정산은 서버 구현 전 시연입니다.</p></div></div></div></section>
+<section class="wrap section" id="w168-panel" aria-labelledby="w168-title">
+ <div class="panel"><span class="tag warn">WORK168 · ACCESS BOUNDARY DEMO</span>
+ <h3 id="w168-title">수리업체 소유권·소속기사·작업 배정 사전검증</h3>
+ <p class="hint">가상 업체 A와 가상 소속기사만 사용합니다. 실제 업체정보·근무자·일정을 조회하거나 서버로 전송하지 않습니다. 최종 업무권한은 DB/RLS/API 서버에서 검증해야 합니다.</p>
+ <div class="fields"><div class="field"><label for="w168-actor">가상 요청자</label>
+ <select id="w168-actor"><option value="DEMO-OWNER-A">가상 업체 A 소유자</option><option value="DEMO-OWNER-B">다른 업체 B 소유자 (접근 거부)</option></select></div>
+ <div class="field"><label for="w168-conflict">가상 일정 충돌</label><label class="row spaced"><input id="w168-conflict" type="checkbox" checked> 작업 시간이 겹치는 배정 있음</label></div></div>
+ <button type="button" class="btn small soft" id="w168-check">업체별 권한·배정 사전검증</button>
+ <output id="w168-result" aria-live="polite">검증 대기</output>
+ <p class="hint">소속 승인 대기·권한 해지·타사기사·예약 충돌은 작업 배정을 허용하지 않으며, 이 데모는 실제 배정·정산·알림을 발생시키지 않습니다.</p>
+ </div></section>
 </main>
 <footer class="footer">
  <div class="wrap"><div><b>집손봄 · 수리업체·기사팀</b><p>개발 미리보기 · 기존 원본 화면 보존 · 운영용 기능과 연결 전</p></div><div>MASTER_11 · WORK164 독립 고정링크</div><a href="./index.html">메인 홈페이지</a></div>
