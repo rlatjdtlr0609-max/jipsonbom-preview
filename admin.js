@@ -661,13 +661,12 @@
    // No access/refresh token or password is stored in HTML, URL, localStorage,
    // sessionStorage, cookies, console, or user-facing log.
    select('login-password').value='';
-   await authUser(token);
-   const factors=await request('/auth/v1/factors',{accessToken:token});
-   const verified=(Array.isArray(factors?.totp)?factors.totp:
-    Array.isArray(factors?.all)?factors.all:
-    Array.isArray(factors?.factors)?factors.factors:[])
-    .find(x=>x?.factor_type==='totp'&&x.status==='verified')||
-    (Array.isArray(factors?.totp)?factors.totp:[]).find(x=>x?.status==='verified');
+   // Supabase Auth GET /factors is not a list endpoint (405).
+   // GET /auth/v1/user returns the signed-in user's enrolled factors.
+   // Do not trust unverified factors or any client-side role claims for admin access.
+   const user=await authUser(token);
+   const factors=Array.isArray(user.factors)?user.factors:[];
+   const verified=factors.find(x=>x?.factor_type==='totp'&&x.status==='verified'&&typeof x.id==='string');
    if(!verified?.id){
     login.hidden=true;mfa.hidden=true;enroll.hidden=false;
     showStatus('인증 앱 최초 등록을 진행할 수 있습니다. 등록 후에도 관리자 업무권한은 별도 승인 전까지 차단됩니다.');

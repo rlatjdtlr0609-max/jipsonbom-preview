@@ -16,8 +16,7 @@ try {
   const response=(status,obj)=>route.fulfill({status,contentType:'application/json',
    headers:{'access-control-allow-origin':'*'},body:JSON.stringify(obj)});
   if(p==='/auth/v1/token')return response(200,{access_token:'synthetic-aal1',expires_in:3600});
-  if(p==='/auth/v1/user')return response(200,{id:'01234567-89ab-4cde-89ab-0123456789ab',role:'authenticated',is_anonymous:false});
-  if(p==='/auth/v1/factors'&&req.method()==='GET')return response(200,{totp:[]});
+  if(p==='/auth/v1/user')return response(200,{id:'01234567-89ab-4cde-89ab-0123456789ab',role:'authenticated',is_anonymous:false,factors:[]});
   if(p==='/auth/v1/factors'&&req.method()==='POST'){
    assert.deepEqual(req.postDataJSON(),{factor_type:'totp',friendly_name:'집손봄 관리자 인증'});
    return response(200,{id:'11111111-1111-4111-8111-111111111111',
@@ -51,6 +50,7 @@ try {
  assert.equal(await page.locator('#dashboard').isVisible(),false);
  assert.match(await page.locator('#auth-status').textContent(),/관리자 업무권한이 아직 승인되지 않아/);
  assert.equal(errors.length,0,JSON.stringify(errors));
+ assert.ok(!paths.includes('GET /auth/v1/factors'));
  assert.ok(paths.some(x=>x==='POST /auth/v1/factors'));
  assert.ok(paths.some(x=>x.endsWith('/challenge')));
  assert.ok(paths.some(x=>x.endsWith('/verify')));

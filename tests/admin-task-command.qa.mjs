@@ -13,7 +13,7 @@ try{
  page.on('request',r=>{
   if(!r.url().startsWith(origin))return;
   const p=new URL(r.url()).pathname;
-  assert.ok(['/auth/v1/token','/auth/v1/user','/auth/v1/factors',
+  assert.ok(['/auth/v1/token','/auth/v1/user',
    '/auth/v1/factors/11111111-1111-4111-8111-111111111111/challenge',
    '/auth/v1/factors/11111111-1111-4111-8111-111111111111/verify',
    '/auth/v1/logout','/rest/v1/rpc/jsb_w103_admin_snapshot',
@@ -29,8 +29,7 @@ try{
    'access-control-allow-methods':'POST,GET,OPTIONS'}});
   let status=200,object={};
   if(path==='/auth/v1/token')object={access_token:'aal1-synthetic',expires_in:3600};
-  else if(path==='/auth/v1/user')object={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false};
-  else if(path==='/auth/v1/factors')object={totp:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
+  else if(path==='/auth/v1/user')object={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false,factors:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
   else if(path.endsWith('/challenge'))object={id:'22222222-2222-4222-8222-222222222222'};
   else if(path.endsWith('/verify'))object={access_token:'aal2-synthetic',expires_in:3600};
   else if(path==='/rest/v1/rpc/jsb_w103_admin_snapshot')object={
