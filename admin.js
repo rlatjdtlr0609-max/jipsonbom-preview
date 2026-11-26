@@ -769,5 +769,6 @@
  });
  // A hard reload intentionally forces a new login: no persistent session.
  emptySession();
+ window.addEventListener('hashchange',()=>{void initRecovery();});
  void initRecovery();
 })();
