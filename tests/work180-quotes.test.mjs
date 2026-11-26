@@ -20,6 +20,7 @@ test('immutable numbered V1/V2 and only current sent unexpired quote can be appr
  assert.equal(s.versions[0].version,1);
  assert.throws(()=>execute(s,'APPROVE',customer,{expectedQuoteVersion:1}),/QUOTE_NOT_APPROVABLE/);
  s=execute(s,'SEND',worker,{expectedQuoteVersion:1});
+ assert.throws(()=>execute(s,'DRAFT',worker,{components:one}),/QUOTE_DRAFT_NOT_ALLOWED/);
  assert.throws(()=>execute(s,'APPROVE',worker,{expectedQuoteVersion:1}),/QUOTE_NOT_APPROVABLE/);
  s=execute(s,'REQUEST_REVISION',customer,{expectedQuoteVersion:1});
  s=execute(s,'DRAFT',worker,{components:{...one,items:[{id:'SINK',labor:50000,defaultLabor:35000,quantity:1}]}});
