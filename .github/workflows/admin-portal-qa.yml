@@ -1,4 +1,4 @@
-name: WORK103-118 fixed-link admin 24-screen worklist, auth, pagination and mobile QA
+name: WORK103-124 fixed-link admin 24-screen task commands, 10pct finance and mobile QA
 on:
   push:
     branches:
@@ -6,6 +6,7 @@ on:
       - feature/work103-106-admin-auth-portal-20261126
       - feature/work107-112-admin-fixed-link-20261126
       - feature/work113-118-admin-list-ui-20261126
+      - feature/work119-124-admin-action-console-20261126
     paths:
       - admin.html
       - admin.css
