@@ -1,0 +1,15 @@
+/* WORK212 — customer aftercare process only */
+.work212-aftercare{border:1px solid #e8e0f4;padding:clamp(16px,2.5vw,25px);background:#fff}
+.work212-aftercare h3{margin:0;color:#2d1e4a;font-size:clamp(18px,2vw,23px)}
+.work212-description,.work212-safety{color:#625f70;font-size:13px;line-height:1.7;margin-top:10px}
+.work212-stages{list-style:none;padding:0;margin:18px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px}
+.work212-stages li{margin:0;padding:16px;background:#f9f6fd;border:1px solid #ebe5f5;border-radius:13px;min-width:0}
+.work212-index{display:inline-flex;font-weight:800;color:#6a40b6;margin-right:8px}
+.work212-stages strong{font-size:14px;color:#2c2450}
+.work212-stages p{font-size:12px;color:#615a73;line-height:1.6;margin:7px 0 0}
+.work212-checks{border:1px solid #e5ddec;border-radius:12px;padding:15px;display:grid;gap:12px;min-width:0}
+.work212-checks legend{font-size:14px;font-weight:700;padding:0 6px;color:#403058}
+.work212-checks label{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.5}
+.work212-checks input{width:18px;height:18px;flex-shrink:0;accent-color:#6942b2}
+.work212-status{display:block;font-weight:750;font-size:13px;color:#6942b2;margin:9px 0}
+@media(max-width:600px){.work212-stages{grid-template-columns:1fr}.work212-aftercare{padding:16px}}
