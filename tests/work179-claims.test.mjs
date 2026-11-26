@@ -9,9 +9,9 @@ const act=(s,action,workerId,key,extra=eligibility)=>claimAction(s,action,{
 test('public board never exposes customer name, phone, exact address, access codes',()=>{
  const v=publishOpportunity({id,category:'배관',estimatedLabor:80000,district:'강남구',title:'수리',
   publishable:true,state:'OPEN',customerName:'SECRET',phone:'01012345678',fullAddress:'동호수',
-  accessSecret:'PASSWORD'});
+  accessSecret:'PASSWORD',title:'CUSTOMER_PHONE_01012345678'});
  assert.equal(v.district,'강남구');assert.equal('customerName' in v,false);
- assert.doesNotMatch(JSON.stringify(v),/SECRET|12345678|PASSWORD|동호수/);
+ assert.doesNotMatch(JSON.stringify(v),/SECRET|12345678|PASSWORD|동호수|CUSTOMER_PHONE/);
  assert.throws(()=>publishOpportunity({id,state:'HIDDEN',publishable:true,district:'강남구'}),/NOT_PUBLISHABLE/);
 });
 test('only one worker can claim; replay idempotent; competing workers/versions denied',()=>{
