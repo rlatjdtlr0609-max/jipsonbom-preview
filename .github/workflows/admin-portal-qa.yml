@@ -9,6 +9,7 @@ on:
       - feature/work119-124-admin-action-console-20261126
       - feature/work160-fixed-admin-mfa-20261126
       - feature/work161-admin-password-recovery-20261126
+      - fix/work162-admin-mfa-405-login-20261126
     paths:
       - admin.html
       - admin.css
