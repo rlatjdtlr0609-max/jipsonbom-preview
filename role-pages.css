@@ -19,3 +19,10 @@ body[data-role-page] .footer p{font-size:11px;margin-top:6px}
  .role-heading h2{font-size:25px}
  .navouter .navtools a{padding:8px 12px}
 }
+/* The original homepage hides .tabstrip on small screens. Keep navigation visible
+   only for standalone role URLs; do not alter the existing homepage. */
+@media(max-width:720px){
+ body[data-role-page] .tabstrip{display:block!important;position:sticky;top:58px;z-index:40;background:#fff}
+ body[data-role-page] .role-tabs{display:flex!important;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+ body[data-role-page] .role-tabs a{flex:0 0 auto;white-space:nowrap}
+}
