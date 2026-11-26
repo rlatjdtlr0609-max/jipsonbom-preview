@@ -1,0 +1,18 @@
+/* WORK214 — isolated public cash-policy illustration only */
+.work214-cash{background:#fff;border:1px solid #e8e1f1;border-radius:15px;padding:clamp(16px,2vw,24px)}
+.work214-cash h3{font-size:clamp(18px,2vw,23px);color:#2d234e;margin:0}
+.work214-intro,.work214-note{font-size:13px;color:#625c72;line-height:1.7;margin:11px 0}
+.work214-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0}
+.work214-values>div{background:#faf7ff;border:1px solid #ebe4f6;border-radius:12px;padding:14px;min-width:0}
+.work214-values span{display:block;font-size:12px;color:#635a76;line-height:1.5}
+.work214-values strong{display:block;font-size:clamp(15px,1.7vw,20px);color:#34215c;margin-top:6px;overflow-wrap:anywhere}
+.work214-actions{display:flex;gap:8px;flex-wrap:wrap}
+.work214-actions button{font:inherit;font-size:13px;min-height:44px;padding:9px 13px;border-radius:10px;border:1px solid #7552bf;background:#6c45bb;color:#fff;cursor:pointer}
+.work214-actions button:disabled{background:#e8e5ed;color:#807b87;border-color:#e8e5ed;cursor:not-allowed}
+.work214-actions button:focus-visible{outline:3px solid #b89be9;outline-offset:2px}
+.work214-state{display:block;font-size:14px;font-weight:800;color:#6745ae;margin:15px 0}
+.work214-history{padding-inline-start:21px;margin:10px 0;color:#5c526e;font-size:13px}
+.work214-history li{line-height:1.7}
+.work214-cash h4{font-size:14px;color:#342653}
+@media(max-width:650px){.work214-values{grid-template-columns:1fr}.work214-actions{display:grid;grid-template-columns:1fr 1fr}.work214-actions button{font-size:12px;padding:8px}}
+@media(max-width:360px){.work214-actions{grid-template-columns:1fr}}
