@@ -9,7 +9,7 @@ const pass={approved:true,active:true,regionAllowed:true,complianceValid:true};
 const job={id:'JOB_001',orgId:id,status:'READY',start:100,end:200};
 const init=()=>createOrg({id,ownerId});
 const doIt=(s,action,actor=owner,extras={})=>orgCommand(s,action,{
- actor,workerId,expectedVersion:s.version,key:'KEY_'+action+':'+s.version,...extras});
+ actor,workerId,expectedVersion:s.version,key:'KEY_'+action+'_'+s.version,...extras});
 test('owner invites, only worker accepts, active worker assigned and duplicate blocked',()=>{
  let s=init();
  assert.throws(()=>doIt(s,'INVITE',outsider),/ORG_OWNER_PERMISSION_DENIED/);
@@ -24,7 +24,7 @@ test('owner invites, only worker accepts, active worker assigned and duplicate b
  assert.equal(old.assignments.JOB_001,undefined,'no in-place mutation of input');
  assert.throws(()=>doIt(s,'ASSIGN',owner,{job,workerEligible:pass}),/ALREADY_ASSIGNED/);
  const repeat=orgCommand(s,'ASSIGN',{actor:owner,workerId,expectedVersion:old.version,
-   key:'KEY_ASSIGN:'+old.version,job,workerEligible:pass});
+   key:'KEY_ASSIGN_'+old.version,job,workerEligible:pass});
  assert.equal(repeat,s,'same idempotency key never duplicates');
  assert.throws(()=>doIt(s,'REVOKE'),/ACTIVE_ASSIGNMENTS_REQUIRE_REVIEW/);
  s=doIt(s,'UNASSIGN',owner,{job});
@@ -50,6 +50,6 @@ test('optimistic version mismatch and idempotency key reuse fail closed',()=>{
  let s=init();
  s=doIt(s,'INVITE');
  assert.throws(()=>orgCommand(s,'ACCEPT',{actor:worker,workerId,key:'NEWKEY',expectedVersion:0}),/STALE_ORG_VERSION/);
- assert.throws(()=>orgCommand(s,'REVOKE',{actor:owner,workerId,key:'KEY_INVITE:0',
+ assert.throws(()=>orgCommand(s,'REVOKE',{actor:owner,workerId,key:'KEY_INVITE_0',
  expectedVersion:s.version}),/IDEMPOTENCY_KEY_REUSE_CONFLICT/);
 });
