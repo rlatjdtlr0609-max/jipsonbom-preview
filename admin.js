@@ -8,6 +8,7 @@
 'use strict';
 (()=>{
  const API='https://ohwkywomdqgcnptsnhwk.supabase.co';
+ const RECOVERY_REDIRECT='https://rlatjdtlr0609-max.github.io/jipsonbom-preview/admin.html';
  const KEY='sb_publishable_tNSrR-mJYeChyS1J_5Ykkg_oH15pvXd';
  const groups=[
   {title:'A. 통합 운영관제',entries:[
@@ -55,6 +56,7 @@
  const select=id=>document.getElementById(id);
  const authLayout=select('auth-layout'),dashboard=select('dashboard');
  const login=select('login-form'),mfa=select('mfa-form'),enroll=select('enroll-form');
+ const resetRequest=select('reset-request-form'),resetConfirm=select('reset-confirm-form');
  const status=select('auth-status'),logout=select('logout');
  const mfaInput=select('totp-code'),topSession=select('session-label');
  const message=select('dashboard-message'),nav=select('screen-nav');
@@ -66,7 +68,8 @@
  const recordsPrev=select('records-prev'),recordsNext=select('records-next');
  const recordsPage=select('records-page');
  const sections=groups.flatMap(g=>g.entries.map(([id,label,description,...keys])=>({id,label,description,keys,group:g.title})));
- let token=null;let expiresAt=0;let factorId=null;let enrollFactorId=null;let busy=false;let selected='overview';let snapshot=null;
+ let token=null;let expiresAt=0;let factorId=null;let enrollFactorId=null;let busy=false;
+ let recoveryToken=null;let recoveryExpiresAt=0;let selected='overview';let snapshot=null;
  let panelRequestSequence=0,recordRequestSequence=0,recordOffset=0,recordBusy=false,recordHasMore=false;
  let opsSequence=0,financeSequence=0,providerSequence=0,commandBusy=false;
  const RECORD_LIMIT=15;
@@ -87,6 +90,9 @@
   records.replaceChildren();recordsPrev.disabled=true;recordsNext.disabled=true;
   recordsPage.textContent='0건';recordsState.textContent='관리자 인증 후 업무목록을 조회합니다.';
   token=null;expiresAt=0;factorId=null;enrollFactorId=null;snapshot=null;
+  recoveryToken=null;recoveryExpiresAt=0;
+  resetRequest.reset();resetRequest.hidden=true;resetConfirm.reset();resetConfirm.hidden=true;
+  select('reset-copy').hidden=true;select('reset-generated-note').textContent='';
   select('enroll-qr').removeAttribute('src');select('enroll-qr-wrap').hidden=true;
   select('enroll-start').hidden=false;enroll.reset();enroll.hidden=true;
   login.reset();mfa.reset();mfa.hidden=true;login.hidden=false;
@@ -97,6 +103,8 @@
  const guardBusy=loading=>{
   busy=loading;select('login-submit').disabled=loading;
   select('mfa-submit').disabled=loading;select('refresh').disabled=loading;
+  select('reset-request-submit').disabled=loading;select('reset-confirm-submit').disabled=loading;
+  select('reset-generate').disabled=loading;
  };
  async function request(path,{method='GET',body,accessToken}={}){
   const headers={'apikey':KEY};
@@ -540,6 +548,105 @@
   if(code==='UNVERIFIED_RESPONSE')return '보호된 관리자 응답을 확인하지 못했습니다. 업무 화면을 열지 않습니다.';
   return '인증 또는 서버 연결을 완료하지 못했습니다. 연결 상태를 확인해주세요.';
  };
+ // WORK161: password recovery never creates administrator permissions.
+ // Recovery credentials stay in volatile memory; all URL fragments are scrubbed.
+ const recoveryExpired=()=>!recoveryToken||Date.now()>=recoveryExpiresAt;
+ select('forgot-password').addEventListener('click',()=>{
+  if(busy)return;
+  login.hidden=true;mfa.hidden=true;enroll.hidden=true;
+  resetRequest.hidden=false;resetConfirm.hidden=true;
+  select('reset-email').value=select('login-email').value.trim();
+  showStatus('등록된 이메일로 본인확인 링크를 요청할 수 있습니다.');
+ });
+ select('reset-request-cancel').addEventListener('click',()=>{
+  if(!busy){emptySession();showStatus('관리자 로그인으로 돌아왔습니다.');}
+ });
+ resetRequest.addEventListener('submit',async event=>{
+  event.preventDefault();if(busy)return;
+  const email=select('reset-email').value.trim();
+  if(!email||email.length>254)return;
+  guardBusy(true);showStatus('비밀번호 재설정 안내 메일을 요청하고 있습니다.');
+  try{
+   const p='/auth/v1/recover?redirect_to='+encodeURIComponent(RECOVERY_REDIRECT);
+   await request(p,{method:'POST',body:{email}});
+   showStatus('등록된 계정이면 재설정 안내 메일이 발송됩니다. 이메일의 본인확인 링크를 열어 새 비밀번호를 설정하세요.');
+  }catch(e){
+   showStatus(e?.message==='RATE_LIMITED'
+    ?'요청 횟수 제한입니다. 잠시 후 다시 시도해주세요.'
+    :'이메일 요청을 완료하지 못했습니다. Supabase 인증 메일·리디렉션 설정을 확인하세요.',true);
+  }finally{guardBusy(false);}
+ });
+ // Browser-generated password: unbiased byte sampling, no storage, no chat exposure.
+ select('reset-generate').addEventListener('click',()=>{
+  if(busy||recoveryExpired())return;
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%*-_';
+  const max=256-(256%chars.length);let candidate='';
+  while(candidate.length<24){
+   const bytes=crypto.getRandomValues(new Uint8Array(48));
+   for(const b of bytes){if(b<max&&candidate.length<24)candidate+=chars[b%chars.length];}
+  }
+  select('reset-password').value=candidate;
+  select('reset-password-repeat').value=candidate;
+  select('reset-copy').hidden=false;
+  select('reset-generated-note').textContent='24자리 임시 비밀번호가 생성됐습니다. 저장 전에 복사하여 안전한 비밀번호 관리 앱에 보관하세요.';
+ });
+ select('reset-copy').addEventListener('click',async()=>{
+  if(busy||recoveryExpired())return;
+  try{
+   await navigator.clipboard.writeText(select('reset-password').value);
+   select('reset-generated-note').textContent='임시 비밀번호가 복사됐습니다. 안전한 비밀번호 관리자에 보관하세요.';
+  }catch{select('reset-generated-note').textContent='복사할 수 없습니다. 새 비밀번호 입력칸의 표시/복사 기능을 이용하세요.';}
+ });
+ select('reset-confirm-cancel').addEventListener('click',()=>{
+  if(!busy){emptySession();showStatus('비밀번호 재설정을 취소했습니다.');}
+ });
+ resetConfirm.addEventListener('submit',async event=>{
+  event.preventDefault();if(busy||recoveryExpired())return;
+  const password=select('reset-password').value,verify=select('reset-password-repeat').value;
+  if(password.length<12||password.length>128||password!==verify){
+   showStatus('새 비밀번호는 12~128자이며 두 입력값이 같아야 합니다.',true);return;
+  }
+  guardBusy(true);showStatus('인증된 계정의 비밀번호를 갱신하는 중입니다.');
+  const bearer=recoveryToken;
+  try{
+   await request('/auth/v1/user',{method:'PUT',accessToken:bearer,body:{password}});
+   emptySession();
+   showStatus('비밀번호 변경이 완료됐습니다. 새 비밀번호로 다시 로그인하세요. 관리자 업무권한은 별도 승인이 필요합니다.');
+   // Recovery session is invalidated after password update; failure does not reopen access.
+   try{await request('/auth/v1/logout',{method:'POST',accessToken:bearer});}catch{}
+  }catch{
+   select('reset-password').value='';select('reset-password-repeat').value='';
+   showStatus('비밀번호 변경이 완료되지 않았습니다. 새 본인확인 링크를 요청해 다시 진행하세요.',true);
+  }finally{guardBusy(false);}
+ });
+ async function initRecovery(){
+  const raw=window.location.hash;
+  const params=new URLSearchParams(raw.startsWith('#')?raw.slice(1):'');
+  const hasSecrets=['access_token','refresh_token','type','error','error_description'].some(k=>params.has(k));
+  if(!hasSecrets)return;
+  // Strip bearer and refresh token from the browser URL/history immediately.
+  history.replaceState(null,'',window.location.pathname+window.location.search);
+  const bearer=params.get('access_token'),kind=params.get('type');
+  const expires=Number(params.get('expires_in'));
+  if(kind!=='recovery'||!bearer||!/^[-A-Za-z0-9_]+\.[-A-Za-z0-9_]+\.[-A-Za-z0-9_]+$/.test(bearer)||
+     !Number.isFinite(expires)||expires<=0){
+   showStatus('본인확인 링크가 유효하지 않습니다. 비밀번호 재설정 이메일을 다시 요청하세요.',true);
+   return;
+  }
+  recoveryToken=bearer;recoveryExpiresAt=Date.now()+expires*1000-15000;
+  login.hidden=true;resetRequest.hidden=true;resetConfirm.hidden=true;
+  showStatus('이메일 본인확인 결과를 검증하고 있습니다.');
+  try{
+   await authUser(recoveryToken);
+   if(recoveryExpired())throw Error('AUTH_EXPIRED');
+   resetConfirm.hidden=false;
+   showStatus('이메일 인증이 확인됐습니다. 새 비밀번호를 안전하게 설정하세요.');
+  }catch{
+   recoveryToken=null;recoveryExpiresAt=0;
+   emptySession();
+   showStatus('본인확인 링크가 만료되었거나 유효하지 않습니다. 새 링크를 요청하세요.',true);
+  }
+ }
  login.addEventListener('submit',async event=>{
   event.preventDefault();if(busy)return;
   const email=select('login-email').value.trim();
@@ -662,4 +769,6 @@
  });
  // A hard reload intentionally forces a new login: no persistent session.
  emptySession();
+ window.addEventListener('hashchange',()=>{void initRecovery();});
+ void initRecovery();
 })();
