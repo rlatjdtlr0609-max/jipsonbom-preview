@@ -8,7 +8,7 @@ const specs=[
  {path:'construction.html',role:'provider',title:'공사업체',check:'#constructionContract'},
  {path:'repair-company.html',role:'repairCompany',title:'수리업체',check:'#providermain'}
 ];
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({headless:true,...(process.env.JSB_QA_BROWSER_CHANNEL?{channel:process.env.JSB_QA_BROWSER_CHANNEL}:{})});
 try{
  for(const width of [1440,390]){
   const page=await browser.newPage({viewport:{width,height:900}});
