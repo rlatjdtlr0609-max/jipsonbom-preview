@@ -1,0 +1,13 @@
+/* WORK213: static-only notification condition explorer */
+.work213-notices{padding:clamp(16px,2.5vw,24px);border:1px solid #e7e1f0;background:#fff;border-radius:15px}
+.work213-notices h3{font-size:clamp(18px,1.9vw,23px);color:#2c2350;margin:0}
+.work213-description{color:#665f75;font-size:13px;line-height:1.65;margin:9px 0 17px}
+.work213-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.work213-tabs button{font:inherit;font-weight:700;min-height:42px;padding:9px 13px;border-radius:10px;border:1px solid #ded3ef;background:#fff;color:#52446c;cursor:pointer}
+.work213-tabs button[aria-pressed="true"]{background:#6c45bc;color:#fff;border-color:#6c45bc}
+.work213-tabs button:focus-visible{outline:3px solid #b392ed;outline-offset:2px}
+.work213-content{background:#faf8fd;margin-top:15px;padding:16px;border-radius:12px;min-height:148px}
+.work213-content h4{font-size:15px;margin:0 0 9px;color:#30214f}
+.work213-content p{font-size:13px;color:#564f66;line-height:1.7;margin:6px 0;overflow-wrap:anywhere}
+.work213-status{display:block;color:#6d4ba0;font-size:12px;font-weight:750;margin-top:12px}
+@media(max-width:600px){.work213-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.work213-tabs button{font-size:12px;padding:8px}.work213-content{min-height:0}}
