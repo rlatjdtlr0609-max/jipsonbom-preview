@@ -1,0 +1,21 @@
+name: WORK196 independent DEV integration NO DEPLOY
+on:
+  push:
+    branches:
+      - feature/work196-customer-real-e2e-20261126
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-nonproduction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: WORK196 test without production or Supabase writes
+        run: |
+          node --check work196-readonly-boundary.mjs
+          node --test tests/work186-e2e-contract.test.mjs tests/work196-readonly-boundary.test.mjs
