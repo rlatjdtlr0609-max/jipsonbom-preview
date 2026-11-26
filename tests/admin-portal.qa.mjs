@@ -44,6 +44,22 @@ const list=(screen,offset=0,limit=15)=>{
   }))
  };
 };
+const workQueue={
+ environment:'DEVELOPMENT',read_only:true,source_mutated:false,
+ approval_or_payment_enabled:false,production_deployment:false,pii_included:false,
+ schema_version:'WORK120_QUEUE_V1',task_command_enabled:false,items:[]
+};
+const workFinance={
+ environment:'DEVELOPMENT',adapter:'DEV_VIRTUAL',read_only:true,
+ source_of_fee:'OFFICIAL_SERVICE_PRICE',fee_percent:10,
+ actual_pg_reconciled:false,actual_payment_enabled:false,
+ full_cash_e2e_certified:false,booking_or_cash_changed:false,
+ production_deployment:false,schema_version:'WORK123_CASH_AUDIT_V1',
+ booking_count:0,hold_count:0,held_count:0,debited_count:0,
+ fee_rule_mismatches:0,confirmed_booking_missing_hold:0,
+ hold_snapshot_mismatches:0,orphan_holds:0,duplicate_holds_for_booking:0,
+ refund_review_requests:0
+};
 const browser=await chromium.launch({headless:true});
 let successful=0;
 try{
