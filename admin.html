@@ -8,8 +8,8 @@
  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://ohwkywomdqgcnptsnhwk.supabase.co; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
  <meta name="referrer" content="no-referrer">
  <title>집손봄 관리자 통합 관제 | 개발 환경</title>
- <link rel="stylesheet" href="./admin.css?v=work160-fixed-1">
- <script defer src="./admin.js?v=work160-fixed-1"></script>
+ <link rel="stylesheet" href="./admin.css?v=work161-fixed-1">
+ <script defer src="./admin.js?v=work161-fixed-1"></script>
 </head>
 <body>
  <header class="topbar">
@@ -48,6 +48,25 @@
      <label for="login-password">비밀번호</label>
      <input id="login-password" type="password" autocomplete="current-password" required minlength="1" placeholder="비밀번호">
      <button id="login-submit" class="primary-btn" type="submit">관리자 로그인</button>
+     <button id="forgot-password" class="plain-btn" type="button">비밀번호를 잊으셨나요?</button>
+    </form>
+    <form id="reset-request-form" hidden autocomplete="off">
+     <h3>관리자 비밀번호 재설정</h3>
+     <p>가입한 이메일로 본인확인 링크를 받습니다. 임시 비밀번호를 채팅이나 이메일 본문에 보내지 않습니다.</p>
+     <label for="reset-email">계정 이메일</label>
+     <input id="reset-email" type="email" autocomplete="username" inputmode="email" maxlength="254" required placeholder="등록된 이메일">
+     <button id="reset-request-submit" class="primary-btn" type="submit">비밀번호 재설정 이메일 받기</button>
+     <button id="reset-request-cancel" class="plain-btn" type="button">로그인으로 돌아가기</button>
+    </form>
+    <form id="reset-confirm-form" hidden autocomplete="off">
+     <h3>새 비밀번호 설정</h3>
+     <p>본인확인 링크에서만 표시됩니다. 12자 이상으로 설정하세요. 비밀번호를 서버 이외에 보관하지 않습니다.</p>
+     <label for="reset-password">새 비밀번호</label>
+     <input id="reset-password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+     <label for="reset-password-repeat">새 비밀번호 확인</label>
+     <input id="reset-password-repeat" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+     <button id="reset-confirm-submit" class="primary-btn" type="submit">새 비밀번호 저장</button>
+     <button id="reset-confirm-cancel" class="plain-btn" type="button">재설정 취소</button>
     </form>
     <form id="mfa-form" hidden autocomplete="off">
      <h3>2단계 인증</h3>
