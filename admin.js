@@ -61,13 +61,14 @@
  const metrics=select('metrics');
  const opsSection=select('operation-console'),opsItems=select('ops-items'),opsStatus=select('ops-status');
  const finSection=select('finance-console'),finItems=select('finance-items'),finStatus=select('finance-status');
+ const provSection=select('provider-console'),provItems=select('provider-items'),provStatus=select('provider-status');
  const records=select('records-list'),recordsState=select('records-state');
  const recordsPrev=select('records-prev'),recordsNext=select('records-next');
  const recordsPage=select('records-page');
  const sections=groups.flatMap(g=>g.entries.map(([id,label,description,...keys])=>({id,label,description,keys,group:g.title})));
  let token=null;let expiresAt=0;let factorId=null;let busy=false;let selected='overview';let snapshot=null;
  let panelRequestSequence=0,recordRequestSequence=0,recordOffset=0,recordBusy=false,recordHasMore=false;
- let opsSequence=0,financeSequence=0,commandBusy=false;
+ let opsSequence=0,financeSequence=0,providerSequence=0,commandBusy=false;
  const RECORD_LIMIT=15;
  const create=(tag,cls,text)=>{
   const e=document.createElement(tag);
@@ -79,8 +80,9 @@
   status.textContent=msg;status.dataset.error=error?'true':'false';
  };
  const emptySession=()=>{
-  panelRequestSequence++;opsSequence++;financeSequence++;commandBusy=false;
-  opsSection.hidden=true;finSection.hidden=true;opsItems.replaceChildren();finItems.replaceChildren();
+  panelRequestSequence++;opsSequence++;financeSequence++;providerSequence++;commandBusy=false;
+  opsSection.hidden=true;finSection.hidden=true;provSection.hidden=true;
+  opsItems.replaceChildren();finItems.replaceChildren();provItems.replaceChildren();
   recordRequestSequence++;recordBusy=false;recordHasMore=false;recordOffset=0;
   records.replaceChildren();recordsPrev.disabled=true;recordsNext.disabled=true;
   recordsPage.textContent='0건';recordsState.textContent='관리자 인증 후 업무목록을 조회합니다.';
@@ -432,12 +434,61 @@
     :'재무 무결성 조회를 완료하지 못했습니다. 실제 PG 대사로 간주하지 않습니다.';
   }
  }
+
+ const providerLabels=[
+  ['org_count','수리업체 등록'],
+  ['membership_count','소속기사 관계'],
+  ['invited_memberships','기사 초대대기'],
+  ['accepted_memberships','기사 초대수락'],
+  ['ended_memberships','종료된 소속'],
+  ['booking_membership_links','예약 연결 기록'],
+  ['confirmed_bookings_with_nonaccepted_member','확정예약 연결 검토 필요'],
+  ['document_count','업체 제출서류'],
+  ['verified_document_count','검증된 제출서류'],
+  ['region_link_count','업체 서비스지역 연결']
+ ];
+ const safeProvider=data=>data&&data.schema_version==='WORK122_ORG_BOOKING_READ_V1'&&
+  data.environment==='DEVELOPMENT'&&data.read_only===true&&data.pii_included===false&&
+  data.production_deployment===false&&data.assignment_action_enabled===false&&
+  data.booking_change_enabled===false&&data.company_or_worker_record_modified===false&&
+  data.full_company_e2e_certified===false&&
+  providerLabels.every(([key])=>Number.isSafeInteger(data[key])&&data[key]>=0);
+ async function loadProvider(){
+  const version=++providerSequence,issuedScreen=selected,issuedToken=token;
+  provItems.replaceChildren();provStatus.dataset.error='false';
+  provStatus.textContent='업체·기사·예약 연결 관계를 서버에서 검증하고 있습니다…';
+  try{
+   if(isExpired())throw Error('AUTH_EXPIRED');
+   const data=await request('/rest/v1/rpc/jsb_w122_admin_org_booking_integrity',{
+    method:'POST',accessToken:token,body:{}});
+   if(version!==providerSequence||issuedToken!==token||selected!==issuedScreen||dashboard.hidden)return;
+   if(!safeProvider(data))throw Error('UNVERIFIED_RESPONSE');
+   provItems.replaceChildren();
+   for(const [key,label] of providerLabels){
+    const tile=create('article','finance-item');
+    tile.append(create('div','finance-label',label),
+     create('div','finance-count',data[key].toLocaleString('ko-KR')));
+    provItems.append(tile);
+   }
+   provStatus.textContent='업체·기사·예약 연결 진단 완료 · 실제 업체 승인·배정·예약변경 미활성';
+  }catch(e){
+   if(version!==providerSequence||issuedToken!==token||selected!==issuedScreen||dashboard.hidden)return;
+   provItems.replaceChildren();provStatus.dataset.error='true';
+   provStatus.textContent=e.status===403
+    ?'업체·기사 업무권한(workers_review)이나 최근 MFA가 없어 조회할 수 없습니다.'
+    :'보호된 업체·기사·예약 관계 점검을 완료하지 못했습니다.';
+  }
+ }
+
  function loadAdminConsoles(){
-  opsSequence++;financeSequence++;opsItems.replaceChildren();finItems.replaceChildren();
+  opsSequence++;financeSequence++;providerSequence++;
+  opsItems.replaceChildren();finItems.replaceChildren();provItems.replaceChildren();
   opsSection.hidden=!opsScreens.has(selected);
   finSection.hidden=!financeScreens.has(selected);
+  provSection.hidden=selected!=='providers';
   if(!opsSection.hidden)void loadOps();
   if(!finSection.hidden)void loadFinance();
+  if(!provSection.hidden)void loadProvider();
  }
 
  function renderScreen(){
