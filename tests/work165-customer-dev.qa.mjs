@@ -96,7 +96,7 @@ try{
  await page.locator('#w165-password').fill('ExamplePassword_165!');
  await page.locator('#w165-auth button[type=submit]').click();
  await page.locator('#w165-request').waitFor({state:'visible'});
- assert.match(await page.locator('#w165-status').textContent(),/본인 접수/);
+ assert.match(await page.locator('#w165-status').textContent(),/현재 로그인 계정의 접수/);
  await page.locator('#w165-request input[name=name]').fill('테스트A');
  await page.locator('#w165-request input[name=phone]').fill('01000000000');
  await page.locator('#w165-request input[name=address]').fill('가상 작업장 A');
