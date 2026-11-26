@@ -1,0 +1,13 @@
+/* WORK211 — styles contained to the existing public home section. */
+.work211-guide{margin-block:20px 32px;padding:24px;max-width:1160px;border:1px solid #ebe3f5;border-radius:18px;background:#faf7ff;color:#24304e}
+.work211-guide h2{font-size:clamp(19px,2vw,27px);line-height:1.3;margin:5px 0 7px;letter-spacing:-.025em}
+.work211-eyebrow{color:#7448bf;font-size:12px;font-weight:800}
+.work211-intro,.work211-note{font-size:13px;line-height:1.6;color:#596277}
+.work211-inputs{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-block:18px}
+.work211-inputs label{font-size:14px;font-weight:750}
+.work211-inputs select{flex:1 1 200px;min-width:0;min-height:44px;padding:8px 12px;border:1px solid #cfc2e5;border-radius:10px;background:#fff;color:#24304e;font:inherit}
+.work211-action{min-height:44px;padding:10px 20px;border:0;border-radius:11px;background:#6a42bb;color:#fff;font:inherit;font-weight:750;cursor:pointer}
+.work211-action:focus-visible,.work211-inputs select:focus-visible{outline:3px solid #9879dc;outline-offset:2px}
+.work211-prep{display:flex;flex-wrap:wrap;gap:9px}
+.work211-prep span{font-size:12px;padding:9px 12px;border-radius:999px;background:#fff;border:1px solid #eee8f6}
+@media(max-width:600px){.work211-guide{padding:18px;border-radius:14px}.work211-inputs{display:grid;grid-template-columns:1fr}.work211-action{width:100%}.work211-prep span{border-radius:12px;flex:1 1 100%}}

@@ -1,0 +1,28 @@
+name: WORK211 isolated public preview QA NO LIVE OPERATIONS
+on:
+  push:
+    branches:
+      - feature/work211-home-intake-ux-20261126
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static client-only syntax test
+        run: |
+          node --check work211-home-guide.js
+          node --check tests/work211-preview.qa.mjs
+      - name: Install pinned browser QA tool
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Validate fixed PC/mobile preview with no external writes
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-work211-http.log 2>&1 &
+          sleep 2
+          node tests/work211-preview.qa.mjs
