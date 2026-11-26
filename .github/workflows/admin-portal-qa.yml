@@ -13,6 +13,7 @@ on:
       - admin.js
       - index.html
       - tests/admin-portal.qa.mjs
+      - tests/admin-task-command.qa.mjs
       - .github/workflows/admin-portal-qa.yml
   workflow_dispatch:
 permissions:
@@ -30,6 +31,7 @@ jobs:
         run: |
           node --check admin.js
           node --check tests/admin-portal.qa.mjs
+          node --check tests/admin-task-command.qa.mjs
           ! grep -REi '(sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY)' admin.js admin.html admin.css
           grep -F "connect-src https://ohwkywomdqgcnptsnhwk.supabase.co" admin.html
       - name: Install isolated Chromium
@@ -41,4 +43,5 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-admin-portal-http.log 2>&1 &
           sleep 2
           node tests/admin-portal.qa.mjs
+          node tests/admin-task-command.qa.mjs
           node tests/mobile-qa.mjs
