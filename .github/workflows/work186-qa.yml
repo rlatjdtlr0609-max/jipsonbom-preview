@@ -20,4 +20,4 @@ jobs:
           node --check work186-real-dev-e2e.mjs
           node --check tests/work186-real-dev-runner.mjs
           node --test tests/work186-e2e-contract.test.mjs
-          node tests/work186-real-dev-runner.mjs; code=$?; if [ $code -eq 2 ]; then echo 'REAL_TWO_ACCOUNT_E2E_BLOCKED_NO_CREDENTIALS'; elif [ $code -ne 0 ]; then exit $code; fi
+          if node tests/work186-real-dev-runner.mjs; then echo 'REAL_DEV_E2E_EXECUTED'; else code=$?; if [ $code -eq 2 ]; then echo 'REAL_TWO_ACCOUNT_E2E_BLOCKED_NO_CREDENTIALS'; else exit $code; fi; fi
