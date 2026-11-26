@@ -1,0 +1,37 @@
+name: WORK166 customer session security
+on:
+  push:
+    branches:
+      - feature/work166-customer-dev-security-20261126
+    paths:
+      - 'customer-dev.js'
+      - 'tests/work166-session-security.qa.mjs'
+      - '.github/workflows/work166-dev-security.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser testing dependency
+        run: |
+          google-chrome --version
+          npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Run isolated local source server
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-local-http.log 2>&1 &
+          sleep 2
+      - name: Check JS and customer A/B mock and navigation cleanup
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          node --check customer-dev.js
+          node --check tests/work166-session-security.qa.mjs
+          node tests/work165-customer-dev.qa.mjs
+          node tests/work166-session-security.qa.mjs
