@@ -34,10 +34,12 @@
  const text=(tag,value)=>{const e=document.createElement(tag);e.textContent=String(value??'');return e;};
  const normalizePhone=v=>String(v).replace(/[^0-9]/g,'');
  const sessionValid=()=>!!(session&&Date.now()<session.expiresAt&&UUID.test(session.id));
- const clearWork=()=>{rows=[];nextBefore=null;pending=null;list.replaceChildren();detail.replaceChildren();};
+ const sameSession=(id,rev,bearer)=>revision===rev&&sessionValid()&&session?.id===id&&session.token===bearer;
+ const clearWork=()=>{rows=[];nextBefore=null;pending=null;list.replaceChildren();detail.replaceChildren();const more=document.getElementById('w165-more');if(more)more.hidden=true;requestForm.reset();};
  const reset=()=>{
   revision++;session=null;clearWork();requestForm.hidden=true;reload.disabled=true;
   signout.hidden=true;authForm.hidden=false;sessionLabel.textContent='로그인하지 않음';
+  const password=authForm.querySelector('input[name="password"]');if(password)password.value='';
  };
  function requireSession(){
   if(!sessionValid()){reset();throw Error('로그인이 만료되었습니다. 다시 로그인하세요.');}
@@ -89,9 +91,8 @@
  async function loadProfile(before=null){
   const s=requireSession(),rev=revision;
   const data=await api('/rest/v1/rpc/jsb_w16_member_profile',{method:'POST',token:s.token,body:{p_before:before}});
-  if(rev!==revision||!sessionValid())return;
-  if(data?.account_id!==s.id||!Array.isArray(data?.intakes))
-   throw Error('계정과 접수 소유자 검증이 일치하지 않습니다.');
+  if(!sameSession(s.id,rev,s.token))return;
+  if(data?.account_id!==s.id||!Array.isArray(data?.intakes)){reset();throw Error('서버의 접수 소유자 검증에 실패하여 로그인 상태를 초기화했습니다.');}
   const received=data.intakes.filter(x=>UUID.test(x?.request_id||''));
   rows=before?rows.concat(received.filter(x=>!rows.some(y=>y.request_id===x.request_id))):received;
   nextBefore=UUID.test(data.next_before||'')?data.next_before:null;
@@ -184,7 +185,7 @@
     text('p','상태: '+String(data.status||'-')),text('p','수리 분야: '+String(data.category||'-')),
     text('p','설명: '+String(data.description||'-')));
    write('본인 접수의 상세정보만 서버에서 확인했습니다.');
-  }catch(e){detail.replaceChildren();write(e.message||'상세 조회 불가');}
+  }catch(e){if(rev===revision&&session?.id===s.id){detail.replaceChildren();write(e.message||'상세 조회 불가');}}
   finally{setBusy(false);}
  });
  requestForm.addEventListener('submit',async e=>{
@@ -204,7 +205,7 @@
    write('개발 DB에 접수 저장됨 · '+result.id+' (가상 시험정보만 사용)');
    await loadProfile();
   }catch(e){
-   write((e.message||'접수 실패')+' 동일한 내용으로 재시도하면 중복 방지 키를 재사용합니다.');
+   if(sessionValid())write((e.message||'접수 실패')+' 동일한 내용으로 재시도하면 중복 방지 키를 재사용합니다.');
   }finally{setBusy(false);}
  });
  // Browser back-forward cache must never restore previous customer identity/details.
