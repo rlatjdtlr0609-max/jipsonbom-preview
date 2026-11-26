@@ -32,14 +32,14 @@ jobs:
           node-version: '22'
       - name: MASTER11 structural and privacy checks
         env:
-          JSB_REQUIRE_ALL_WORK211_214: \${{ github.ref == 'refs/heads/main' }}
+          JSB_REQUIRE_ALL_WORK211_214: ${{ github.ref == 'refs/heads/main' }}
         run: node --test tests/work215-contract.test.mjs
       - name: Install pinned browser QA dependency
         run: npm install --no-save --no-package-lock playwright@1.57.0
       - name: Safe PC/mobile integrated browser checks
         env:
           JSB_QA_BROWSER_CHANNEL: chrome
-          JSB_REQUIRE_ALL_WORK211_214: \${{ github.ref == 'refs/heads/main' }}
+          JSB_REQUIRE_ALL_WORK211_214: ${{ github.ref == 'refs/heads/main' }}
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-work215-http.log 2>&1 &
           sleep 2
