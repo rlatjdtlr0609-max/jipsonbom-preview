@@ -35,7 +35,8 @@ test('full customer->worker->customer approval->booking->hold->completion',()=>{
  s=move(s,'COMPLETE_WORK',ids.customerId);
  assert.equal(s.state,'COMPLETED');
  assert.deepEqual([s.cash.available,s.cash.held,s.cash.debited],[7000,0,8000]);
- assert.throws(()=>move(s,'COMPLETE_WORK',ids.customerId),/ILLEGAL_STATE_TRANSITION/);
+ assert.equal(move(s,'COMPLETE_WORK',ids.customerId),s,'retry using same idempotency key must be a no-op');
+ assert.throws(()=>applyFlow(s,'COMPLETE_WORK',{actor:ids.customerId,expectedVersion:s.version,key:'DIFFERENT_COMPLETE_KEY'}),/ILLEGAL_STATE_TRANSITION/);
  assert.throws(()=>move(s,'CANCEL',ids.customerId),/CANCEL_NOT_ALLOWED/);
  assert.equal(s.events.length,7);
 });
@@ -60,7 +61,8 @@ test('cancel after hold releases amount exactly once, cancelling before booking 
  r=move(r,'CONFIRM_BOOKING',ids.customerId,{safety,officialPrice:80000,officialVersion:'V1'});
  const cancellation=move(r,'CANCEL',ids.customerId);
  assert.deepEqual([cancellation.cash.available,cancellation.cash.held,cancellation.cash.debited],[15000,0,0]);
- assert.throws(()=>move(cancellation,'CANCEL',ids.customerId),/CANCEL_NOT_ALLOWED/);
+ assert.equal(move(cancellation,'CANCEL',ids.customerId),cancellation,'cancel replay must not release again');
+ assert.throws(()=>applyFlow(cancellation,'CANCEL',{actor:ids.customerId,expectedVersion:cancellation.version,key:'DIFFERENT_CANCEL_KEY'}),/CANCEL_NOT_ALLOWED/);
  assert.equal(cancellation.cash.events.filter(x=>x.action==='RELEASE').length,1);
 });
 test('cannot reuse an idempotency key for a different actor/action',()=>{
