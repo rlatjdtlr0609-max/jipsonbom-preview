@@ -14,8 +14,8 @@ test('six groups, 24 distinct screen IDs and source-based evidence labels',()=>{
  assert.equal(report.screens.every(s=>s.group!=='UNMAPPED'),true);
 });
 test('malformed or weakened backend response guards fail closed',()=>{
- assert.throws(()=>auditAdminSource(js.replace('screen_id===screenId','screen_id===anyScreen'),html),/ADMIN_RESPONSE_GUARD/);
- assert.throws(()=>auditAdminSource(js.replace('mfa_and_backend_permissions_verified===true','mfa_and_backend_permissions_verified!==false'),html),/ADMIN_RESPONSE_GUARD/);
+ assert.throws(()=>auditAdminSource(js.replaceAll('screen_id===screenId','screen_id===anyScreen'),html),/ADMIN_RESPONSE_GUARD/);
+ assert.throws(()=>auditAdminSource(js.replaceAll('mfa_and_backend_permissions_verified===true','mfa_and_backend_permissions_verified!==false'),html),/ADMIN_RESPONSE_GUARD/);
  assert.throws(()=>auditAdminSource(js.replace('const groups=[','const removed=['),html),/GROUPS_NOT_FOUND/);
 });
 test('no promotion of source-only API presence to real admin validation',()=>{
