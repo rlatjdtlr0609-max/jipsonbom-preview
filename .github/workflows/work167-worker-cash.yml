@@ -7,6 +7,7 @@ on:
       - 'worker.html'
       - 'work167-*.mjs'
       - 'tests/work167-worker-cash.test.mjs'
+      - 'tests/work167-worker-panel.qa.mjs'
       - '.github/workflows/work167-worker-cash.yml'
   workflow_dispatch:
 permissions:
@@ -35,4 +36,5 @@ jobs:
           node --check work167-worker-panel.mjs
           node --check work167-cash-policy.mjs
           node --test tests/work167-worker-cash.test.mjs
+          node tests/work167-worker-panel.qa.mjs
           node tests/standalone-role-pages.qa.mjs
