@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#211735">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>집손봄 | 고객 전용 · 수리접수·마이페이지 (개발 미리보기)</title>
+<meta name="description" content="사진 접수 · 견적 · 방문 예약 · 수리이력 · A/S 시연. 실제 인증·접수·결제는 불가한 개발 미리보기입니다.">
+<link rel="stylesheet" href="./release.css?v=eed8e997160b">
+<link rel="stylesheet" href="./premium-ui.css?v=atelier-1">
+<link rel="stylesheet" href="./role-pages.css?v=work164-1">
+<script src="./role-pages.js?v=work164-1" defer></script>
+</head>
+<body data-role-page="customer">
+<div class="topnote">집손봄 · 고객 센터 · 개발용 독립 고정페이지 · 실제 개인정보 입력 및 결제 금지</div>
+<header class="navouter">
+ <div class="wrap nav">
+  <a href="./index.html" class="logo" aria-label="집손봄 메인 홈페이지"><span class="mark" aria-hidden="true">⌂</span><span><b>집손봄</b><small>사진으로 먼저 보는 생활수리</small></span></a>
+  <nav class="mainnav" aria-label="다른 서비스로 이동"><a href="./index.html">메인</a><a href="./customer.html">고객</a><a href="./worker.html">수리기사</a><a href="./construction.html">공사업체</a><a href="./repair-company.html">수리업체</a></nav>
+  <div class="navtools"><a class="navbtn strong" href="./index.html">메인으로</a></div>
+ </div>
+</header>
+<div class="tabstrip"><nav class="wrap tabs role-tabs" aria-label="영역별 고정링크"><a href="./index.html">메인</a>
+<a href="./customer.html" aria-current="page">고객</a>
+<a href="./worker.html">수리기사</a>
+<a href="./construction.html">공사업체</a>
+<a href="./repair-company.html">수리업체·기사팀</a>
+<a href="./admin.html">관리자 로그인</a></nav></div>
+<div class="wrap role-heading">
+ <div class="role-eyebrow">JIPSONBOM · WORK164 · DEVELOPMENT PREVIEW</div>
+ <h2>고객 전용 · 수리접수·마이페이지</h2>
+ <p>사진 접수 · 견적 · 방문 예약 · 수리이력 · A/S 시연</p>
+ <p class="role-warning">이 페이지는 원본 화면을 분리한 개발용 미리보기입니다. 회원 인증·실제 수리접수·기사배정·계약·캐시충전·결제·정산은 이 페이지에서 처리되지 않습니다. 개인정보를 입력하지 마세요.</p>
+</div>
+<main id="screen">
+<section data-screen="customer"><div class="wrap section"><div class="layout"><aside class="card dashnav"><h3>고객 접수·마이페이지</h3><a href="#reception" data-scroll="reception">사진 수리접수</a><a href="#myrequests" data-scroll="myrequests">접수·견적·예약</a><a href="#autharea" data-scroll="autharea">회원·비회원</a><a href="#asarea" data-scroll="asarea">A/S 안내</a><a href="#customer-benefits" data-scroll="customer-benefits">혜택·쿠폰·추천</a><a href="#repair-history" data-scroll="repair-history">수리 이력 (시연)</a></aside><div class="dashboard"><div class="dashhead"><div><span class="tag">고객 서비스</span><h1>고객 접수·마이페이지</h1><p class="intro">접수부터 견적·예약·A/S까지 같은 접수번호로 이어집니다.</p><div class="jb-policy-note " role="note"><b>생활수리 사후관리 책임 안내</b><p>집손봄은 수리 요청 접수와 수리기사 매칭·견적·예약 절차를 지원하는 플랫폼입니다. 고객이 승인한 실제 수리 작업의 시공 품질, 기사 귀책 하자보수 및 A/S 등 계약상 사후관리의 1차 책임은 해당 수리기사에게 있습니다. 고객은 집손봄을 통해 A/S·분쟁을 접수할 수 있으며 집손봄은 접수·전달·처리 이력 및 관련 법령상 의무를 이행합니다. 해당 고지는 집손봄의 법률상 책임을 배제하지 않습니다.</p></div></div></div><p class="hint preview-state">시연 전용 · 접수, 견적, 예약, 수리 이력과 A/S. 내 계정과 접수 동의 이력은 인증된 개발 환경에서만 확인할 수 있습니다. 이 화면에는 실제 로그인·파일 전송 기능이 없습니다.</p><div class="grid2" id="autharea"><div class="panel"><h3>회원으로 이용</h3><p class="intro">개발 API의 HTTPS 응답을 확인했습니다. 회원 로그인·접수·조회는 개발 계정 권한 검증 후 연결됩니다.</p><a class="btn small soft" data-service-health="" rel="noreferrer" href="https://ohwkywomdqgcnptsnhwk.supabase.co/functions/v1/jsb-work19-api/health">개발 API 상태 확인</a><div class="row spaced"><button class="btn small primary" data-auth="signup">회원가입</button><button class="btn small soft" data-auth="login">기존회원 로그인</button><button type="button" class="btn small soft" data-go="customer" data-scroll="reception">작성 중인 접수로 돌아가기</button></div></div><div class="panel"><h3>비회원으로 바로 접수</h3><p class="intro">가입 없이 접수 가능하며 실제 서비스에서는 접수별 인증·만료 권한을 적용합니다.</p><div class="row spaced"><button class="btn small primary" data-intake-guest="">비회원 접수 시작 →</button></div></div></div><div class="panel space24" id="reception"><h3>고객 접수 · 사진으로 접수하기 (시연)</h3><div class="hint" style="margin-bottom:15px">시연용 접수입니다. 실제 이름·전화번호·상세주소를 입력하지 마세요. 사진은 서버에 전송되지 않습니다.</div><form id="requestForm" class="fields" autocomplete="off"><div class="field"><label for="intake-account">이용 방법</label><select name="account" required="" id="intake-account"><option>비회원 바로 접수 (시연)</option><option>회원으로 접수 (시연)</option></select></div><div class="field"><label for="intake-category">수리 분야</label><select name="category" id="intake-category"><option selected="">수전·배관</option><option>욕실·변기</option><option>전기·조명</option><option>문·창호</option><option>가구·설치</option><option>실리콘·방수</option><option>세탁기 연결</option><option>배관 점검</option></select></div><div class="field full"><label for="intake-title">수리 요청 제목</label><input name="title" required="" maxlength="90" placeholder="예: 욕실 수전에서 물이 새요" readonly="" value="싱크대 배수관 점검" id="intake-title"></div><div class="field full"><label for="intake-note">요청 내용</label><textarea name="note" required="" maxlength="400" placeholder="고장 증상과 희망 일정 등을 적어주세요 (시연용)" readonly="" id="intake-note">예시: 싱크대 하부 누수 흔적 확인</textarea></div><div class="field"><label for="intake-address">서비스 지역 (시·군·구까지만)</label><input name="address" required="" maxlength="40" placeholder="예: 경기 광명시" readonly="" value="예시 지역 A" id="intake-address"></div><div class="field"><label for="preview-media">사진·영상 (브라우저에서만 선택)</label><input name="photo" type="file" accept="image/*,video/*" multiple="" id="preview-media"><output id="preview-file" aria-live="polite"></output></div><div class="field full"><label for="preview-visit">희망 방문일정 (시연)</label>
+ <select id="preview-visit" name="visitPreference"><option>일정 협의</option><option>평일 오전</option><option>평일 오후</option><option>주말</option></select>
+ <details class="center-details"><summary>주소·현장 연락정보·동의 예시</summary>
+ <ul><li>주소검색·상세주소 예시 · 예시 지역 A, 예시 건물</li><li>현장 연락정보 · 예시 연락처 확인</li>
+ <li>이용약관·개인정보 동의 · 실제 동의는 인증된 접수에서 기록합니다.</li></ul></details></div><div class="field full"><button class="btn primary" type="submit">예시 접수 확인하기</button></div></form><output id="preview-receipt" role="status"></output></div><div class="panel space24" id="customer-benefits"><h3>내 혜택 · 쿠폰 · 추천</h3><p class="intro">실제 발급 가능한 쿠폰과 추천 보상, 단지 캠페인은 아직 없습니다. 이 화면에서 혜택을 발급하거나 단지 개인정보를 수집하지 않습니다.</p><div class="jsb-customer-services"><div><strong>쿠폰 · 추천</strong><p>발급 가능 0건 · 실계정 이력은 인증된 업무환경에서만 제공합니다.</p></div><div><strong>아파트·지역 캠페인</strong><p>공개된 캠페인 0건 · 준비 단계</p></div></div><p class="hint">고객 할인과 기사 공식 수리단가 10% 이용료는 분리합니다.</p><div class="row spaced"><button type="button" class="btn small soft" data-go="home" data-scroll="benefit-programs">혜택 안내 보기</button><button type="button" class="btn small soft" data-go="home" data-scroll="campaign-programs">캠페인 안내 보기</button></div></div><div class="panel space24" id="myrequests"><div class="row between" style="margin-bottom:12px"><h3 style="margin:0">고객 마이페이지 · 내 접수·견적·예약 (시연)</h3><span class="tiny">모든 데모 접수표시</span></div><div id="customerJobs"><div class="item"><img class="itemphoto" src="./assets/plumber.webp" alt="싱크대 하부 누수 점검"><div class="iteminfo"><div class="row between" style="align-items:start"><div><b>싱크대 하부 누수 점검</b><p>DEMO-101 · 수전·배관 · 예시 지역 A</p><p>배수관 연결 부위 점검 요청</p></div><span class="status pending">기사 선택 대기</span></div><div class="row between spaced" style="flex-wrap:wrap"><div class="tiny">기사 견적 <b>미제출</b></div></div></div></div><div class="item"><img class="itemphoto" src="./assets/lighting.webp" alt="주방 LED 교체"><div class="iteminfo"><div class="row between" style="align-items:start"><div><b>주방 LED 교체</b><p>DEMO-102 · 전기·조명 · 예시 지역 B</p><p>점등이 끊기는 증상 확인</p></div><span class="status pending">견적 검토</span></div><div class="row between spaced" style="flex-wrap:wrap"><div class="tiny">기사 견적 <b>72,000원</b></div><button class="btn small primary" data-action="approve" data-id="DEMO-102">견적 승인</button></div></div></div><div class="item"><img class="itemphoto" src="./assets/door.webp" alt="현관문 손잡이 점검"><div class="iteminfo"><div class="row between" style="align-items:start"><div><b>현관문 손잡이 점검</b><p>DEMO-103 · 문·창호 · 예시 지역 C</p><p>방문 시간 조율 예시</p></div><span class="status booked">예약 확정·캐시 보류</span></div><div class="row between spaced" style="flex-wrap:wrap"><div class="tiny">기사 견적 <b>95,000원</b></div><button class="btn small negative" data-action="cancel" data-id="DEMO-103">취소 (보류 해제 데모)</button></div></div></div></div><details class="center-details"><summary>마이페이지 업무 안내</summary><ul><li>내 접수 · 내 견적 · 방문예약 · 담당기사</li><li>수리이력 · 공임·직접지급 내역 · A/S</li><li>문의·신고 · 주소관리 · 회원정보</li><li>개인 업무는 본인 인증 후 이용합니다.</li></ul></details></div><section id="repair-history" class="panel space24"><h3>수리 이력 (시연)</h3><ul class="preview-list"><li><b>배관 연결 점검</b> · 예시 작업 완료 · A/S 검토 화면 확인 가능</li></ul></section><div class="panel space24" id="asarea"><h3>A/S 및 문의</h3><p class="intro">수리 완료 후 작업 내역을 확인하고 A/S를 요청하는 흐름입니다. 공개 미리보기에서는 예시만 제공합니다.</p><button class="btn soft spaced" data-unavailable="A/S 실제 접수">A/S 문의 기능 보기</button></div></div></div></div></section>
+</main>
+<footer class="footer">
+ <div class="wrap"><div><b>집손봄 · 고객 센터</b><p>개발 미리보기 · 기존 원본 화면 보존 · 운영용 기능과 연결 전</p></div><div>MASTER_11 · WORK164 독립 고정링크</div><a href="./index.html">메인 홈페이지</a></div>
+</footer>
+<div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
