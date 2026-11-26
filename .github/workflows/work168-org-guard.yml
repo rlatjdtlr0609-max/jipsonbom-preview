@@ -1,0 +1,38 @@
+name: WORK168 repair org tenancy guard
+on:
+  push:
+    branches:
+      - feature/work168-repair-org-preview-20261126
+    paths:
+      - 'repair-company.html'
+      - 'work168-*.mjs'
+      - 'tests/work168-org-boundary.test.mjs'
+      - '.github/workflows/work168-org-guard.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  organization-safety:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser testing dependency
+        run: |
+          google-chrome --version
+          npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Run isolated local source server
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-local-http.log 2>&1 &
+          sleep 2
+      - name: Validate cross-company authorization and existing navigation
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          node --check work168-org-panel.mjs
+          node --check work168-org-guard.mjs
+          node --test tests/work168-org-boundary.test.mjs
+          node tests/standalone-role-pages.qa.mjs
