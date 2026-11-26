@@ -1,0 +1,45 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+const {chromium}=createRequire(import.meta.url)('playwright');
+const src=await readFile(new URL('../customer-dev.js',import.meta.url),'utf8');
+assert.match(src,/Object\.prototype\.hasOwnProperty\.call\(ROUTES,path\)/);
+assert.match(src,/pagehide/);
+assert.match(src,/pageshow/);
+assert.match(src,/visibilitychange/);
+assert.doesNotMatch(src,/localStorage\.(?:setItem|getItem)|sessionStorage\.(?:setItem|getItem)/);
+const root=process.env.JSB_QA_URL||'http://127.0.0.1:8765/';
+const browser=await chromium.launch({headless:true,...(process.env.JSB_QA_BROWSER_CHANNEL?{channel:process.env.JSB_QA_BROWSER_CHANNEL}:{})});
+try{
+ const page=await browser.newPage({viewport:{width:390,height:820}});
+ const calls=[],issues=[];
+ page.on('pageerror',e=>issues.push(e.message));
+ await page.route('https://ohwkywomdqgcnptsnhwk.supabase.co/**',async route=>{
+  const req=route.request(),url=new URL(req.url());
+  calls.push(req.method()+' '+url.pathname);
+  const headers={'access-control-allow-origin':'*','access-control-allow-methods':'GET,POST,OPTIONS','access-control-allow-headers':'apikey,authorization,content-type'};
+  if(req.method()==='OPTIONS')return route.fulfill({status:204,headers});
+  let result;
+  if(url.pathname==='/auth/v1/token')result={access_token:'synthetic-work166',expires_in:3600};
+  else if(url.pathname==='/auth/v1/user')result={id:'11111111-1111-4111-8111-111111111111',role:'authenticated',email:'test166@example.invalid',email_confirmed_at:'2026-11-26T00:00:00Z'};
+  else if(url.pathname==='/rest/v1/rpc/jsb_w16_member_profile')result={account_id:'11111111-1111-4111-8111-111111111111',intakes:[],next_before:null};
+  else throw Error('Unexpected endpoint '+url.pathname);
+  return route.fulfill({status:200,headers,contentType:'application/json',body:JSON.stringify(result)});
+ });
+ await page.goto(root+'customer.html',{waitUntil:'domcontentloaded'});
+ await page.locator('#w165-email').fill('test166@example.invalid');
+ await page.locator('#w165-password').fill('synthetic-not-a-real-password');
+ await page.locator('#w165-auth button[type="submit"]').click();
+ await page.locator('#w165-request').waitFor({state:'visible'});
+ await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));
+ assert.equal(await page.locator('#w165-request').isVisible(),false,'browser history cleanup must hide intake');
+ assert.equal(await page.locator('#w165-list button').count(),0);
+ assert.equal(await page.locator('#w165-detail').textContent(),'');
+ assert.equal(await page.evaluate(()=>Object.keys(localStorage).length),0);
+ await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+ assert.match(await page.locator('#w165-status').textContent(),/다시 로그인/);
+ assert.equal(issues.length,0,JSON.stringify(issues));
+ assert.ok(calls.includes('POST /auth/v1/token'));
+ assert.ok(!calls.some(x=>x.includes('service_role')));
+ console.log('WORK166 PASS: guarded RPC allowlist, synthetic login, pagehide/back-forward session cleanup');
+}finally{await browser.close();}
