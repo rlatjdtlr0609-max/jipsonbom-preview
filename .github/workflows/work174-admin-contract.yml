@@ -1,0 +1,32 @@
+name: WORK174 24 admin panels MFA DB envelope contract NO DEPLOY
+on:
+  push:
+    branches: [feature/work174-admin-24-integrity-20261126]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  admin:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated browser test runtime
+        run: |
+          google-chrome --version
+          npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Local-only test web server
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/work17x-http.log 2>&1 &
+          sleep 2
+      - name: 24 routes, protected backend contract, Chrome access controls
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          node --check admin.js
+          node --test tests/work174-admin-contract.test.mjs
+          node tests/work169-admin-negative.qa.mjs
+          node tests/admin-portal.qa.mjs
