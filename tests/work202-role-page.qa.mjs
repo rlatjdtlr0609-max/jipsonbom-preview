@@ -29,7 +29,14 @@ try{
   await page.locator('#w202-pass').fill('test-only-password');
   await page.locator('#w202-login button[type=submit]').click();
   await page.locator('#w202-load').waitFor({state:'visible'});
-  await page.waitForFunction(()=>document.querySelector('#w202-load')?.disabled===false);
+  try{
+   await page.waitForFunction(()=>document.querySelector('#w202-load')?.disabled===false,null,{timeout:7000});
+  }catch(e){
+   console.error('WORK202 diagnostic (no credentials):',file,
+    'status=',await page.locator('#w202-status').textContent(),
+    'pageErrors=',errors,'apiPaths=',requests.map(x=>x.method+' '+x.path));
+   throw e;
+  }
   await page.locator('#w202-load').click();
   await page.waitForFunction(()=>document.querySelector('#w202-result')?.textContent.length>5);
   const str=await page.locator('#w202-result').textContent();
