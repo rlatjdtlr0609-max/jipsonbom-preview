@@ -91,9 +91,8 @@ try{
     assert.equal(req.postDataJSON().email,'admin@example.invalid');
     return body(200,{access_token:'test-aal1',expires_in:3600});
    }
-   if(url.pathname==='/auth/v1/user')return body(200,{id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false});
+   if(url.pathname==='/auth/v1/user')return body(200,{id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false,factors:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]});
    if(url.pathname==='/auth/v1/logout')return body(200,{});
-   if(url.pathname==='/auth/v1/factors')return body(200,{totp:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]});
    if(url.pathname.endsWith('/challenge'))return body(200,{id:'22222222-2222-4222-8222-222222222222'});
    if(url.pathname.endsWith('/verify'))return body(200,{access_token:'test-aal2',expires_in:3600});
    if(url.pathname==='/rest/v1/rpc/jsb_w103_admin_snapshot'){
@@ -214,8 +213,7 @@ try{
    'access-control-allow-headers':'apikey,authorization,content-type'}});
   let status=200,value={};
   if(u.pathname==='/auth/v1/token')value={access_token:'test-aal1',expires_in:3600};
-  else if(u.pathname==='/auth/v1/user')value={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false};
-  else if(u.pathname==='/auth/v1/factors')value={totp:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
+  else if(u.pathname==='/auth/v1/user')value={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false,factors:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
   else if(u.pathname.endsWith('/challenge'))value={id:'22222222-2222-4222-8222-222222222222'};
   else if(u.pathname.endsWith('/verify'))value={access_token:'test-aal2',expires_in:3600};
   else if(u.pathname==='/rest/v1/rpc/jsb_w103_admin_snapshot'){status=403;value={code:'42501',message:'PRIVATE_DB_DETAIL_NEVER_RENDER'};}
@@ -246,8 +244,7 @@ try{
    'access-control-allow-headers':'apikey,authorization,content-type'}});
   let status=200,value={};
   if(u.pathname==='/auth/v1/token')value={access_token:'test-aal1',expires_in:3600};
-  else if(u.pathname==='/auth/v1/user')value={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false};
-  else if(u.pathname==='/auth/v1/factors')value={totp:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
+  else if(u.pathname==='/auth/v1/user')value={id:'00000000-0000-4000-8000-000000000006',role:'authenticated',is_anonymous:false,factors:[{id:'11111111-1111-4111-8111-111111111111',factor_type:'totp',status:'verified'}]};
   else if(u.pathname.endsWith('/challenge'))value={id:'22222222-2222-4222-8222-222222222222'};
   else if(u.pathname.endsWith('/verify'))value={access_token:'test-aal2',expires_in:3600};
   else if(u.pathname==='/rest/v1/rpc/jsb_w103_admin_snapshot')value=payload;
