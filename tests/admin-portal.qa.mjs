@@ -70,7 +70,7 @@ const workProvider={
  booking_membership_links:0,confirmed_bookings_with_nonaccepted_member:0,
  document_count:0,verified_document_count:0,region_link_count:0
 };
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({headless:true,...(process.env.JSB_QA_BROWSER_CHANNEL?{channel:process.env.JSB_QA_BROWSER_CHANNEL}:{})});
 let successful=0;
 try{
  for(const width of [360,768,1366]){
