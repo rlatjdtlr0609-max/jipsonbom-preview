@@ -42,6 +42,7 @@ try {
  });
  await page.goto(ROOT+'admin.html',{waitUntil:'domcontentloaded'});
  assert.equal(await page.locator('#dashboard').isVisible(),false);
+ assert.match(await page.locator('#forgot-password').textContent(),/비밀번호 직접 설정·변경/);
  await page.locator('#forgot-password').click();
  await page.locator('#reset-request-form').waitFor({state:'visible'});
  await page.locator('#reset-email').fill('admin@example.invalid');
@@ -53,6 +54,8 @@ try {
  await page.goto(ROOT+'admin.html#access_token='+encodeURIComponent(fakeJWT)+
   '&expires_in=3600&type=recovery&refresh_token=synthetic-refresh');
  await page.locator('#reset-confirm-form').waitFor({state:'visible'});
+ assert.match(await page.locator('#reset-confirm-form').textContent(),/원하는 비밀번호를 12자 이상 직접 입력/);
+ assert.equal(await page.locator('#reset-password').getAttribute('readonly'),null,'user chosen password must be editable');
  assert.equal(new URL(page.url()).hash,'','recovery credentials must be scrubbed from address bar');
  assert.equal(await page.locator('#dashboard').isVisible(),false);
  await page.locator('#reset-generate').click();
