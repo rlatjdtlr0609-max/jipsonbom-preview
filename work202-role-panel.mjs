@@ -19,9 +19,11 @@ if(root){
  const hideData=()=>{result.textContent='';form.elements.password.value='';};
  form.addEventListener('submit',async event=>{
   event.preventDefault();if(busy)return;
-  busy=true;buttons();hideData();
+  const email=form.elements.namedItem('email')?.value.trim();
+  const password=form.elements.namedItem('password')?.value;
+  busy=true;buttons();result.textContent='';
   try{
-   await client.login(form.elements.email.value.trim(),form.elements.password.value);
+   await client.login(email,password);
    say('DEV 서버 로그인 확인. 조회는 서버의 역할·소유권 승인 후에만 가능합니다.');
   }catch{client.clear();say('인증에 실패했거나 개발계정이 확인되지 않았습니다.');}
   finally{busy=false;buttons();form.elements.password.value='';}
