@@ -7,6 +7,16 @@
  const API='https://ohwkywomdqgcnptsnhwk.supabase.co';
  const KEY='sb_publishable_tNSrR-mJYeChyS1J_5Ykkg_oH15pvXd'; // Supabase publishable (public) key, already in public admin.js
  const VALID_ORIGIN=/^(?:https:\/\/rlatjdtlr0609-max\.github\.io|http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?)$/i;
+ // Fail closed: new front-end calls require deliberate reviewed registration.
+ const ROUTES=Object.freeze({
+  '/auth/v1/signup':'POST',
+  '/auth/v1/token?grant_type=password':'POST',
+  '/auth/v1/user':'GET',
+  '/auth/v1/logout':'POST',
+  '/rest/v1/rpc/jsb_member_submit_once':'POST',
+  '/rest/v1/rpc/jsb_member_request':'POST',
+  '/rest/v1/rpc/jsb_w16_member_profile':'POST'
+ });
  const UUID=/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
  const EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  const status=document.getElementById('w165-status');
@@ -35,7 +45,7 @@
  }
  async function api(path,{method='GET',body=null,token=null}={}){
   if(!VALID_ORIGIN.test(location.origin))throw Error('허용되지 않은 개발용 출처입니다.');
-  if(!path.startsWith('/auth/v1/')&&!path.startsWith('/rest/v1/rpc/'))throw Error('허용되지 않은 API 경로');
+   if(!Object.prototype.hasOwnProperty.call(ROUTES,path)||ROUTES[path]!==method)throw Error('허용되지 않은 API 경로 또는 메서드');
   const headers={'apikey':KEY,'content-type':'application/json'};
   if(token)headers.authorization='Bearer '+token;
   const r=await fetch(API+path,{
@@ -196,6 +206,16 @@
   }catch(e){
    write((e.message||'접수 실패')+' 동일한 내용으로 재시도하면 중복 방지 키를 재사용합니다.');
   }finally{setBusy(false);}
+ });
+ // Browser back-forward cache must never restore previous customer identity/details.
+ window.addEventListener('pagehide',()=>{reset();});
+ window.addEventListener('pageshow',event=>{
+  if(event.persisted){reset();write('페이지 복귀로 이전 인증정보를 지웠습니다. 다시 로그인하세요.');}
+ });
+ document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&session&&!sessionValid()){
+   reset();write('인증이 만료되어 내 접수 정보를 지웠습니다. 다시 로그인하세요.');
+  }
  });
  reset();write('개발용 고객 인증 준비. 실제 개인정보·시공사진은 입력하지 마세요.');
  // No refresh tokens, session/case data or credentials persisted.
