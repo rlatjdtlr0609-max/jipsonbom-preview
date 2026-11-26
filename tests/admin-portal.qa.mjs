@@ -44,6 +44,32 @@ const list=(screen,offset=0,limit=15)=>{
   }))
  };
 };
+const workQueue={
+ environment:'DEVELOPMENT',read_only:true,source_mutated:false,
+ approval_or_payment_enabled:false,production_deployment:false,pii_included:false,
+ schema_version:'WORK120_QUEUE_V1',task_command_enabled:false,items:[]
+};
+const workFinance={
+ environment:'DEVELOPMENT',adapter:'DEV_VIRTUAL',read_only:true,
+ source_of_fee:'OFFICIAL_SERVICE_PRICE',fee_percent:10,
+ actual_pg_reconciled:false,actual_payment_enabled:false,
+ full_cash_e2e_certified:false,booking_or_cash_changed:false,
+ production_deployment:false,schema_version:'WORK123_CASH_AUDIT_V1',
+ booking_count:0,hold_count:0,held_count:0,debited_count:0,
+ fee_rule_mismatches:0,confirmed_booking_missing_hold:0,
+ hold_snapshot_mismatches:0,orphan_holds:0,duplicate_holds_for_booking:0,
+ refund_review_requests:0
+};
+const workProvider={
+ schema_version:'WORK122_ORG_BOOKING_READ_V1',
+ environment:'DEVELOPMENT',read_only:true,pii_included:false,
+ production_deployment:false,assignment_action_enabled:false,
+ booking_change_enabled:false,company_or_worker_record_modified:false,
+ full_company_e2e_certified:false,org_count:0,membership_count:0,
+ invited_memberships:0,accepted_memberships:0,ended_memberships:0,
+ booking_membership_links:0,confirmed_bookings_with_nonaccepted_member:0,
+ document_count:0,verified_document_count:0,region_link_count:0
+};
 const browser=await chromium.launch({headless:true});
 let successful=0;
 try{
@@ -87,6 +113,16 @@ try{
     assert.equal(input.p_limit,15);
     return body(200,list(input.p_screen,input.p_offset,input.p_limit));
    }
+   if(url.pathname==='/rest/v1/rpc/jsb_w120_admin_task_queue'){
+    assert.deepEqual(req.postDataJSON(),{p_limit:15});
+    return body(200,workQueue);
+   }
+   if(url.pathname==='/rest/v1/rpc/jsb_w123_admin_cash_integrity')
+    return body(200,workFinance);
+   if(url.pathname==='/rest/v1/rpc/jsb_w122_admin_org_booking_integrity')
+    return body(200,workProvider);
+   if(url.pathname==='/rest/v1/rpc/jsb_w120_admin_task_command')
+    return body(403,{code:'42501'});
    throw Error('Unexpected external request '+url.pathname);
   });
   await page.goto(URL_BASE+'admin.html',{waitUntil:'domcontentloaded'});
@@ -106,6 +142,8 @@ try{
   await page.locator('#mfa-submit').click();
   await page.locator('#dashboard').waitFor({state:'visible'});
   assert.equal(await page.locator('#screen-nav button').count(),24);
+  await page.waitForFunction(()=>document.querySelector('#ops-status')?.textContent.includes('미승인'));
+  assert.equal(await page.locator('#ops-items button').count(),0,'Unapproved TASK claim must not expose business commands');
   await page.locator('#metrics .metric').first().waitFor({state:'visible'});
   assert.equal(await page.locator('#metrics .metric').count(),3);
   assert.match(await page.locator('#metrics').innerText(),/4/);
@@ -118,6 +156,14 @@ try{
   await page.locator('#records-prev').click();
   await page.waitForFunction(()=>document.querySelector('#records-page')?.textContent.includes('1–15'));
   assert.equal(await page.locator('.record-item').count(),15);
+  await page.locator('[data-screen-id="cash"]').click();
+  await page.locator('#finance-items .finance-item').first().waitFor({state:'visible'});
+  assert.equal(await page.locator('#finance-items .finance-item').count(),10);
+  assert.match(await page.locator('#finance-status').innerText(),/실거래 미검증/);
+  await page.locator('[data-screen-id="providers"]').click();
+  await page.locator('#provider-items .finance-item').first().waitFor({state:'visible'});
+  assert.equal(await page.locator('#provider-items .finance-item').count(),10);
+  assert.match(await page.locator('#provider-status').innerText(),/미활성/);
   await page.locator('[data-screen-id="cases"]').click();
   assert.match(await page.locator('#detail-title').innerText(),/A\/S/);
   await page.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
@@ -219,6 +265,12 @@ try{
     if(screen==='tasks')await new Promise(ok=>setTimeout(ok,200));
     value=list(screen,input.p_offset,input.p_limit);
    }
+  }else if(u.pathname==='/rest/v1/rpc/jsb_w120_admin_task_queue'){
+    value=workQueue;
+  }else if(u.pathname==='/rest/v1/rpc/jsb_w123_admin_cash_integrity'){
+    status=403;value={code:'42501',message:'ACCESS_DENIED'};
+  }else if(u.pathname==='/rest/v1/rpc/jsb_w120_admin_task_command'){
+    status=403;value={code:'42501'};
   }else if(u.pathname==='/auth/v1/logout')value={};
   else throw Error('Unexpected scoped path '+u.pathname);
   await route.fulfill({status,headers,contentType:'application/json',body:JSON.stringify(value)});
@@ -237,6 +289,8 @@ try{
  assert.equal(await scoped.locator('.metric').count(),0,'denied finance panel must have no metrics');
  await scoped.waitForFunction(()=>document.querySelector('#records-state')?.textContent.includes('별도 업무권한'));
  assert.equal(await scoped.locator('.record-item').count(),0,'denied finance list must expose no records');
+ await scoped.waitForFunction(()=>document.querySelector('#finance-status')?.textContent.includes('권한'));
+ assert.equal(await scoped.locator('.finance-item').count(),0,'finance scope denial reveals no diagnostic');
  assert.doesNotMatch(await scoped.locator('body').innerText(),/PRIVATE_PERSONAL_DATA_MUST_NOT_APPEAR/);
  await scoped.locator('[data-screen-id="tasks"]').click();
  await scoped.locator('[data-screen-id="cases"]').click();
@@ -253,7 +307,11 @@ try{
  assert.match(js,/jsb_w103_admin_snapshot/);
  assert.match(js,/jsb_w108_admin_panel/);
  assert.match(js,/jsb_w114_admin_list/);
+ assert.match(js,/jsb_w120_admin_task_queue/);
+ assert.match(js,/jsb_w120_admin_task_command/);
+ assert.match(js,/jsb_w123_admin_cash_integrity/);
+ assert.match(js,/jsb_w122_admin_org_booking_integrity/);
  assert.doesNotMatch(js,/localStorage\s*\.|sessionStorage\s*\.|document\.cookie|service_role|sb_secret_/i);
  assert.ok(!html.includes('test-aal2'));
- console.log('WORK113-118 PASS: '+successful+' viewport auth/MFA/24-screen status lists + pagination + scope denials + no token/PII');
+ console.log('WORK119-124 PASS: '+successful+' viewport admin login MFA task gate OFF finance rights and no token persistence');
 }finally{await browser.close();}

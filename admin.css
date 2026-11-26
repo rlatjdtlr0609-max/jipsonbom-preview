@@ -32,3 +32,32 @@
 .records-empty{padding:25px 12px;border:1px dashed #d0d8e4;border-radius:9px;color:#687891;text-align:center;background:#fafbfe;font-size:12px}
 @media(max-width:760px){.records-heading{align-items:flex-start}.records-heading h3{font-size:16px}.records-tag{white-space:normal;text-align:right}.records-panel{margin-top:18px}.record-item{padding:13px;gap:7px}.records-pagination{justify-content:space-between}}
 @media(max-width:380px){.record-item{grid-template-columns:1fr}.record-status{max-width:100%;justify-self:start}.record-amount{text-align:left}}
+
+/* WORK119-124: private, role-scoped operation task and finance diagnostic */
+.operations-console{margin-top:23px;border-top:1px solid #e4e9f2;padding-top:22px;min-width:0}
+.ops-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ops-heading h3{font-size:18px;margin:5px 0 2px}
+.ops-hint{font-size:12px;line-height:1.75;color:#64758b;margin:11px 0 17px}
+.ops-items{display:grid;gap:12px}
+.ops-item{background:#fbfcfe;border:1px solid #dce3ed;border-radius:10px;padding:15px;display:grid;gap:11px}
+.ops-item-top{display:flex;justify-content:space-between;gap:13px;flex-wrap:wrap}
+.ops-item-title{font-weight:700;font-size:13px;color:var(--navy)}
+.ops-item-sub{font-size:11px;color:#758298;line-height:1.7;margin-top:4px;overflow-wrap:anywhere}
+.ops-item-status{font-size:11px;font-weight:700;color:#543e88;border:1px solid #dfd5f4;background:#f8f4ff;border-radius:5px;padding:4px 8px}
+.ops-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.ops-controls button{border-radius:7px;border:1px solid #c8badf;color:#4e3981;padding:8px 12px;background:white;font-size:12px;font-weight:700}
+.ops-controls button:hover{background:#f2eef8}
+.ops-controls button:disabled{opacity:.55;cursor:not-allowed}
+.ops-resolve-form{display:grid;gap:8px;border-top:1px dashed #d5dbe7;padding-top:13px}
+.ops-resolve-form label{font-size:11px;font-weight:700;color:#54627c}
+.ops-resolve-form input{height:38px;padding:8px 10px;border-radius:7px;border:1px solid #c9d3e1;font-size:12px;width:100%;background:#fff}
+.ops-resolve-form .ops-confirm{justify-self:start;background:var(--purple);color:white;border:0;border-radius:7px;padding:10px 15px;font-weight:700;font-size:12px}
+.ops-fail{color:#a33f39;font-size:12px}
+.finance-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.finance-item{border:1px solid #e2e6ed;background:#fff;border-radius:9px;padding:15px}
+.finance-label{font-size:11px;color:#697992;margin-bottom:11px;line-height:1.6}
+.finance-count{font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--navy)}
+.ops-empty{border:1px dashed #d5dae6;border-radius:9px;padding:20px;color:#64728b;font-size:12px;background:#fafbfe}
+@media(max-width:1040px){.finance-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.finance-items{grid-template-columns:repeat(2,minmax(0,1fr))}.ops-heading h3{font-size:16px}}
+@media(max-width:380px){.finance-items{grid-template-columns:1fr}}

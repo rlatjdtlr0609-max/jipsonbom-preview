@@ -8,8 +8,8 @@
  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src https://ohwkywomdqgcnptsnhwk.supabase.co; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
  <meta name="referrer" content="no-referrer">
  <title>집손봄 관리자 통합 관제 | 개발 환경</title>
- <link rel="stylesheet" href="./admin.css?v=work113-118-1">
- <script defer src="./admin.js?v=work113-118-1"></script>
+ <link rel="stylesheet" href="./admin.css?v=work119-124-1">
+ <script defer src="./admin.js?v=work119-124-1"></script>
 </head>
 <body>
  <header class="topbar">
@@ -101,6 +101,24 @@
        <span id="records-page" aria-live="polite">0건</span>
        <button id="records-next" class="plain-btn bordered" type="button" disabled>다음</button>
       </div>
+     </section>
+     <section id="operation-console" class="operations-console" aria-label="보호된 관리자 운영업무" hidden>
+      <div class="ops-heading"><div><span class="eyebrow">WORK120 · OPERATION_TASKS</span><h3>관리자 업무처리 원장</h3></div><span class="state-tag">원업무 별도</span></div>
+      <p class="ops-hint">관리자 MFA와 업무권한이 확인된 경우에만 처리할 업무가 나타납니다. 업무 처리완료는 고객 접수 게시, 기사 승인, 예약 변경이나 결제 완료를 의미하지 않습니다.</p>
+      <p id="ops-status" class="records-state" role="status" aria-live="polite">관리자 인증 후 원장 조회</p>
+      <div id="ops-items" class="ops-items"></div>
+     </section>
+     <section id="provider-console" class="operations-console" aria-label="수리업체·소속기사·예약 연결 검토" hidden>
+      <div class="ops-heading"><div><span class="eyebrow">WORK122 · COMPANY / MEMBER RELATIONS</span><h3>수리업체·소속기사·확정예약 연결 현황</h3></div><span class="state-tag">보호된 개발용 조회</span></div>
+      <p class="ops-hint">기존 업체 등록, 소속기사 초대·수락, 서류 검증, 지역, 예약 연결 현황만 조회합니다. 사업자등록번호·대표자 이름·기사 식별자는 표시하지 않습니다. 실제 기사배정·업체 승인·예약 변경은 비활성입니다.</p>
+      <p id="provider-status" class="records-state" role="status" aria-live="polite">관리자 인증 및 업체관리 권한 필요</p>
+      <div id="provider-items" class="finance-items"></div>
+     </section>
+     <section id="finance-console" class="operations-console" aria-label="기사 캐시 무결성" hidden>
+      <div class="ops-heading"><div><span class="eyebrow">WORK123 · DEV_VIRTUAL</span><h3>공식단가 10% · 캐시 이상거래 점검</h3></div><span class="state-tag">실 PG 비활성</span></div>
+      <p class="ops-hint">기사 견적금액이 아닌 공식 수리단가의 10%를 기준으로 개발 DB의 예약·보류·환불 요청을 조회합니다. 이 결과는 실제 PG 대사·법률·세무 검증 또는 실거래 증거가 아닙니다.</p>
+      <p id="finance-status" class="records-state" role="status" aria-live="polite">승인된 재무 권한 필요</p>
+      <div id="finance-items" class="finance-items"></div>
      </section>
      <div id="detail-safety" class="detail-safety"></div>
     </section>
