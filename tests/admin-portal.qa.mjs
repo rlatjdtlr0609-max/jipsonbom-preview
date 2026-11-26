@@ -243,6 +243,12 @@ try{
     if(screen==='tasks')await new Promise(ok=>setTimeout(ok,200));
     value=list(screen,input.p_offset,input.p_limit);
    }
+  }else if(u.pathname==='/rest/v1/rpc/jsb_w120_admin_task_queue'){
+    value=workQueue;
+  }else if(u.pathname==='/rest/v1/rpc/jsb_w123_admin_cash_integrity'){
+    status=403;value={code:'42501',message:'ACCESS_DENIED'};
+  }else if(u.pathname==='/rest/v1/rpc/jsb_w120_admin_task_command'){
+    status=403;value={code:'42501'};
   }else if(u.pathname==='/auth/v1/logout')value={};
   else throw Error('Unexpected scoped path '+u.pathname);
   await route.fulfill({status,headers,contentType:'application/json',body:JSON.stringify(value)});
