@@ -31,5 +31,5 @@ test('APPROVED alone does not mean ACTIVE, missing region/skill/compliance block
  for(const field of Object.keys(eligibility)){
   assert.throws(()=>act(s,'CLAIM',a,'KEY_'+field,{...eligibility,[field]:false}),/INELIGIBLE/);
  }
- assert.throws(()=>claimAction(s,'CLAIM',{workerId:a,key:'short',expectedVersion:0,eligibility}),/INVALID/);
+ assert.throws(()=>claimAction(s,'CLAIM',{workerId:a,key:'x',expectedVersion:0,eligibility}),/INVALID/);
 });
