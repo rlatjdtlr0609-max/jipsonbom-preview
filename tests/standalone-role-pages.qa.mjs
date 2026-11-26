@@ -29,7 +29,9 @@ try{
    assert.equal(await page.locator('.role-tabs a[aria-current="page"]').count(),1);
    assert.match(await page.title(),new RegExp(spec.title));
    const html=await page.content();
-   assert.match(html,/connect-src 'none'/);
+   if(spec.role==='customer')
+     assert.ok(html.includes('connect-src https://ohwkywomdqgcnptsnhwk.supabase.co'));
+   else assert.match(html,/connect-src 'none'/);
    assert.match(html,/form-action 'none'/);
    assert.doesNotMatch(html,/sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY/i);
    const dim=await page.evaluate(()=>({

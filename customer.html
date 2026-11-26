@@ -6,14 +6,14 @@
 <meta name="theme-color" content="#211735">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src https://ohwkywomdqgcnptsnhwk.supabase.co; form-action 'none'; base-uri 'none'">
 <title>집손봄 | 고객 전용 · 수리접수·마이페이지 (개발 미리보기)</title>
 <meta name="description" content="사진 접수 · 견적 · 방문 예약 · 수리이력 · A/S 시연. 실제 인증·접수·결제는 불가한 개발 미리보기입니다.">
 <link rel="stylesheet" href="./release.css?v=eed8e997160b">
 <link rel="stylesheet" href="./premium-ui.css?v=atelier-1">
 <link rel="stylesheet" href="./role-pages.css?v=work164-1">
 <script src="./role-pages.js?v=work164-1" defer></script>
-</head>
+<link rel="stylesheet" href="./customer-dev.css?v=work165-1"><script src="./customer-dev.js?v=work165-1" defer></script></head>
 <body data-role-page="customer">
 <div class="topnote">집손봄 · 고객 센터 · 개발용 독립 고정페이지 · 실제 개인정보 입력 및 결제 금지</div>
 <header class="navouter">
@@ -36,7 +36,45 @@
  <p class="role-warning">이 페이지는 원본 화면을 분리한 개발용 미리보기입니다. 회원 인증·실제 수리접수·기사배정·계약·캐시충전·결제·정산은 이 페이지에서 처리되지 않습니다. 개인정보를 입력하지 마세요.</p>
 </div>
 <main id="screen">
-<section data-screen="customer"><div class="wrap section"><div class="layout"><aside class="card dashnav"><h3>고객 접수·마이페이지</h3><a href="#reception" data-scroll="reception">사진 수리접수</a><a href="#myrequests" data-scroll="myrequests">접수·견적·예약</a><a href="#autharea" data-scroll="autharea">회원·비회원</a><a href="#asarea" data-scroll="asarea">A/S 안내</a><a href="#customer-benefits" data-scroll="customer-benefits">혜택·쿠폰·추천</a><a href="#repair-history" data-scroll="repair-history">수리 이력 (시연)</a></aside><div class="dashboard"><div class="dashhead"><div><span class="tag">고객 서비스</span><h1>고객 접수·마이페이지</h1><p class="intro">접수부터 견적·예약·A/S까지 같은 접수번호로 이어집니다.</p><div class="jb-policy-note " role="note"><b>생활수리 사후관리 책임 안내</b><p>집손봄은 수리 요청 접수와 수리기사 매칭·견적·예약 절차를 지원하는 플랫폼입니다. 고객이 승인한 실제 수리 작업의 시공 품질, 기사 귀책 하자보수 및 A/S 등 계약상 사후관리의 1차 책임은 해당 수리기사에게 있습니다. 고객은 집손봄을 통해 A/S·분쟁을 접수할 수 있으며 집손봄은 접수·전달·처리 이력 및 관련 법령상 의무를 이행합니다. 해당 고지는 집손봄의 법률상 책임을 배제하지 않습니다.</p></div></div></div><p class="hint preview-state">시연 전용 · 접수, 견적, 예약, 수리 이력과 A/S. 내 계정과 접수 동의 이력은 인증된 개발 환경에서만 확인할 수 있습니다. 이 화면에는 실제 로그인·파일 전송 기능이 없습니다.</p><div class="grid2" id="autharea"><div class="panel"><h3>회원으로 이용</h3><p class="intro">개발 API의 HTTPS 응답을 확인했습니다. 회원 로그인·접수·조회는 개발 계정 권한 검증 후 연결됩니다.</p><a class="btn small soft" data-service-health="" rel="noreferrer" href="https://ohwkywomdqgcnptsnhwk.supabase.co/functions/v1/jsb-work19-api/health">개발 API 상태 확인</a><div class="row spaced"><button class="btn small primary" data-auth="signup">회원가입</button><button class="btn small soft" data-auth="login">기존회원 로그인</button><button type="button" class="btn small soft" data-go="customer" data-scroll="reception">작성 중인 접수로 돌아가기</button></div></div><div class="panel"><h3>비회원으로 바로 접수</h3><p class="intro">가입 없이 접수 가능하며 실제 서비스에서는 접수별 인증·만료 권한을 적용합니다.</p><div class="row spaced"><button class="btn small primary" data-intake-guest="">비회원 접수 시작 →</button></div></div></div><div class="panel space24" id="reception"><h3>고객 접수 · 사진으로 접수하기 (시연)</h3><div class="hint" style="margin-bottom:15px">시연용 접수입니다. 실제 이름·전화번호·상세주소를 입력하지 마세요. 사진은 서버에 전송되지 않습니다.</div><form id="requestForm" class="fields" autocomplete="off"><div class="field"><label for="intake-account">이용 방법</label><select name="account" required="" id="intake-account"><option>비회원 바로 접수 (시연)</option><option>회원으로 접수 (시연)</option></select></div><div class="field"><label for="intake-category">수리 분야</label><select name="category" id="intake-category"><option selected="">수전·배관</option><option>욕실·변기</option><option>전기·조명</option><option>문·창호</option><option>가구·설치</option><option>실리콘·방수</option><option>세탁기 연결</option><option>배관 점검</option></select></div><div class="field full"><label for="intake-title">수리 요청 제목</label><input name="title" required="" maxlength="90" placeholder="예: 욕실 수전에서 물이 새요" readonly="" value="싱크대 배수관 점검" id="intake-title"></div><div class="field full"><label for="intake-note">요청 내용</label><textarea name="note" required="" maxlength="400" placeholder="고장 증상과 희망 일정 등을 적어주세요 (시연용)" readonly="" id="intake-note">예시: 싱크대 하부 누수 흔적 확인</textarea></div><div class="field"><label for="intake-address">서비스 지역 (시·군·구까지만)</label><input name="address" required="" maxlength="40" placeholder="예: 경기 광명시" readonly="" value="예시 지역 A" id="intake-address"></div><div class="field"><label for="preview-media">사진·영상 (브라우저에서만 선택)</label><input name="photo" type="file" accept="image/*,video/*" multiple="" id="preview-media"><output id="preview-file" aria-live="polite"></output></div><div class="field full"><label for="preview-visit">희망 방문일정 (시연)</label>
+<section data-screen="customer"><div class="wrap section"><div class="layout"><aside class="card dashnav"><h3>고객 접수·마이페이지</h3><a href="#reception" data-scroll="reception">사진 수리접수</a><a href="#myrequests" data-scroll="myrequests">접수·견적·예약</a><a href="#autharea" data-scroll="autharea">회원·비회원</a><a href="#asarea" data-scroll="asarea">A/S 안내</a><a href="#customer-benefits" data-scroll="customer-benefits">혜택·쿠폰·추천</a><a href="#repair-history" data-scroll="repair-history">수리 이력 (시연)</a></aside><div class="dashboard"><div class="dashhead"><div><span class="tag">고객 서비스</span><h1>고객 접수·마이페이지</h1><p class="intro">접수부터 견적·예약·A/S까지 같은 접수번호로 이어집니다.</p><div class="jb-policy-note " role="note"><b>생활수리 사후관리 책임 안내</b><p>집손봄은 수리 요청 접수와 수리기사 매칭·견적·예약 절차를 지원하는 플랫폼입니다. 고객이 승인한 실제 수리 작업의 시공 품질, 기사 귀책 하자보수 및 A/S 등 계약상 사후관리의 1차 책임은 해당 수리기사에게 있습니다. 고객은 집손봄을 통해 A/S·분쟁을 접수할 수 있으며 집손봄은 접수·전달·처리 이력 및 관련 법령상 의무를 이행합니다. 해당 고지는 집손봄의 법률상 책임을 배제하지 않습니다.</p></div></div></div><p class="hint preview-state">시연 전용 · 접수, 견적, 예약, 수리 이력과 A/S. 내 계정과 접수 동의 이력은 인증된 개발 환경에서만 확인할 수 있습니다. 이 화면에는 실제 로그인·파일 전송 기능이 없습니다.</p><div class="grid2" id="autharea"><div class="panel"><h3>회원으로 이용</h3><p class="intro">개발 API의 HTTPS 응답을 확인했습니다. 회원 로그인·접수·조회는 개발 계정 권한 검증 후 연결됩니다.</p><a class="btn small soft" data-service-health="" rel="noreferrer" href="https://ohwkywomdqgcnptsnhwk.supabase.co/functions/v1/jsb-work19-api/health">개발 API 상태 확인</a><div class="row spaced"><button class="btn small primary" data-auth="signup">회원가입</button><button class="btn small soft" data-auth="login">기존회원 로그인</button><button type="button" class="btn small soft" data-go="customer" data-scroll="reception">작성 중인 접수로 돌아가기</button></div></div><div class="panel"><h3>비회원으로 바로 접수</h3><p class="intro">가입 없이 접수 가능하며 실제 서비스에서는 접수별 인증·만료 권한을 적용합니다.</p><div class="row spaced"><button class="btn small primary" data-intake-guest="">비회원 접수 시작 →</button></div></div></div><section class="panel space24 w165" id="w165-dev" aria-labelledby="w165-title">
+ <div class="w165-header"><span class="tag warn">WORK 165 · DEV 전용</span>
+ <h3 id="w165-title">고객 회원인증 · 수리접수 · 내 접수 조회</h3>
+ <p>이 기능은 <b>집손봄 개발 DB(jipsonbom-dev)</b>와 연결됩니다. 개발용 합성 이름·연락처·주소만 입력하세요. 실제 고객 개인정보, 시공사진, 결제정보는 입력하지 마세요.</p>
+ <p>회원가입 시 이메일 확인이 필요합니다. 로그인한 고객의 접수만 조회하며, 다른 계정의 접수번호를 알아도 접근할 수 없습니다.</p></div>
+ <output id="w165-status" role="status" aria-live="polite">인증 준비 중</output>
+ <div class="w165-session"><span id="w165-session">로그인하지 않음</span>
+ <button type="button" class="btn small soft" id="w165-reload" disabled>내 접수 새로고침</button>
+ <button type="button" class="btn small soft" id="w165-signout" hidden>로그아웃</button></div>
+ <form id="w165-auth" autocomplete="off" class="w165-form">
+  <h4>이메일 회원 로그인 · 가입</h4>
+  <label for="w165-email">개발용 이메일</label><input id="w165-email" type="email" name="email" maxlength="254" autocomplete="username" required>
+  <label for="w165-password">비밀번호 (가입 시 12자리 이상)</label><input id="w165-password" type="password" name="password" autocomplete="current-password" required minlength="1">
+  <div class="w165-actions"><button class="btn primary" type="submit">회원 로그인</button>
+   <button class="btn soft" id="w165-signup" type="button">신규 회원가입</button></div>
+  <p class="tiny">로그인 토큰은 브라우저 메모리에서만 사용하며 새로고침하면 재로그인이 필요합니다. 가입 후 이메일 인증 전에는 접수가 저장되지 않습니다.</p>
+ </form>
+ <form id="w165-request" class="w165-form" autocomplete="off" hidden>
+  <h4>개발용 회원 수리접수 저장</h4>
+  <div class="w165-grid">
+  <label>가상 고객 이름<input name="name" maxlength="80" required placeholder="예: 테스트고객A"></label>
+  <label>가상 연락처 (숫자 8~11자리)<input name="phone" inputmode="numeric" maxlength="15" required placeholder="가상번호만 입력"></label>
+  <label>수리 분야<select name="category" required><option value="수전·배관">수전·배관</option><option value="전기·조명">전기·조명</option><option value="문·창호">문·창호</option><option value="가구·설치">가구·설치</option><option value="욕실·변기">욕실·변기</option></select></label>
+  <label>가상 작업 지역<input name="address" maxlength="300" required placeholder="가상주소 / 실제 상세주소 입력 금지"></label>
+  </div>
+  <label>가상 수리 요청 내용<textarea name="description" minlength="1" maxlength="2000" required placeholder="실제 고객정보 없는 테스트 요청만 작성"></textarea></label>
+  <label class="w165-consent"><input type="checkbox" name="contactConfirmed" required> 가상 연락처를 다시 확인했습니다 (오타 방지)</label>
+  <label class="w165-consent"><input type="checkbox" name="terms" required> 개발용 서비스 이용약관 테스트 동의 · work01-dev-v1 (상용 약관 아님)</label>
+  <label class="w165-consent"><input type="checkbox" name="privacy" required> 개발용 개인정보 수집·이용 테스트 동의 · work01-dev-v1 (상용 동의 아님)</label>
+  <button class="btn primary" type="submit">가상 수리접수 개발 DB에 저장</button>
+  <p class="tiny">동일한 전송 재시도는 고유키로 중복 저장을 막습니다. 사진·영상 업로드와 실제 접수 예약은 현재 비활성화됩니다.</p>
+ </form>
+ <div class="w165-history" aria-labelledby="w165-history-title">
+  <h4 id="w165-history-title">인증된 고객의 접수내역</h4>
+  <ul id="w165-list" aria-live="polite"><li>로그인 후 본인 접수만 표시됩니다.</li></ul>
+  <button type="button" id="w165-more" class="btn small soft" hidden>이전 접수 더보기</button>
+  <div id="w165-detail" aria-live="polite"></div>
+ </div>
+</section><div class="panel space24" id="reception"><h3>고객 접수 · 사진으로 접수하기 (시연)</h3><div class="hint" style="margin-bottom:15px">시연용 접수입니다. 실제 이름·전화번호·상세주소를 입력하지 마세요. 사진은 서버에 전송되지 않습니다.</div><form id="requestForm" class="fields" autocomplete="off"><div class="field"><label for="intake-account">이용 방법</label><select name="account" required="" id="intake-account"><option>비회원 바로 접수 (시연)</option><option>회원으로 접수 (시연)</option></select></div><div class="field"><label for="intake-category">수리 분야</label><select name="category" id="intake-category"><option selected="">수전·배관</option><option>욕실·변기</option><option>전기·조명</option><option>문·창호</option><option>가구·설치</option><option>실리콘·방수</option><option>세탁기 연결</option><option>배관 점검</option></select></div><div class="field full"><label for="intake-title">수리 요청 제목</label><input name="title" required="" maxlength="90" placeholder="예: 욕실 수전에서 물이 새요" readonly="" value="싱크대 배수관 점검" id="intake-title"></div><div class="field full"><label for="intake-note">요청 내용</label><textarea name="note" required="" maxlength="400" placeholder="고장 증상과 희망 일정 등을 적어주세요 (시연용)" readonly="" id="intake-note">예시: 싱크대 하부 누수 흔적 확인</textarea></div><div class="field"><label for="intake-address">서비스 지역 (시·군·구까지만)</label><input name="address" required="" maxlength="40" placeholder="예: 경기 광명시" readonly="" value="예시 지역 A" id="intake-address"></div><div class="field"><label for="preview-media">사진·영상 (브라우저에서만 선택)</label><input name="photo" type="file" accept="image/*,video/*" multiple="" id="preview-media"><output id="preview-file" aria-live="polite"></output></div><div class="field full"><label for="preview-visit">희망 방문일정 (시연)</label>
  <select id="preview-visit" name="visitPreference"><option>일정 협의</option><option>평일 오전</option><option>평일 오후</option><option>주말</option></select>
  <details class="center-details"><summary>주소·현장 연락정보·동의 예시</summary>
  <ul><li>주소검색·상세주소 예시 · 예시 지역 A, 예시 건물</li><li>현장 연락정보 · 예시 연락처 확인</li>

@@ -1,0 +1,27 @@
+/* WORK165 — DEV-only customer authenticated intake panel.
+ * Excludes original WORK164 demo styles; never makes private data publicly readable.
+ */
+.w165{border:2px solid #d7c6fb!important;background:#fff}
+.w165-header{display:grid;gap:9px;margin-bottom:12px}
+.w165-header h3{font-size:21px;line-height:1.3;color:#271c49}
+.w165-header p{font-size:12px;line-height:1.7;color:#645a77}
+#w165-status{display:block;margin:12px 0;padding:13px 15px;border-radius:11px;background:#f2ecff;color:#523681;font-size:13px;line-height:1.65;overflow-wrap:anywhere}
+.w165-session{display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #ebe5f4;padding:10px 0 15px}
+.w165-session span{margin-right:auto;font-size:13px;color:#3c315a;overflow-wrap:anywhere}
+.w165-form{display:grid;gap:11px;padding:18px 0}
+.w165-form h4,.w165-history h4{color:#211b36;font-size:17px;margin:0 0 7px}
+.w165-form label{font-size:13px;font-weight:650;color:#413658;display:grid;gap:6px}
+.w165-form input,.w165-form textarea,.w165-form select{font-size:14px;max-width:100%;min-width:0}
+.w165-form .w165-consent{display:flex;align-items:start;gap:10px;font-size:12px;line-height:1.5;font-weight:500}
+.w165-consent input{flex:0 0 18px;width:18px;height:18px;margin:0}
+.w165-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.w165-actions{display:flex;flex-wrap:wrap;gap:10px}
+.w165-actions button{min-height:44px}
+.w165-history{margin-top:15px;border-top:1px solid #ece8f5;padding-top:17px}
+#w165-list{padding:0;display:grid;gap:8px;list-style:none}
+#w165-list li{font-size:13px;color:#5b5269;overflow-wrap:anywhere}
+#w165-list button{text-align:left;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+#w165-detail{margin-top:10px;display:grid;gap:6px;background:#faf9ff;border-radius:12px;padding:12px;font-size:13px;overflow-wrap:anywhere}
+#w165-detail:empty{display:none}
+.w165 [hidden]{display:none!important}
+@media(max-width:720px){.w165-grid{grid-template-columns:1fr}.w165{padding:15px!important}.w165-actions button{width:100%}}

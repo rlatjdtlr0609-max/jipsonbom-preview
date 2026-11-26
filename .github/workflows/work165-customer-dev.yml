@@ -1,0 +1,46 @@
+name: WORK165 DEV customer Auth, member intake and A/B access isolation (NO DEPLOY)
+on:
+  push:
+    branches:
+      - feature/work165-dev-customer-auth-intake-20261126
+    paths:
+      - customer.html
+      - customer-dev.js
+      - customer-dev.css
+      - tests/work165-customer-dev.qa.mjs
+      - tests/standalone-role-pages.qa.mjs
+      - .github/workflows/work165-customer-dev.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  work165-dev-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and secret-key guard
+        run: |
+          node --check customer-dev.js
+          node --check tests/work165-customer-dev.qa.mjs
+          node --check tests/standalone-role-pages.qa.mjs
+          ! grep -REi '(sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY)' customer-dev.js customer.html customer-dev.css
+          grep -F "connect-src https://ohwkywomdqgcnptsnhwk.supabase.co" customer.html
+          grep -F "form-action 'none'" customer.html
+          grep -F 'jsb_member_submit_once' customer-dev.js
+          grep -F 'jsb_w16_member_profile' customer-dev.js
+      - name: Install Playwright using existing Chrome
+        run: |
+          google-chrome --version
+          npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Browser security and customer isolation
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-work165-server.log 2>&1 &
+          sleep 2
+          node tests/work165-customer-dev.qa.mjs
+          node tests/standalone-role-pages.qa.mjs
