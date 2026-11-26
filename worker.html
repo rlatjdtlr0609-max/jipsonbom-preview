@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#211735">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>집손봄 | 수리기사 전용 · 작업게시판·캐시 (개발 미리보기)</title>
+<meta name="description" content="작업선택 · 견적 · 일정 · 캐시 10% 정책 시연. 실제 인증·접수·결제는 불가한 개발 미리보기입니다.">
+<link rel="stylesheet" href="./release.css?v=eed8e997160b">
+<link rel="stylesheet" href="./premium-ui.css?v=atelier-1">
+<link rel="stylesheet" href="./role-pages.css?v=work164-1">
+<script src="./role-pages.js?v=work164-1" defer></script>
+</head>
+<body data-role-page="worker">
+<div class="topnote">집손봄 · 수리기사 센터 · 개발용 독립 고정페이지 · 실제 개인정보 입력 및 결제 금지</div>
+<header class="navouter">
+ <div class="wrap nav">
+  <a href="./index.html" class="logo" aria-label="집손봄 메인 홈페이지"><span class="mark" aria-hidden="true">⌂</span><span><b>집손봄</b><small>사진으로 먼저 보는 생활수리</small></span></a>
+  <nav class="mainnav" aria-label="다른 서비스로 이동"><a href="./index.html">메인</a><a href="./customer.html">고객</a><a href="./worker.html">수리기사</a><a href="./construction.html">공사업체</a><a href="./repair-company.html">수리업체</a></nav>
+  <div class="navtools"><a class="navbtn strong" href="./index.html">메인으로</a></div>
+ </div>
+</header>
+<div class="tabstrip"><nav class="wrap tabs role-tabs" aria-label="영역별 고정링크"><a href="./index.html">메인</a>
+<a href="./customer.html">고객</a>
+<a href="./worker.html" aria-current="page">수리기사</a>
+<a href="./construction.html">공사업체</a>
+<a href="./repair-company.html">수리업체·기사팀</a>
+<a href="./admin.html">관리자 로그인</a></nav></div>
+<div class="wrap role-heading">
+ <div class="role-eyebrow">JIPSONBOM · WORK164 · DEVELOPMENT PREVIEW</div>
+ <h2>수리기사 전용 · 작업게시판·캐시</h2>
+ <p>작업선택 · 견적 · 일정 · 캐시 10% 정책 시연</p>
+ <p class="role-warning">이 페이지는 원본 화면을 분리한 개발용 미리보기입니다. 회원 인증·실제 수리접수·기사배정·계약·캐시충전·결제·정산은 이 페이지에서 처리되지 않습니다. 개인정보를 입력하지 마세요.</p>
+</div>
+<main id="screen">
+<section data-screen="worker"><div class="wrap section"><div class="layout"><aside class="card dashnav"><h3>기사 전용 센터</h3><a href="#jobs" data-scroll="jobs">작업게시판</a><a href="#wallet" data-scroll="wallet">선불 캐시 지갑</a><a href="#calculator" data-scroll="calculator">캐시 계산기</a><a href="#workernote" data-scroll="workernote">활동 안내</a><a href="#visit-agenda" data-scroll="visit-agenda">방문 일정·수리 진행 (시연)</a></aside><div class="dashboard"><div class="dashhead"><div><span class="tag">기사 전용</span><h1>수리기사센터</h1><p class="intro">기사 가입·관리자 승인 이후 작업 자율선택 · 견적 · 예약 · 완료</p><div class="jb-policy-note " role="note"><b>수리기사 의무 안내 · 매칭 및 작업수락 전 확인</b><p>기사는 자신이 수락하고 수행한 수리의 적정 시공, 안전조치, 귀책 있는 하자에 대한 보수 및 적용된 A/S 정책에 따른 사후관리의 1차 책임을 부담합니다. 고객의 A/S 요청에 성실히 답변하고 증빙과 처리이력을 플랫폼에 남겨야 합니다. 기사 귀책 재작업은 원작업에 연결하고 추가 플랫폼 캐시 과금을 자동 적용하지 않습니다. 귀책 여부는 계약·작업범위·증빙을 기준으로 검토하며 일방 주장만으로 확정하지 않습니다.</p></div></div><button class="btn small soft" data-auth="worker" id="worker-apply">기사 등록·승인 안내 (시연)</button></div><p class="hint preview-state">시연 전용 · 등록 심사, 작업게시판, 견적, 방문 및 완료, 거래이력. 실제 신청·충전은 차단됩니다.</p><div class="kpis"><div class="kpi"><span>사용 가능 캐시 (시연)</span><b>31,000원</b></div><div class="kpi"><span>예약 보류 캐시</span><b>9,000원</b></div><div class="kpi"><span>누적 차감 캐시</span><b>5,000원</b></div><div class="kpi"><span>기사 과금 정책</span><b>공식 단가 10%</b></div></div><div class="panel space24" id="wallet"><div class="row between"><h3>💜 기사 선불 캐시 지갑</h3><span class="tag warn">거래 이력 시연 · 충전 차단</span></div><div class="hint">예약 당시 집손봄 공식 수리단가의 10%를 보류합니다. 정상완료 시 차감하고 적법한 취소 시 해제합니다. 아래 금액과 내역은 시연 데이터입니다.</div><div class="pillrow spaced"></div><div class="div"></div><h3>캐시 거래 내역</h3><div class="ledger"><div class="log"><span>예시 정상완료 차감<small style="display:block;color:#96899c">시연 내역</small></span><b>5,000원</b></div><div class="log"><span>예시 예약 보류<small style="display:block;color:#96899c">시연 내역</small></span><b>9,000원</b></div></div></div><div class="panel space24" id="jobs"><div class="row between"><h3 style="margin:0">내 지역 수리 작업게시판</h3><span class="tiny">모의 데이터 · 실제 고객 정보 비노출</span></div><div class="pillrow spaced"><button class="chip active" data-filter="전체">전체</button><button class="chip " data-filter="수전·배관">수도·배관</button><button class="chip " data-filter="전기·조명">전기·조명</button></div><div id="workerJobs"><div class="item"><img class="itemphoto" src="./assets/plumber.webp" alt="싱크대 하부 누수 점검"><div class="iteminfo"><div class="row between" style="align-items:start"><div><b>싱크대 하부 누수 점검</b><p>DEMO-101 · 수전·배관 · 예시 지역 A</p><p>배수관 연결 부위 점검 요청</p></div><span class="status pending">기사 선택 대기</span></div><div class="row between spaced" style="flex-wrap:wrap"><div class="tiny">공식 단가 예시 <b>80,000원</b> · 기사 캐시 10% <b style="color:var(--purple)">8,000원</b><br>기사 견적 <b>미제출</b></div><button class="btn small primary" data-action="claim" data-id="DEMO-101">작업 선택</button></div></div></div><div class="item"><img class="itemphoto" src="./assets/lighting.webp" alt="주방 LED 교체"><div class="iteminfo"><div class="row between" style="align-items:start"><div><b>주방 LED 교체</b><p>DEMO-102 · 전기·조명 · 예시 지역 B</p><p>점등이 끊기는 증상 확인</p></div><span class="status pending">견적 검토</span></div><div class="row between spaced" style="flex-wrap:wrap"><div class="tiny">공식 단가 예시 <b>60,000원</b> · 기사 캐시 10% <b style="color:var(--purple)">6,000원</b><br>기사 견적 <b>72,000원</b></div></div></div></div><div class="item"><img class="itemphoto" src="./assets/door.webp" alt="현관문 손잡이 점검"><div class="iteminfo"><div class="row between" style="align-items:start"><div><b>현관문 손잡이 점검</b><p>DEMO-103 · 문·창호 · 예시 지역 C</p><p>방문 시간 조율 예시</p></div><span class="status booked">예약 확정·캐시 보류</span></div><div class="row between spaced" style="flex-wrap:wrap"><div class="tiny">공식 단가 예시 <b>90,000원</b> · 기사 캐시 10% <b style="color:var(--purple)">9,000원</b><br>기사 견적 <b>95,000원</b></div><button class="btn small primary" data-action="complete" data-id="DEMO-103">정상 수리완료</button></div></div></div></div></div><section id="visit-agenda" class="panel space24"><h3>방문 일정·수리 진행 (시연)</h3><ul class="preview-list"><li><b>오후 2:00</b> · 현관문 손잡이 점검 · 방문 예정</li><li><b>오후 4:00</b> · 배관 연결 점검 · 작업 완료 예시</li></ul><details class="center-details"><summary>승인된 기사의 업무 안내</summary><ul><li>내가 선택한 수리 · 견적 작성·제출 · 예약확정 작업</li><li>오늘 방문 · 작업진행·전후사진 · 작업완료·수리이력</li><li>활동지역 · 기술·서류 · 일정·휴무·알림 · 회원정보</li></ul></details></section><div class="panel space24" id="calculator"><h3>집손봄 공식 수리단가 10% 계산기</h3><p class="intro" style="margin-bottom:15px">공식 수리단가표 미승인 상태이므로 아래 금액은 테스트 입력값입니다. 실제 고객 견적은 차감 기준이 아닙니다.</p><div class="fields"><div class="field"><label>공식 수리단가 (원, 예시)</label><input type="number" min="0" step="1000" id="calcprice" value="80000"></div><div class="field"><label>기사 캐시 차감 예정액</label><div class="price" id="calcresult">8,000원</div></div></div><p class="tiny spaced">원 미만 처리·복합작업 과금단위·VAT·법률/세무/PG 검토는 아직 출시 전 필수 확인사항입니다.</p></div><div class="notice space24" id="workernote">고객이 기사에게 직접 지급하는 수리비와 플랫폼 이용료는 별도입니다. 실제 결제·충전·환불은 차단됩니다.</div></div></div></div></section>
+</main>
+<footer class="footer">
+ <div class="wrap"><div><b>집손봄 · 수리기사 센터</b><p>개발 미리보기 · 기존 원본 화면 보존 · 운영용 기능과 연결 전</p></div><div>MASTER_11 · WORK164 독립 고정링크</div><a href="./index.html">메인 홈페이지</a></div>
+</footer>
+<div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
