@@ -1,0 +1,23 @@
+name: WORK186 DEV isolated verification NO DEPLOY
+on:
+  push:
+    branches:
+      - feature/work186-real-customer-auth-e2e-20261126
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: WORK186 isolated checks (no production deploy, no payment)
+        run: |
+          node --check work186-real-dev-e2e.mjs
+          node --check tests/work186-real-dev-runner.mjs
+          node --test tests/work186-e2e-contract.test.mjs
+          if node tests/work186-real-dev-runner.mjs; then echo 'REAL_DEV_E2E_EXECUTED'; else code=$?; if [ $code -eq 2 ]; then echo 'REAL_TWO_ACCOUNT_E2E_BLOCKED_NO_CREDENTIALS'; else exit $code; fi; fi
