@@ -60,6 +60,16 @@ const workFinance={
  hold_snapshot_mismatches:0,orphan_holds:0,duplicate_holds_for_booking:0,
  refund_review_requests:0
 };
+const workProvider={
+ schema_version:'WORK122_ORG_BOOKING_READ_V1',
+ environment:'DEVELOPMENT',read_only:true,pii_included:false,
+ production_deployment:false,assignment_action_enabled:false,
+ booking_change_enabled:false,company_or_worker_record_modified:false,
+ full_company_e2e_certified:false,org_count:0,membership_count:0,
+ invited_memberships:0,accepted_memberships:0,ended_memberships:0,
+ booking_membership_links:0,confirmed_bookings_with_nonaccepted_member:0,
+ document_count:0,verified_document_count:0,region_link_count:0
+};
 const browser=await chromium.launch({headless:true});
 let successful=0;
 try{
@@ -109,6 +119,8 @@ try{
    }
    if(url.pathname==='/rest/v1/rpc/jsb_w123_admin_cash_integrity')
     return body(200,workFinance);
+   if(url.pathname==='/rest/v1/rpc/jsb_w122_admin_org_booking_integrity')
+    return body(200,workProvider);
    if(url.pathname==='/rest/v1/rpc/jsb_w120_admin_task_command')
     return body(403,{code:'42501'});
    throw Error('Unexpected external request '+url.pathname);
@@ -148,6 +160,10 @@ try{
   await page.locator('#finance-items .finance-item').first().waitFor({state:'visible'});
   assert.equal(await page.locator('#finance-items .finance-item').count(),10);
   assert.match(await page.locator('#finance-status').innerText(),/실거래 미검증/);
+  await page.locator('[data-screen-id="providers"]').click();
+  await page.locator('#provider-items .finance-item').first().waitFor({state:'visible'});
+  assert.equal(await page.locator('#provider-items .finance-item').count(),10);
+  assert.match(await page.locator('#provider-status').innerText(),/미활성/);
   await page.locator('[data-screen-id="cases"]').click();
   assert.match(await page.locator('#detail-title').innerText(),/A\/S/);
   await page.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
@@ -294,6 +310,7 @@ try{
  assert.match(js,/jsb_w120_admin_task_queue/);
  assert.match(js,/jsb_w120_admin_task_command/);
  assert.match(js,/jsb_w123_admin_cash_integrity/);
+ assert.match(js,/jsb_w122_admin_org_booking_integrity/);
  assert.doesNotMatch(js,/localStorage\s*\.|sessionStorage\s*\.|document\.cookie|service_role|sb_secret_/i);
  assert.ok(!html.includes('test-aal2'));
  console.log('WORK119-124 PASS: '+successful+' viewport admin login MFA task gate OFF finance rights and no token persistence');
