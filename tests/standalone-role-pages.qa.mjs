@@ -30,7 +30,7 @@ try{
    assert.match(await page.title(),new RegExp(spec.title));
    const html=await page.content();
    if(spec.role==='customer')
-    assert.match(html,/connect-src https:\\/\\/ohwkywomdqgcnptsnhwk\\.supabase\\.co/);
+     assert.ok(html.includes('connect-src https://ohwkywomdqgcnptsnhwk.supabase.co'));
    else assert.match(html,/connect-src 'none'/);
    assert.match(html,/form-action 'none'/);
    assert.doesNotMatch(html,/sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY/i);
