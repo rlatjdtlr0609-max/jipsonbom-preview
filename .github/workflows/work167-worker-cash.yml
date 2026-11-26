@@ -1,0 +1,40 @@
+name: WORK167 worker official price 10pct cash guards
+on:
+  push:
+    branches:
+      - feature/work167-worker-preview-20261126
+    paths:
+      - 'worker.html'
+      - 'work167-*.mjs'
+      - 'tests/work167-worker-cash.test.mjs'
+      - 'tests/work167-worker-panel.qa.mjs'
+      - '.github/workflows/work167-worker-cash.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  demo-cash:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser testing dependency
+        run: |
+          google-chrome --version
+          npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Run isolated local source server
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-local-http.log 2>&1 &
+          sleep 2
+      - name: Official price, hold debit release and role-page regression
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          node --check work167-worker-panel.mjs
+          node --check work167-cash-policy.mjs
+          node --test tests/work167-worker-cash.test.mjs
+          node tests/work167-worker-panel.qa.mjs
+          node tests/standalone-role-pages.qa.mjs
