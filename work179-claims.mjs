@@ -6,10 +6,10 @@ const valid=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{4,80}$/.test(v);
 export function publishOpportunity(source){
  if(!valid(source?.id)||source?.publishable!==true||source?.state!=='OPEN')
   throw Error('NOT_PUBLISHABLE');
- const safeKeys=['id','category','estimatedLabor','district','publishedAt','title'];
+ const safeKeys=['id','category','estimatedLabor','district','publishedAt'];
  const output={};
  for(const k of safeKeys)if(source[k]!==undefined)output[k]=source[k];
- if(typeof output.district!=='string'||output.district.length>70)throw Error('DISTRICT_REQUIRED');
+ if(typeof output.district!=='string'||output.district.length>40||!/(시|군|구)$/u.test(output.district))throw Error('NORMALIZED_DISTRICT_REQUIRED');
  return Object.freeze(output);
 }
 export function emptyClaimBoard(opportunityId){
