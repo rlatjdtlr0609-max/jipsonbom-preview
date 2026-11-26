@@ -39,7 +39,7 @@ export function quoteEvent(state,action,{actor,key,expectedVersion,components,
  const latest=state.versions.at(-1);
  let next;
  if(action==='DRAFT'){
-  if(!worker||latest?.status==='APPROVED')throw Error('QUOTE_DRAFT_NOT_ALLOWED');
+  if(!worker||(latest&&latest.status!=='REVISION_REQUESTED'))throw Error('QUOTE_DRAFT_NOT_ALLOWED');
   const amount=laborTotal(components);
   next={version:(latest?.version||0)+1,status:'DRAFT',amount,deadline:null};
  }else{
