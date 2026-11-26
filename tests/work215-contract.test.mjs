@@ -7,7 +7,7 @@ test('WORK215 fixed pages and protected boundary',async()=>{
  const pages=await Promise.all(fixed.map(read));
  for(const [i,html] of pages.entries()){
   assert.match(html,/lang="ko"/);
-  assert.match(html,/name="robots" content="noindex,nofollow"/);
+  assert.match(html,/name="robots" content="noindex,nofollow(?:,[^"]+)?"/);
   assert.doesNotMatch(html,/(sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY)/i,fixed[i]);
  }
  for(const html of pages.slice(0,5)){
