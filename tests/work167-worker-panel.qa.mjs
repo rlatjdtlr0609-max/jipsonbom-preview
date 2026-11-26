@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+const {chromium}=createRequire(import.meta.url)('playwright');
+const ROOT=process.env.JSB_QA_URL||'http://127.0.0.1:8765/';
+const browser=await chromium.launch({headless:true,...(process.env.JSB_QA_BROWSER_CHANNEL?{channel:process.env.JSB_QA_BROWSER_CHANNEL}:{})});
+try{
+ const page=await browser.newPage({viewport:{width:390,height:850}});
+ const errors=[],external=[],writes=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ page.on('request',r=>{if(new URL(r.url()).origin!==new URL(ROOT).origin)external.push(r.url());if(!['GET','HEAD'].includes(r.method()))writes.push(r.url());});
+ await page.goto(ROOT+'worker.html',{waitUntil:'networkidle'});
+ await page.locator('#w167-panel').waitFor({state:'visible'});
+ await page.locator('[data-w167-op=CALCULATE]').click();
+ assert.match(await page.locator('#w167-result').textContent(),/8,000원/);
+ await page.locator('[data-w167-op=CONFIRM_BOOKING]').click();
+ assert.match(await page.locator('#w167-held').textContent(),/8,000원/);
+ assert.match(await page.locator('#w167-available').textContent(),/17,000원/);
+ await page.locator('[data-w167-op=CONFIRM_BOOKING]').click();
+ assert.equal(await page.locator('#w167-events li').count(),1,'duplicate hold not allowed');
+ await page.locator('[data-w167-op=COMPLETE_WORK]').click();
+ assert.match(await page.locator('#w167-debited').textContent(),/8,000원/);
+ await page.locator('[data-w167-op=COMPLETE_WORK]').click();
+ assert.match(await page.locator('#w167-result').textContent(),/차단/);
+ await page.locator('#w167-price').fill('80001');
+ await page.locator('[data-w167-op=CALCULATE]').click();
+ assert.match(await page.locator('#w167-result').textContent(),/ROUNDING_POLICY_APPROVAL_REQUIRED/);
+ assert.equal(errors.length,0,JSON.stringify(errors));
+ assert.equal(external.length,0,JSON.stringify(external));
+ assert.equal(writes.length,0,JSON.stringify(writes));
+ console.log('WORK167 PASS: 390px UI official fee, hold once, debit once, rounding unapproved denied, no network writes');
+}finally{await browser.close();}
