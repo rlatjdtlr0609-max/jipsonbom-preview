@@ -1,0 +1,34 @@
+name: WORK202 isolated DEV QA NO DEPLOY
+on:
+  push:
+    branches:
+      - feature/work202-role-pages-live-readonly-20261126
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare Chrome browser test runtime
+        run: |
+          google-chrome --version
+          npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Start local DEV page test server
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/work202.log 2>&1 &
+          sleep 2
+      - name: Execute WORK202 checks (no production/PG/deploy)
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          node --check work202-role-client.mjs
+          node --check work202-role-panel.mjs
+          node --test tests/work202-role-api.test.mjs
+          node tests/work202-role-page.qa.mjs
+          node tests/work165-customer-dev.qa.mjs
