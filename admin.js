@@ -628,7 +628,7 @@
   history.replaceState(null,'',window.location.pathname+window.location.search);
   const bearer=params.get('access_token'),kind=params.get('type');
   const expires=Number(params.get('expires_in'));
-  if(kind!=='recovery'||!bearer||!/^[-A-Za-z0-9_]+\\.[-A-Za-z0-9_]+\\.[-A-Za-z0-9_]+$/.test(bearer)||
+  if(kind!=='recovery'||!bearer||!/^[-A-Za-z0-9_]+\.[-A-Za-z0-9_]+\.[-A-Za-z0-9_]+$/.test(bearer)||
      !Number.isFinite(expires)||expires<=0){
    showStatus('본인확인 링크가 유효하지 않습니다. 비밀번호 재설정 이메일을 다시 요청하세요.',true);
    return;
