@@ -130,6 +130,8 @@ try{
   await page.locator('#mfa-submit').click();
   await page.locator('#dashboard').waitFor({state:'visible'});
   assert.equal(await page.locator('#screen-nav button').count(),24);
+  await page.waitForFunction(()=>document.querySelector('#ops-status')?.textContent.includes('미승인'));
+  assert.equal(await page.locator('#ops-items button').count(),0,'Unapproved TASK claim must not expose business commands');
   await page.locator('#metrics .metric').first().waitFor({state:'visible'});
   assert.equal(await page.locator('#metrics .metric').count(),3);
   assert.match(await page.locator('#metrics').innerText(),/4/);
@@ -142,6 +144,10 @@ try{
   await page.locator('#records-prev').click();
   await page.waitForFunction(()=>document.querySelector('#records-page')?.textContent.includes('1–15'));
   assert.equal(await page.locator('.record-item').count(),15);
+  await page.locator('[data-screen-id="cash"]').click();
+  await page.locator('#finance-items .finance-item').first().waitFor({state:'visible'});
+  assert.equal(await page.locator('#finance-items .finance-item').count(),10);
+  assert.match(await page.locator('#finance-status').innerText(),/실거래 미검증/);
   await page.locator('[data-screen-id="cases"]').click();
   assert.match(await page.locator('#detail-title').innerText(),/A\/S/);
   await page.waitForFunction(()=>document.querySelector('.metric-label')?.textContent.includes('cases'));
@@ -267,6 +273,8 @@ try{
  assert.equal(await scoped.locator('.metric').count(),0,'denied finance panel must have no metrics');
  await scoped.waitForFunction(()=>document.querySelector('#records-state')?.textContent.includes('별도 업무권한'));
  assert.equal(await scoped.locator('.record-item').count(),0,'denied finance list must expose no records');
+ await scoped.waitForFunction(()=>document.querySelector('#finance-status')?.textContent.includes('권한'));
+ assert.equal(await scoped.locator('.finance-item').count(),0,'finance scope denial reveals no diagnostic');
  assert.doesNotMatch(await scoped.locator('body').innerText(),/PRIVATE_PERSONAL_DATA_MUST_NOT_APPEAR/);
  await scoped.locator('[data-screen-id="tasks"]').click();
  await scoped.locator('[data-screen-id="cases"]').click();
@@ -283,7 +291,10 @@ try{
  assert.match(js,/jsb_w103_admin_snapshot/);
  assert.match(js,/jsb_w108_admin_panel/);
  assert.match(js,/jsb_w114_admin_list/);
+ assert.match(js,/jsb_w120_admin_task_queue/);
+ assert.match(js,/jsb_w120_admin_task_command/);
+ assert.match(js,/jsb_w123_admin_cash_integrity/);
  assert.doesNotMatch(js,/localStorage\s*\.|sessionStorage\s*\.|document\.cookie|service_role|sb_secret_/i);
  assert.ok(!html.includes('test-aal2'));
- console.log('WORK113-118 PASS: '+successful+' viewport auth/MFA/24-screen status lists + pagination + scope denials + no token/PII');
+ console.log('WORK119-124 PASS: '+successful+' viewport admin login MFA task gate OFF finance rights and no token persistence');
 }finally{await browser.close();}
