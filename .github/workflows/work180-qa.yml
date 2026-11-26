@@ -1,0 +1,21 @@
+name: WORK180 isolated DEV verification NO DEPLOY
+on:
+  push:
+    branches:
+      - feature/work180-quotes-20261126
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate WORK180 only
+        run: |
+          node --check work180-quotes.mjs
+          node --test tests/work180-quotes.test.mjs
