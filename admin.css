@@ -71,3 +71,14 @@
 #enroll-form button{max-width:100%}
 .mfa-qr{display:block;width:min(225px,100%);height:auto;max-height:250px;object-fit:contain;margin:10px auto;border:1px solid #dfd7f1;background:white;padding:12px;border-radius:9px}
 #enroll-form .enroll-warning{font-size:12px;color:#735e86;background:#f8f4ff;border:1px solid #e8def6;border-radius:8px;padding:10px}
+
+
+/* WORK161 - password recovery remains isolated from administrator permissions. */
+#reset-request-form,#reset-confirm-form{display:grid;gap:11px;margin-top:16px}
+#reset-request-form[hidden],#reset-confirm-form[hidden],#reset-copy[hidden]{display:none}
+#reset-request-form h3,#reset-confirm-form h3{margin:0;font-weight:750;font-size:17px;color:var(--navy)}
+#reset-request-form p,#reset-confirm-form p{margin:0;color:var(--secondary);font-size:12px;line-height:1.65}
+#reset-request-form label,#reset-confirm-form label{font-size:12px;font-weight:700;color:var(--navy)}
+#reset-request-form input,#reset-confirm-form input{min-width:0;width:100%;border:1px solid #cbd4e4;border-radius:8px;padding:11px 12px;background:#fff;color:var(--navy)}
+#reset-request-form button,#reset-confirm-form button{width:100%;margin:2px 0}
+#reset-confirm-form .recovery-note{color:#63468f;font-size:12px;line-height:1.6}
