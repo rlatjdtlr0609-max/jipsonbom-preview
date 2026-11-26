@@ -58,7 +58,13 @@
   try{data=await r.json();}catch{}
   if(!r.ok){
    const code=String(data?.code||data?.error_code||'');
-   if(r.status===401||r.status===403)throw Error('인증 또는 소유권 검증에 실패했습니다.');
+   if(r.status===401||r.status===403){
+    if(token&&session?.token===token){
+     reset();
+     write('인증 또는 소유권 확인에 실패하여 고객 정보를 지웠습니다. 다시 로그인하세요.');
+    }
+    throw Error('인증 또는 소유권 검증에 실패했습니다.');
+   }
    if(code==='email_not_confirmed')throw Error('이메일 확인 후 로그인하세요.');
    if(code==='invalid_credentials')throw Error('로그인 정보가 올바르지 않습니다.');
    throw Error('개발 서버 요청이 거부되었습니다. ('+r.status+')');
