@@ -24,9 +24,11 @@ export function applyFlow(source,action,{actor,expectedVersion,key,workerEligibl
  visit,safety,officialPrice,officialVersion}={}){
  if(!moves[action])throw Error('UNKNOWN_TRANSITION');
  if(!id(key))throw Error('IDEMPOTENCY_KEY_REQUIRED');
+ const fingerprint=JSON.stringify({workerEligible,quote,visit,safety,officialPrice,officialVersion});
  const prior=source.keys[key];
  if(prior){
-  if(prior.action!==action||prior.actor!==actor)throw Error('IDEMPOTENCY_KEY_CONFLICT');
+  if(prior.action!==action||prior.actor!==actor||prior.fingerprint!==fingerprint)
+   throw Error('IDEMPOTENCY_KEY_CONFLICT');
   return source;
  }
  if(!Number.isSafeInteger(expectedVersion)||expectedVersion!==source.version)throw Error('STALE_EXPECTED_VERSION');
@@ -73,7 +75,7 @@ export function applyFlow(source,action,{actor,expectedVersion,key,workerEligibl
   out.cash=stepCash(source.cash,out.billingUnit.id,'RELEASE_HOLD');
  }
  out.state=rule.to;out.version+=1;
- out.keys[key]={action,actor};
+ out.keys[key]={action,actor,fingerprint};
  out.events.push({action,version:out.version,actor,jobId:out.jobId,mode:'DEV_SIMULATION'});
  return out;
 }
