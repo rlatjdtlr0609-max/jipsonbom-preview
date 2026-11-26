@@ -65,6 +65,9 @@
      <input id="reset-password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
      <label for="reset-password-repeat">새 비밀번호 확인</label>
      <input id="reset-password-repeat" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+     <button id="reset-generate" class="plain-btn bordered" type="button">안전한 임시 비밀번호 자동 생성</button>
+     <button id="reset-copy" class="plain-btn bordered" type="button" hidden>생성한 비밀번호 복사</button>
+     <p id="reset-generated-note" class="recovery-note" role="status"></p>
      <button id="reset-confirm-submit" class="primary-btn" type="submit">새 비밀번호 저장</button>
      <button id="reset-confirm-cancel" class="plain-btn" type="button">재설정 취소</button>
     </form>
