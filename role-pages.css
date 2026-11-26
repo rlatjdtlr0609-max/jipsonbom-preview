@@ -1,4 +1,5 @@
 /* WORK164 - only public preview presentation; keeps original release.css untouched */
+body[data-role-page] .tabstrip{display:block!important;background:#fff}
 .role-tabs{gap:6px;overflow-x:auto;white-space:nowrap}
 .role-tabs a{display:inline-flex;padding:10px 15px;font-weight:760;border-radius:10px;font-size:13px;min-height:41px;align-items:center;color:#5f526b;flex-shrink:0}
 .role-tabs a[aria-current="page"]{background:#ede5ff;color:#5322aa}
