@@ -60,7 +60,16 @@ try{
   await page.goto(BASE+'repair-company.html',{waitUntil:'networkidle'});
   await page.locator('[data-provider]').first().click();
   assert.match(await page.locator('#toast').textContent(),/시연용 안내/);
-  await page.locator('.role-tabs a[href="./customer.html"]').click();
+  const target=page.locator('.role-tabs a[href="./customer.html"]');
+  const diag=await target.evaluate(el=>{
+   const chain=[];for(let n=el;n&&chain.length<6;n=n.parentElement){
+    const css=getComputedStyle(n);chain.push({tag:n.tagName,class:n.className,display:css.display,visibility:css.visibility,rect:n.getBoundingClientRect().toJSON()});
+   }
+   return {viewport:innerWidth,mq:matchMedia('(max-width:720px)').matches,chain};
+  });
+  console.log('WORK164 NAV DIAGNOSTIC '+JSON.stringify({width,diag}));
+  assert.equal(await target.isVisible(),true,'sibling fixed URL navigation must be visible');
+  await target.click({timeout:3000});
   await page.waitForURL('**/customer.html');
   assert.equal(await page.locator('main#screen [data-screen]').getAttribute('data-screen'),'customer');
   await page.goto(BASE+'index.html',{waitUntil:'networkidle'});
