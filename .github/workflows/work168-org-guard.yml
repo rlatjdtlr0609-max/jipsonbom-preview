@@ -7,6 +7,7 @@ on:
       - 'repair-company.html'
       - 'work168-*.mjs'
       - 'tests/work168-org-boundary.test.mjs'
+      - 'tests/work168-org-panel.qa.mjs'
       - '.github/workflows/work168-org-guard.yml'
   workflow_dispatch:
 permissions:
@@ -35,4 +36,5 @@ jobs:
           node --check work168-org-panel.mjs
           node --check work168-org-guard.mjs
           node --test tests/work168-org-boundary.test.mjs
+          node tests/work168-org-panel.qa.mjs
           node tests/standalone-role-pages.qa.mjs
