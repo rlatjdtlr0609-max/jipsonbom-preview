@@ -59,12 +59,15 @@
  const mfaInput=select('totp-code'),topSession=select('session-label');
  const message=select('dashboard-message'),nav=select('screen-nav');
  const metrics=select('metrics');
+ const opsSection=select('operation-console'),opsItems=select('ops-items'),opsStatus=select('ops-status');
+ const finSection=select('finance-console'),finItems=select('finance-items'),finStatus=select('finance-status');
  const records=select('records-list'),recordsState=select('records-state');
  const recordsPrev=select('records-prev'),recordsNext=select('records-next');
  const recordsPage=select('records-page');
  const sections=groups.flatMap(g=>g.entries.map(([id,label,description,...keys])=>({id,label,description,keys,group:g.title})));
  let token=null;let expiresAt=0;let factorId=null;let busy=false;let selected='overview';let snapshot=null;
  let panelRequestSequence=0,recordRequestSequence=0,recordOffset=0,recordBusy=false,recordHasMore=false;
+ let opsSequence=0,financeSequence=0,commandBusy=false;
  const RECORD_LIMIT=15;
  const create=(tag,cls,text)=>{
   const e=document.createElement(tag);
@@ -76,7 +79,8 @@
   status.textContent=msg;status.dataset.error=error?'true':'false';
  };
  const emptySession=()=>{
-  panelRequestSequence++;
+  panelRequestSequence++;opsSequence++;financeSequence++;commandBusy=false;
+  opsSection.hidden=true;finSection.hidden=true;opsItems.replaceChildren();finItems.replaceChildren();
   recordRequestSequence++;recordBusy=false;recordHasMore=false;recordOffset=0;
   records.replaceChildren();recordsPrev.disabled=true;recordsNext.disabled=true;
   recordsPage.textContent='0건';recordsState.textContent='관리자 인증 후 업무목록을 조회합니다.';
@@ -265,6 +269,177 @@
   void loadRecords(recordOffset+RECORD_LIMIT);
  });
 
+
+ // WORK119-124 / MASTER_11 #128: a RESOLVED task is not a source request,
+ // contractor membership, booking, worker approval or payment decision.
+ const opsScreens=new Set(['overview','tasks','requests','alerts','applications','providers','booking','cases','incidents']);
+ const financeScreens=new Set(['cash','recon','directpay','integrity','catalog']);
+ const uuid=/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+ const taskLabels={
+  INCIDENT_SAFETY_REVIEW:'사고·안전검토',
+  REQUEST_PUBLICATION_REVIEW:'수리접수 게시검토',
+  AFTERCARE_REVIEW:'A/S 검토',
+  REPAIR_DISPUTE_REVIEW:'수리 분쟁 검토',
+  WORKER_APPROVAL_REVIEW:'기사 가입심사',
+  WORKER_EVIDENCE_REVERIFY_REVIEW:'기사 자격·서류 재검토'
+ };
+ const safeOps=(data)=>
+  data&&data.environment==='DEVELOPMENT'&&data.read_only===true&&
+  data.production_deployment===false&&data.pii_included===false&&
+  data.approval_or_payment_enabled===false&&data.source_mutated===false&&
+  data.schema_version==='WORK120_QUEUE_V1'&&
+  typeof data.task_command_enabled==='boolean'&&Array.isArray(data.items)&&
+  data.items.length<=15&&data.items.every(t=>t&&uuid.test(t.id)&&
+   Number.isSafeInteger(t.row_version)&&t.row_version>0&&
+   Object.hasOwn(taskLabels,t.task_type)&&
+   ['OPEN','CLAIMED'].includes(t.status)&&
+   ['CRITICAL','HIGH','NORMAL','LOW'].includes(t.priority)&&
+   typeof t.can_claim==='boolean'&&typeof t.can_release==='boolean'&&
+   typeof t.can_resolve==='boolean'&&
+   (t.created_at===null||typeof t.created_at==='string'));
+ async function taskCommand(task,action,data={}){
+  if(commandBusy||dashboard.hidden||isExpired())return;
+  if(!opsSection.isConnected||opsSection.hidden||!['CLAIM','RELEASE','RESOLVE'].includes(action))return;
+  commandBusy=true;opsStatus.textContent='서버에서 관리자 MFA·업무권한·버전을 확인하고 있습니다…';
+  const issuedToken=token,issuedScreen=selected;
+  try{
+   const result=await request('/rest/v1/rpc/jsb_w120_admin_task_command',{
+    method:'POST',accessToken:token,
+    body:{p_task:task.id,p_expected_version:task.row_version,p_action:action,
+      p_key:crypto.randomUUID(),p_data:data}
+   });
+   if(token!==issuedToken||selected!==issuedScreen||dashboard.hidden)return;
+   if(!result||result.source_record_modified!==false||
+     result.booking_changed!==false||result.cash_changed!==false||
+     result.worker_approved!==false||result.result?.id!==task.id||
+     result.result?.row_version!==task.row_version+1)
+    throw Error('UNVERIFIED_RESPONSE');
+   opsStatus.textContent='운영업무 원장에 '+action+' 기록을 저장했습니다. 원접수·기사승인·예약·결제는 변경되지 않았습니다.';
+   await loadOps();
+  }catch(e){
+   if(token!==issuedToken||selected!==issuedScreen||dashboard.hidden)return;
+   opsStatus.dataset.error='true';
+   opsStatus.textContent=e.status===403
+    ?'관리자 업무권한·최근 MFA 또는 승인 정책이 없어 처리할 수 없습니다.'
+    :'처리거부 또는 버전 충돌입니다. 원본을 보존했고 업무목록을 다시 조회할 수 있습니다.';
+  }finally{commandBusy=false;}
+ }
+ async function loadOps(){
+  const version=++opsSequence,issuedScreen=selected,issuedToken=token;
+  opsItems.replaceChildren();opsStatus.dataset.error='false';
+  opsStatus.textContent='서버 원장과 선점 정책을 확인하는 중…';
+  try{
+   if(isExpired())throw Error('AUTH_EXPIRED');
+   const data=await request('/rest/v1/rpc/jsb_w120_admin_task_queue',{
+    method:'POST',accessToken:token,body:{p_limit:15}});
+   if(version!==opsSequence||token!==issuedToken||selected!==issuedScreen||dashboard.hidden)return;
+   if(!safeOps(data))throw Error('UNVERIFIED_RESPONSE');
+   opsItems.replaceChildren();
+   if(!data.items.length)opsItems.append(create('div','ops-empty','현재 활성 관리자 원장 업무가 없습니다. 원업무가 없다는 뜻은 아닙니다.'));
+   for(const task of data.items){
+    const card=create('article','ops-item');
+    const top=create('div','ops-item-top'),heading=create('div','');
+    heading.append(create('div','ops-item-title',taskLabels[task.task_type]));
+    heading.append(create('div','ops-item-sub','우선순위 '+task.priority+
+      ' · 원장 버전 '+task.row_version+' · 등록 '+fmtDate(task.created_at)+
+      (task.due_at?' · 기한 '+fmtDate(task.due_at):' · 승인된 기한 없음')));
+    top.append(heading,create('span','ops-item-status',task.status));
+    card.append(top);
+    const controls=create('div','ops-controls');
+    const actionButton=(label,action)=>{
+     const b=create('button','',label);b.type='button';
+     b.addEventListener('click',()=>{
+      if(!snapshot||!token||isExpired())return;
+      void taskCommand(task,action,{});
+     });controls.append(b);
+    };
+    if(task.can_claim&&data.task_command_enabled)actionButton('처리 시작 · 선점','CLAIM');
+    if(task.can_release)actionButton('내 선점 해제','RELEASE');
+    if(controls.childNodes.length)card.append(controls);
+    if(task.can_resolve){
+     const form=create('form','ops-resolve-form');
+     const label1=create('label','', '업무종료 사유 코드 · 대문자/숫자/밑줄');
+     const code=create('input','');code.type='text';code.placeholder='REVIEW_HANDOFF';code.maxLength=64;code.required=true;
+     code.pattern='[A-Z][A-Z0-9_]{1,63}';
+     const label2=create('label','', '검토기록 참조 · 최소 8자');
+     const reference=create('input','');reference.type='text';reference.placeholder='근거 문서번호 또는 업무처리 참조';reference.minLength=8;reference.maxLength=250;reference.required=true;
+     const submit=create('button','ops-confirm','업무원장만 처리완료');submit.type='submit';
+     form.append(label1,code,label2,reference,submit);
+     form.addEventListener('submit',e=>{
+      e.preventDefault();
+      if(!form.reportValidity()||!snapshot||isExpired())return;
+      if(!window.confirm('운영업무 원장만 종료합니다. 고객 접수·기사·예약·결제는 변경되지 않습니다. 진행하시겠습니까?'))return;
+      void taskCommand(task,'RESOLVE',{resolution_code:code.value.trim(),resolution_reference:reference.value.trim()});
+     });
+     card.append(form);
+    }
+    opsItems.append(card);
+   }
+   opsStatus.textContent='서버에서 확인한 활성 원장 '+data.items.length+
+    '건 · 선점정책 '+(data.task_command_enabled?'관리자 별도승인됨':'미승인(처리 시작 차단)')+
+    ' · 원접수/기사승인/예약/금전 업무 미변경';
+  }catch(e){
+   if(version!==opsSequence||token!==issuedToken||selected!==issuedScreen||dashboard.hidden)return;
+   opsItems.replaceChildren();
+   opsStatus.dataset.error='true';
+   opsStatus.textContent=e.status===403
+    ?'원장 조회에 필요한 권한이 없거나 최근 MFA가 만료되었습니다.'
+    :'보호된 관리자 업무원장 조회를 완료하지 못했습니다.';
+  }
+ }
+ const financeLabels=[
+  ['booking_count','개발 DB 예약'],
+  ['hold_count','캐시 보류원장'],
+  ['held_count','현재 HELD'],
+  ['debited_count','완료 DEBITED'],
+  ['fee_rule_mismatches','공식단가 10% 불일치'],
+  ['confirmed_booking_missing_hold','확정예약 보류 누락'],
+  ['hold_snapshot_mismatches','예약 스냅샷 불일치'],
+  ['orphan_holds','예약 없는 보류'],
+  ['duplicate_holds_for_booking','예약별 이중 보류'],
+  ['refund_review_requests','환불 검토 요청']
+ ];
+ const safeFin=data=>data&&data.environment==='DEVELOPMENT'&&
+   data.adapter==='DEV_VIRTUAL'&&data.read_only===true&&
+   data.source_of_fee==='OFFICIAL_SERVICE_PRICE'&&data.fee_percent===10&&
+   data.actual_pg_reconciled===false&&data.actual_payment_enabled===false&&
+   data.full_cash_e2e_certified===false&&data.booking_or_cash_changed===false&&
+   data.production_deployment===false&&data.schema_version==='WORK123_CASH_AUDIT_V1'&&
+   financeLabels.every(([key])=>Number.isSafeInteger(data[key])&&data[key]>=0);
+ async function loadFinance(){
+  const version=++financeSequence,issuedScreen=selected,issuedToken=token;
+  finItems.replaceChildren();finStatus.dataset.error='false';
+  finStatus.textContent='재무 업무권한·공식단가 스냅샷을 검증하고 있습니다…';
+  try{
+   if(isExpired())throw Error('AUTH_EXPIRED');
+   const data=await request('/rest/v1/rpc/jsb_w123_admin_cash_integrity',{
+    method:'POST',accessToken:token,body:{}});
+   if(version!==financeSequence||token!==issuedToken||selected!==issuedScreen||dashboard.hidden)return;
+   if(!safeFin(data))throw Error('UNVERIFIED_RESPONSE');
+   finItems.replaceChildren();
+   for(const [key,label] of financeLabels){
+    const tile=create('article','finance-item');
+    tile.append(create('div','finance-label',label),
+      create('div','finance-count',data[key].toLocaleString('ko-KR')));
+    finItems.append(tile);
+   }
+   finStatus.textContent='DEV 가상캐시 조회만 완료 · 수리 공식단가 10% · PG/법률/세무/실거래 미검증';
+  }catch(e){
+   if(version!==financeSequence||token!==issuedToken||selected!==issuedScreen||dashboard.hidden)return;
+   finItems.replaceChildren();finStatus.dataset.error='true';
+   finStatus.textContent=e.status===403
+    ?'개별 재무관리 권한(prices_manage) 또는 최근 MFA가 없어 접근할 수 없습니다.'
+    :'재무 무결성 조회를 완료하지 못했습니다. 실제 PG 대사로 간주하지 않습니다.';
+  }
+ }
+ function loadAdminConsoles(){
+  opsSequence++;financeSequence++;opsItems.replaceChildren();finItems.replaceChildren();
+  opsSection.hidden=!opsScreens.has(selected);
+  finSection.hidden=!financeScreens.has(selected);
+  if(!opsSection.hidden)void loadOps();
+  if(!finSection.hidden)void loadFinance();
+ }
+
  function renderScreen(){
   const current=sections.find(x=>x.id===selected)||sections[0];selected=current.id;
   select('workarea-title').textContent=current.label;
@@ -277,6 +452,7 @@
   }
   void loadPanel();
   void loadRecords(0);
+  loadAdminConsoles();
  }
  function buildNav(){
   nav.replaceChildren();
