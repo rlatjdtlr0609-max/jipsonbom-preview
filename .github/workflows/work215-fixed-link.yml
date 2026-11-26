@@ -1,0 +1,46 @@
+name: WORK215 fixed-link QA development preview ONLY
+on:
+  push:
+    branches:
+      - main
+      - audit/work215-integrated-preview-qa-20261126
+    paths:
+      - index.html
+      - customer.html
+      - worker.html
+      - repair-company.html
+      - construction.html
+      - admin.html
+      - work211-home-guide.js
+      - work212-aftercare.js
+      - work213-notice-preview.js
+      - work214-cash-preview.js
+      - tests/work215-contract.test.mjs
+      - tests/work215-browser.qa.mjs
+      - .github/workflows/work215-fixed-link.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: MASTER11 structural and privacy checks
+        env:
+          JSB_REQUIRE_ALL_WORK211_214: ${{ github.ref == 'refs/heads/main' }}
+        run: node --test tests/work215-contract.test.mjs
+      - name: Install pinned browser QA dependency
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Safe PC/mobile integrated browser checks
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+          JSB_REQUIRE_ALL_WORK211_214: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-work215-http.log 2>&1 &
+          sleep 2
+          node tests/work215-browser.qa.mjs
