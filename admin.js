@@ -54,7 +54,7 @@
  };
  const select=id=>document.getElementById(id);
  const authLayout=select('auth-layout'),dashboard=select('dashboard');
- const login=select('login-form'),mfa=select('mfa-form');
+ const login=select('login-form'),mfa=select('mfa-form'),enroll=select('enroll-form');
  const status=select('auth-status'),logout=select('logout');
  const mfaInput=select('totp-code'),topSession=select('session-label');
  const message=select('dashboard-message'),nav=select('screen-nav');
@@ -66,7 +66,7 @@
  const recordsPrev=select('records-prev'),recordsNext=select('records-next');
  const recordsPage=select('records-page');
  const sections=groups.flatMap(g=>g.entries.map(([id,label,description,...keys])=>({id,label,description,keys,group:g.title})));
- let token=null;let expiresAt=0;let factorId=null;let busy=false;let selected='overview';let snapshot=null;
+ let token=null;let expiresAt=0;let factorId=null;let enrollFactorId=null;let busy=false;let selected='overview';let snapshot=null;
  let panelRequestSequence=0,recordRequestSequence=0,recordOffset=0,recordBusy=false,recordHasMore=false;
  let opsSequence=0,financeSequence=0,providerSequence=0,commandBusy=false;
  const RECORD_LIMIT=15;
@@ -86,7 +86,9 @@
   recordRequestSequence++;recordBusy=false;recordHasMore=false;recordOffset=0;
   records.replaceChildren();recordsPrev.disabled=true;recordsNext.disabled=true;
   recordsPage.textContent='0건';recordsState.textContent='관리자 인증 후 업무목록을 조회합니다.';
-  token=null;expiresAt=0;factorId=null;snapshot=null;
+  token=null;expiresAt=0;factorId=null;enrollFactorId=null;snapshot=null;
+  select('enroll-qr').removeAttribute('src');select('enroll-qr-wrap').hidden=true;
+  select('enroll-start').hidden=false;enroll.reset();enroll.hidden=true;
   login.reset();mfa.reset();mfa.hidden=true;login.hidden=false;
   dashboard.hidden=true;authLayout.hidden=false;logout.hidden=true;topSession.hidden=true;
   metrics.replaceChildren();nav.replaceChildren();
@@ -560,7 +562,8 @@
     .find(x=>x?.factor_type==='totp'&&x.status==='verified')||
     (Array.isArray(factors?.totp)?factors.totp:[]).find(x=>x?.status==='verified');
    if(!verified?.id){
-    emptySession();showStatus('이 계정에는 검증된 TOTP 인증 앱이 없습니다. 관리자 MFA 등록과 업무권한 승인이 먼저 필요합니다.',true);
+    login.hidden=true;mfa.hidden=true;enroll.hidden=false;
+    showStatus('인증 앱 최초 등록을 진행할 수 있습니다. 등록 후에도 관리자 업무권한은 별도 승인 전까지 차단됩니다.');
     return;
    }
    factorId=verified.id;login.hidden=true;mfa.hidden=false;
@@ -568,6 +571,51 @@
   }catch(e){emptySession();showStatus(friendly(e),true);}
   finally{guardBusy(false);}
  });
+
+ // WORK160: self-service TOTP registration; NEVER grants administrator permissions.
+ select('enroll-start').addEventListener('click',async()=>{
+  if(busy||isExpired()||snapshot)return;
+  guardBusy(true);showStatus('인증 앱 등록용 QR을 생성하는 중입니다.');
+  try{
+   const d=await request('/auth/v1/factors',{method:'POST',accessToken:token,
+    body:{factor_type:'totp',friendly_name:'집손봄 관리자 인증'}});
+   if(typeof d?.id!=='string'||typeof d?.totp?.qr_code!=='string')throw Error('BAD_ENROLLMENT');
+   const qr=d.totp.qr_code;
+   if(!qr.startsWith('data:image/svg+xml')||!qr.includes(',')||qr.length>500000)
+    throw Error('BAD_QR');
+   enrollFactorId=d.id;
+   select('enroll-qr').src=qr;select('enroll-qr-wrap').hidden=false;
+   select('enroll-start').hidden=true;
+   showStatus('QR을 인증 앱으로 스캔한 뒤 6자리 인증번호를 입력하세요. QR 비밀정보는 공유하지 마세요.');
+  }catch{showStatus('인증 앱 등록 QR을 만들지 못했습니다. 서버 설정을 확인하세요.',true);}
+  finally{guardBusy(false);}
+ });
+ enroll.addEventListener('submit',async event=>{
+  event.preventDefault();
+  if(busy||!enrollFactorId||isExpired())return;
+  const code=select('enroll-code').value.trim();
+  if(!/^[0-9]{6}$/.test(code)){showStatus('6자리 인증번호를 확인해주세요.',true);return;}
+  guardBusy(true);showStatus('인증 앱 등록을 검증하고 있습니다.');
+  try{
+   const challenge=await request('/auth/v1/factors/'+encodeURIComponent(enrollFactorId)+'/challenge',{
+    method:'POST',accessToken:token,body:{}});
+   if(typeof challenge?.id!=='string')throw Error('AUTH_INVALID');
+   const result=await request('/auth/v1/factors/'+encodeURIComponent(enrollFactorId)+'/verify',{
+    method:'POST',accessToken:token,body:{challenge_id:challenge.id,code}});
+   if(typeof result?.access_token!=='string'||!Number.isFinite(result?.expires_in)||result.expires_in<=0)
+    throw Error('AUTH_INVALID');
+   token=result.access_token;expiresAt=Date.now()+result.expires_in*1000-15000;
+   select('enroll-qr').removeAttribute('src');select('enroll-code').value='';enrollFactorId=null;
+   await authUser(token);
+   try{const data=await readSnapshot();showDashboard(data);}
+   catch{
+    emptySession();
+    showStatus('인증 앱 등록이 완료됐습니다. 관리자 업무권한이 아직 승인되지 않아 업무 화면은 열리지 않습니다.');
+   }
+  }catch{showStatus('인증번호 검증에 실패했습니다. 새로운 6자리 번호로 다시 시도하세요.',true);}
+  finally{guardBusy(false);}
+ });
+ select('enroll-cancel').addEventListener('click',()=>{void doLogout();});
  mfa.addEventListener('submit',async event=>{
   event.preventDefault();if(busy||!token||!factorId)return;
   const code=mfaInput.value.trim();
