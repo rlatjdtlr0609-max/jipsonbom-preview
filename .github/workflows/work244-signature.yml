@@ -31,6 +31,8 @@ jobs:
       - name: Install browser QA dependency
         run: npm install --no-save --no-package-lock playwright@1.57.0
       - name: Verify JPEG PNG MP4 spoofing and no transmissions on PC/mobile
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/work244-http.log 2>&1 &
           sleep 2
