@@ -1,0 +1,30 @@
+name: WORK241 customer read-only UI gated DEV mock QA
+on:
+  push:
+    branches:
+      - feature/work241-customer-readonly-ui-20261128
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dev-login-ui:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source privacy and browser syntax
+        run: |
+          node --check work241-customer-readonly.js
+          node --check tests/work241-customer-ui.qa.mjs
+          ! grep -Ei '(sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY)' work241-customer-readonly.js
+          ! grep -E '(localStorage|sessionStorage|indexedDB|document.cookie)' work241-customer-readonly.js
+      - name: Install pinned browser QA
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Simulate two browser widths - no real customer operations
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-work241-ui.log 2>&1 &
+          sleep 2
+          node tests/work241-customer-ui.qa.mjs
