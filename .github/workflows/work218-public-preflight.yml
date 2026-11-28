@@ -1,0 +1,37 @@
+name: WORK218 public customer media preflight DEV ONLY
+on:
+  push:
+    branches:
+      - feature/work218-public-media-preflight-20261128
+      - main
+    paths:
+      - customer.html
+      - work218-public-preflight.js
+      - tests/work218-public-preflight.qa.mjs
+      - .github/workflows/work218-public-preflight.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  customer-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and no-write safety
+        run: |
+          node --check work218-public-preflight.js
+          node --check tests/work218-public-preflight.qa.mjs
+          grep -F "connect-src 'none'" customer.html
+          grep -F "form-action 'none'" customer.html
+          ! grep -REi '(sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY)' work218-public-preflight.js
+      - name: Browser dependency (no deployment)
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Chromium mobile and PC preflight
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jsb-work218-preflight.log 2>&1 &
+          sleep 2
+          node tests/work218-public-preflight.qa.mjs
