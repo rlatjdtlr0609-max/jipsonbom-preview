@@ -1,0 +1,43 @@
+name: WORK244 local file signature QA (DEV preview, no actual upload)
+on:
+  push:
+    branches:
+      - feature/work244-signature-preflight-20261128
+      - main
+    paths:
+      - customer.html
+      - work218-public-preflight.js
+      - tests/work244-signature.qa.mjs
+      - .github/workflows/work244-signature.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  signature-and-no-upload:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source syntax and privacy gate
+        run: |
+          node --check work218-public-preflight.js
+          node --check tests/work244-signature.qa.mjs
+          grep -F "connect-src 'none'" customer.html
+          grep -F "form-action 'none'" customer.html
+          ! grep -RE '(localStorage|sessionStorage|indexedDB|fetch\(|sendBeacon|XMLHttpRequest)' work218-public-preflight.js
+      - name: Install browser QA dependency
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Verify JPEG PNG MP4 spoofing and no transmissions on PC/mobile
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/work244-http.log 2>&1 &
+          sleep 2
+          node tests/work244-signature.qa.mjs
+          node tests/work218-public-preflight.qa.mjs
+          node tests/standalone-role-pages.qa.mjs
+          node --test tests/work215-contract.test.mjs
+          node tests/work215-browser.qa.mjs
