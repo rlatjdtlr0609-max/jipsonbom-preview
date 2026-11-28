@@ -113,8 +113,12 @@
  if(calc&&calcResult){
   const render=()=>{
    const amount=calc.valueAsNumber;
-   calcResult.textContent=Number.isFinite(amount)&&amount>=0
-    ?(amount*.1).toLocaleString('ko-KR',{maximumFractionDigits:4})+'원':'—';
+   const positive=Number.isSafeInteger(amount)&&amount>0;
+   const exact=positive&&amount%10===0;
+   calcResult.textContent=exact
+    ?(amount/10).toLocaleString('ko-KR')+'원'
+    :positive?'계산 보류 · 10% 원 미만 처리기준 미확정':'— · 유효한 공식단가 예시를 입력하세요';
+   calcResult.dataset.work283Valid=exact?'true':'false';
   };
   calc.addEventListener('input',render);
  }

@@ -1,0 +1,43 @@
+name: WORK283 exact 10pct demo rate on fixed worker page (NO PG)
+on:
+  push:
+    branches:
+      - feature/work283-exact-fee-rounding-block-20261128
+      - main
+    paths:
+      - role-pages.js
+      - worker.html
+      - tests/work283-exact-fee.qa.mjs
+      - .github/workflows/work283-exact-fee.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  worker-fee-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and read-only CSP policy
+        run: |
+          node --check role-pages.js
+          node --check tests/work283-exact-fee.qa.mjs
+          grep -F "connect-src 'none'" worker.html
+          grep -F "form-action 'none'" worker.html
+          ! grep -REi '(sb_secret_|service[_-]?role[_-]?key|BEGIN PRIVATE KEY)' worker.html role-pages.js
+      - name: Browser test dependency
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Exact 10pct, booking demo, role pages, integrated safe regression
+        env:
+          JSB_QA_BROWSER_CHANNEL: chrome
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/work283-http.log 2>&1 &
+          sleep 2
+          node tests/work283-exact-fee.qa.mjs
+          node tests/work214-preview.qa.mjs
+          node tests/standalone-role-pages.qa.mjs
+          node --test tests/work215-contract.test.mjs
+          node tests/work215-browser.qa.mjs
