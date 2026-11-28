@@ -1,0 +1,42 @@
+name: WORK240 six fixed links keyboard accessibility QA
+on:
+  push:
+    branches:
+      - feature/work240-fixed-link-a11y-20261128
+      - main
+    paths:
+      - index.html
+      - customer.html
+      - worker.html
+      - repair-company.html
+      - construction.html
+      - admin.html
+      - work240-accessibility.js
+      - work240-accessibility.css
+      - tests/work240-public.qa.mjs
+      - .github/workflows/work240-public-a11y.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  accessibility:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and policy gates
+        run: |
+          node --check work240-accessibility.js
+          node --check tests/work240-public.qa.mjs
+          grep -F "connect-src 'none'" customer.html
+          grep -F "noindex,nofollow" admin.html
+      - name: Browser test dependency
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Keyboard focus tests for six fixed links
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/work240-http.log 2>&1 &
+          sleep 2
+          node tests/work240-public.qa.mjs
