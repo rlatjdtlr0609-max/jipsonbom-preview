@@ -1,0 +1,25 @@
+name: WORK241 DEV Edge read-only public negative-test gate
+on:
+  push:
+    branches:
+      - audit/work241-readonly-edge-smoke-20261128
+      - main
+    paths:
+      - tests/work241-edge-smoke.test.mjs
+      - .github/workflows/work241-edge-smoke.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unauthenticated-edge-guard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate syntax
+        run: node --check tests/work241-edge-smoke.test.mjs
+      - name: Live external read-only DEV Edge smoke
+        run: node --test tests/work241-edge-smoke.test.mjs
