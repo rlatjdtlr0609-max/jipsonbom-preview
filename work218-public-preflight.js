@@ -27,6 +27,6 @@
   const result=evaluateFiles([...input.files]);
   if(!result.valid){input.value='';output.textContent='선택 불가 · '+result.reason+' 파일은 업로드되지 않았습니다.';return;}
   output.textContent=result.photos+result.videos===0?'파일을 선택하지 않았습니다.':
-   '브라우저 사전검사 통과 · 사진 '+result.photos+'장, 동영상 '+result.videos+'개. 서버 업로드·검역은 수행되지 않았습니다.';
+   '브라우저 사전검사 통과 · 사진 '+result.photos+'장, 동영상 '+result.videos+'개. 서버 업로드·검역은 수행되지 않았습니다. 파일을 서버로 전송하지 않습니다.';
  });
 })();
