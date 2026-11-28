@@ -1,0 +1,8 @@
+/* WORK226 — public service-area policy distinction */
+.jsb-coverage-note{border:1px solid #e7ddf2;border-radius:14px;background:#faf8fe;color:#28334c;margin-block:12px 28px;box-sizing:border-box;padding:16px 20px}
+.jsb-coverage-note summary{cursor:pointer;list-style:auto;font-weight:700;line-height:1.5;min-height:28px}
+.jsb-coverage-note summary:focus-visible{outline:3px solid #7955be;outline-offset:4px}
+.jsb-coverage-body{padding:12px 0 0;color:#4a5266;font-size:14px;line-height:1.6}
+.jsb-coverage-body p{margin:7px 0}
+.jsb-coverage-disclaimer{font-size:12px;color:#776980}
+@media(max-width:600px){.jsb-coverage-note{padding:16px}.jsb-coverage-body{font-size:13px}}

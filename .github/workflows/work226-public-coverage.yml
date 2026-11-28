@@ -1,0 +1,37 @@
+name: WORK226 public service coverage fixed-link QA
+on:
+  push:
+    branches:
+      - feature/work226-service-region-disclosure-20261128
+      - main
+    paths:
+      - index.html
+      - work226-service-coverage.js
+      - work226-service-coverage.css
+      - tests/work226-public.qa.mjs
+      - .github/workflows/work226-public-coverage.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-coverage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Public JS security syntax
+        run: |
+          node --check work226-service-coverage.js
+          node --check tests/work226-public.qa.mjs
+          grep -F "connect-src 'none'" index.html
+          grep -F "form-action 'none'" index.html
+      - name: Browser test dependency (no live business)
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: PC and mobile read-only policy validation
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/work226-http.log 2>&1 &
+          sleep 2
+          node tests/work226-public.qa.mjs
