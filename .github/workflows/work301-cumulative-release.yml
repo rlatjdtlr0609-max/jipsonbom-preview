@@ -1,0 +1,37 @@
+name: WORK301 cumulative 6 fixed URLs and 24 admin release safeguards
+on:
+  push:
+    branches:
+      - main
+      - audit/work301-cumulative-release-gate-20261128
+    paths:
+      - index.html
+      - customer.html
+      - worker.html
+      - repair-company.html
+      - construction.html
+      - admin.html
+      - role-pages.js
+      - work218-public-preflight.js
+      - work211-home-guide.js
+      - work212-aftercare.js
+      - work213-notice-preview.js
+      - work214-cash-preview.js
+      - work226-service-coverage.js
+      - work240-accessibility.js
+      - tests/work301-cumulative-release.test.mjs
+      - .github/workflows/work301-cumulative-release.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fixed-release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify cumulative preview contracts without production activation
+        run: node --test tests/work301-cumulative-release.test.mjs
