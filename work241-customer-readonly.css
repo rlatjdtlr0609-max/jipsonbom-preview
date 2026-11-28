@@ -1,0 +1,13 @@
+/* WORK241 - isolated development test-account profile, no PII in preview markup. */
+.work241-readonly{margin-block:18px;padding:clamp(16px,2vw,24px);border:1px solid #d7c9ed;background:#faf9fd;border-radius:16px;color:#262c45}
+.work241-readonly h3{font-size:clamp(17px,1.8vw,22px);margin:0 0 8px}
+.work241-disclaimer{font-size:13px;color:#555e73;line-height:1.65;margin:0 0 14px}
+.work241-readonly form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.work241-readonly label{display:grid;gap:6px;font-size:13px;font-weight:700;min-width:0}
+.work241-readonly input{font:inherit;min-height:44px;border:1px solid #a99bc4;border-radius:9px;padding:9px;min-width:0}
+.work241-readonly button{font:inherit;min-height:44px;border:1px solid #6e4bb3;border-radius:9px;padding:10px 14px;color:#fff;background:#6945a7;font-weight:700;cursor:pointer}
+.work241-readonly button:disabled{opacity:.55;cursor:wait}
+.work241-readonly button:focus-visible,.work241-readonly input:focus-visible{outline:3px solid #8b67cb;outline-offset:2px}
+.work241-readonly output{display:block;margin-block:14px;font-size:13px;font-weight:700;line-height:1.6;overflow-wrap:anywhere}
+.work241-readonly li{font-size:13px;line-height:1.7;padding:4px 0;overflow-wrap:anywhere}
+@media(max-width:760px){.work241-readonly form{grid-template-columns:1fr}.work241-readonly button{width:100%}}
